@@ -19,11 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{AC899FE6-9682-4615-8C31-817B92BDCE0E}</ProjectGuid>
+    <ProjectGuid>{F66DA4F1-904C-490E-A8F4-B9AD4E805EA3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>DNAnalyzerTest</RootNamespace>
+    <RootNamespace>DNAnalyzerServerTest</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>DNAnalyzerClientTest</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
