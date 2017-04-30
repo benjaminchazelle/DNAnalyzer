@@ -162,6 +162,11 @@
     </ClCompile>
     <ClCompile Include="unittest1.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DNAnalyzerServer\DNAnalyzerServer.vcxproj">
+      <Project>{3053f7f8-c45a-4a2b-9a39-f787c81bcc03}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
