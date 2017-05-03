@@ -12,9 +12,11 @@ e-mail               :	benjamin.chazelle@insa-lyon.fr
 
 //-------------------------------------------------------- Include système
 
+#include <exception>
+#include <cstring>
+
 //------------------------------------------------------ Include personnel
 
-#include <exception>
 #include "Mots.h"
 
 //----------------------------------------------------------------- PUBLIC
