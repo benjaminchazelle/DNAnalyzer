@@ -14,35 +14,65 @@ e-mail               :	benjamin.chazelle@insa-lyon.fr
 
 //------------------------------------------------------ Include personnel
 
+#include <exception>
 #include "Mots.h"
 
 //----------------------------------------------------------------- PUBLIC
 
+Mots* Mots::instanceMots = new Mots();
 
 Mots & Mots::ObtenirInstance()
 {
-	// TODO: changer le retour par l'instance du singleton
-	return *((Mots*) nullptr);
+	return *(Mots::instanceMots);
 }
 
-unsigned int Mots::ObtenirIndex(char[])
+unsigned int Mots::ObtenirIndex(const char const mot[])//non tester
 {
-	return 0;
+	if(mot == nullptr)
+		throw invalid_argument("nullptr n'est pas autoriser pour cette method");
+	char * str = new char[strlen(mot) + 1];
+	strcpy(str, mot);
+	unordered_map<char*, unsigned int>::iterator t = mots.find((char*)str);
+	free(str);
+	if (t == mots.end())
+		throw range_error("mot non trouver");
+	return t->second;
 }
 
-unsigned int Mots::InsererMot(char[])
+unsigned int Mots::InsererMot(const char const mot[])//non tester
 {
-	return 0;
+	if (mot == nullptr)
+		throw invalid_argument("nullptr n'est pas autoriser pour cette method");
+	char * str = new char[strlen(mot) + 1];
+	strcpy(str, mot);
+	unordered_map<char*, unsigned int>::iterator t = mots.find((char*)str);
+	if (t != mots.end()) {
+		free(str);
+		throw range_error("Mot deja present");
+	}
+
+	std::pair<char*, unsigned int> pair1(str, this->counter);
+	std::pair<unsigned int, char *> pair2(this->counter, str);
+	mots.insert(pair1);
+	mots_revers.insert(pair2);
+
+	this->counter++;
+
+	free(str);
+
+	return this->counter-1;
 }
 
-char * Mots::RecupererMot(unsigned int)
+char const * Mots::RecupererMot(const unsigned int i)//non tester
 {
-	return nullptr;
+	if (i < 0 || i >= counter)
+		throw range_error("Mot inexistant");
+	return mots_revers[i];
 }
 
-unsigned int Mots::ObtenirNombreMots()
+unsigned int Mots::ObtenirNombreMots()//non tester
 {
-	return 0;
+	return counter;
 }
 
 //----------------------------------------------------------------- PRIVEE
@@ -50,6 +80,7 @@ unsigned int Mots::ObtenirNombreMots()
 
 Mots::Mots()
 {
+	this->counter = 0;
 }
 
 

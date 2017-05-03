@@ -140,7 +140,7 @@ namespace DNAnalyzerServerTest
 			for (unsigned int i = 0; i < nombreMots; i++) {
 
 				try {
-					char* motRecupere = Mots::ObtenirInstance().RecupererMot(i);
+					char const * motRecupere = Mots::ObtenirInstance().RecupererMot(i);
 
 					Assert::IsTrue(strcmp(mots[i], motRecupere) == 0);
 				}
@@ -160,7 +160,7 @@ namespace DNAnalyzerServerTest
 			bool rangeErrorException = false;
 
 			try {
-				char* motRecupere = Mots::ObtenirInstance().RecupererMot(0);
+				char const * motRecupere = Mots::ObtenirInstance().RecupererMot(0);
 
 				Assert::Fail();
 			}

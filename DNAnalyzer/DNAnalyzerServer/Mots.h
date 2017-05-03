@@ -30,10 +30,10 @@ protected:
 	static Mots* instanceMots;
 	// Description : Instance singleton de Mots
 
-	unordered_map<char[], unsigned int> mots;
+	unordered_map<char*, unsigned int> mots;
 	// Description : Dictionnaire d'un mot vers son index
 
-	unordered_map<unsigned int, char[]> mots_revers;
+	unordered_map<unsigned int, char*> mots_revers;
 	// Description : Dictionnaire d'un index vers un mot
 
 	unsigned int counter;
@@ -44,17 +44,17 @@ public:
 	static Mots& ObtenirInstance();
 	// Mode d'emploi : renvoit l'instance singleton de Mots
 
-	unsigned int ObtenirIndex(char[]);
+	unsigned int ObtenirIndex(const char const []);
 	// Mode d'emploi : renvoit l'index d'un mot s'il existe
 	// Exception "invalid_argument" : si un index null est envoyé
 	// Exception "" : si le mot est inconnu
 
-	unsigned int InsererMot(char[]);
+	unsigned int InsererMot(const char const []);
 	// Mode d'emploi : insère un mot dans l'ensemble et renvoit son index
 	// Exception "invalid_argument" : si un index null est envoyé
 	// Exception "overflow_error" : si le mot est déjà connu
 
-	char* RecupererMot(unsigned int);
+	char const * RecupererMot(const unsigned int);
 	// Mode d'emploi : récupère un mot par son index
 	// Exception "range_error" : si l'index est inconnu
 
