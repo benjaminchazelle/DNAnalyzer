@@ -25,17 +25,17 @@ Mots & Mots::ObtenirInstance()
 	return *((Mots*) nullptr);
 }
 
-unsigned int Mots::ObtenirIndex(unsigned char[])
+unsigned int Mots::ObtenirIndex(char[])
 {
 	return 0;
 }
 
-unsigned int Mots::InsererMot(unsigned char[])
+unsigned int Mots::InsererMot(char[])
 {
 	return 0;
 }
 
-unsigned char * Mots::RecupererMot(unsigned int)
+char * Mots::RecupererMot(unsigned int)
 {
 	return nullptr;
 }

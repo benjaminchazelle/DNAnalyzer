@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 #include "../DNAnalyzerServer/Mots.h"
 #include <exception>
+#include <cstring>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -49,7 +50,7 @@ namespace DNAnalyzerServerTest
 		TEST_METHOD(InsererMot_KnownWord)
 		{
 			// Ajouter un mot déjà connu doit lever une exception "overflow_error"
-			unsigned char mot[] = { 'A', 'C', 'G', 'T', '\0' };
+			char mot[] = { 'A', 'C', 'G', 'T', '\0' };
 
 			try {
 				Mots::ObtenirInstance().InsererMot(mot);
@@ -76,7 +77,7 @@ namespace DNAnalyzerServerTest
 		{
 			// Ajouter un mot inconnu ne doit pas lever d'exception
 
-			unsigned char mot[] = { 'A', 'C', 'G', 'T', '\0' };
+			char mot[] = { 'A', 'C', 'G', 'T', '\0' };
 
 			try {
 				Mots::ObtenirInstance().InsererMot(mot);
@@ -92,7 +93,7 @@ namespace DNAnalyzerServerTest
 
 			const unsigned int nombreMots = 3;
 
-			unsigned char mots[nombreMots][5] = {
+			char mots[nombreMots][5] = {
 				{ 'A', 'C', 'G', 'T', '\0' },
 				{ 'C', 'A', 'G', 'T', '\0' },
 				{ 'C', 'A', 'T', 'G', '\0' }
@@ -119,7 +120,7 @@ namespace DNAnalyzerServerTest
 
 			const unsigned int nombreMots = 3;
 
-			unsigned char mots[nombreMots][5] = {
+			char mots[nombreMots][5] = {
 											{ 'A', 'C', 'G', 'T', '\0' },
 											{ 'C', 'A', 'G', 'T', '\0' },
 											{ 'C', 'A', 'T', 'G', '\0' }
@@ -139,9 +140,9 @@ namespace DNAnalyzerServerTest
 			for (unsigned int i = 0; i < nombreMots; i++) {
 
 				try {
-					unsigned char* motRecupere = Mots::ObtenirInstance().RecupererMot(i);
+					char* motRecupere = Mots::ObtenirInstance().RecupererMot(i);
 
-					//Assert::IsTrue(strcmp(mots|i], motRecupere) == 0);
+					Assert::IsTrue(strcmp(mots[i], motRecupere) == 0);
 				}
 				catch (std::exception const& e) {
 					Assert::Fail();
@@ -154,12 +155,12 @@ namespace DNAnalyzerServerTest
 		{
 			// Récupérer un mot d'un index inconnu doit lever une exception "range_error"
 
-			unsigned char mot[] = { 'A', 'C', 'G', 'T', '\0' };
+			char mot[] = { 'A', 'C', 'G', 'T', '\0' };
 
 			bool rangeErrorException = false;
 
 			try {
-				unsigned char* motRecupere = Mots::ObtenirInstance().RecupererMot(0);
+				char* motRecupere = Mots::ObtenirInstance().RecupererMot(0);
 
 				Assert::Fail();
 			}
@@ -185,7 +186,7 @@ namespace DNAnalyzerServerTest
 
 			Assert::AreEqual(Mots::ObtenirInstance().ObtenirNombreMots(), (unsigned int)0);
 
-			unsigned char mot[] = { 'A', 'C', 'G', 'T', '\0' };
+			char mot[] = { 'A', 'C', 'G', 'T', '\0' };
 
 			try {
 				Mots::ObtenirInstance().InsererMot(mot);
@@ -205,7 +206,7 @@ namespace DNAnalyzerServerTest
 
 			Assert::AreEqual(Mots::ObtenirInstance().ObtenirNombreMots(), (unsigned int)0);
 
-			unsigned char mot[] = { 'A', 'C', 'G', 'T', '\0' };
+			char mot[] = { 'A', 'C', 'G', 'T', '\0' };
 
 			try {
 				Mots::ObtenirInstance().InsererMot(mot);
@@ -251,7 +252,7 @@ namespace DNAnalyzerServerTest
 		{
 			// Obtenir l'index d'un mot inconnu doit lever une exception "range_error"
 
-			unsigned char mot[] = { 'A', 'C', 'G', 'T', '\0' };
+			char mot[] = { 'A', 'C', 'G', 'T', '\0' };
 
 			bool rangeErrorException = false;
 
@@ -270,7 +271,7 @@ namespace DNAnalyzerServerTest
 		{
 			// Obtenir l'index d'un mot connu ne doit pas lever d'exception
 
-			unsigned char mot[] = { 'A', 'C', 'G', 'T', '\0' };
+			char mot[] = { 'A', 'C', 'G', 'T', '\0' };
 
 			try {
 				Mots::ObtenirInstance().InsererMot(mot);
