@@ -44,12 +44,12 @@ public:
 	static Mots& ObtenirInstance();
 	// Mode d'emploi : renvoit l'instance singleton de Mots
 
-	unsigned int ObtenirIndex(const char const []);
+	unsigned int ObtenirIndex(const char []);
 	// Mode d'emploi : renvoit l'index d'un mot s'il existe
 	// Exception "invalid_argument" : si un index null est envoyé
 	// Exception "" : si le mot est inconnu
 
-	unsigned int InsererMot(const char const []);
+	unsigned int InsererMot(const char []);
 	// Mode d'emploi : insère un mot dans l'ensemble et renvoit son index
 	// Exception "invalid_argument" : si un index null est envoyé
 	// Exception "overflow_error" : si le mot est déjà connu

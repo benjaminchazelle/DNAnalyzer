@@ -28,7 +28,7 @@ Mots & Mots::ObtenirInstance()
 	return *(Mots::instanceMots);
 }
 
-unsigned int Mots::ObtenirIndex(const char const mot[])//non tester
+unsigned int Mots::ObtenirIndex(const char mot[])//non tester
 {
 	if(mot == nullptr)
 		throw invalid_argument("nullptr n'est pas autoriser pour cette method");
@@ -41,7 +41,7 @@ unsigned int Mots::ObtenirIndex(const char const mot[])//non tester
 	return t->second;
 }
 
-unsigned int Mots::InsererMot(const char const mot[])//non tester
+unsigned int Mots::InsererMot(const char mot[])//non tester
 {
 	if (mot == nullptr)
 		throw invalid_argument("nullptr n'est pas autoriser pour cette method");

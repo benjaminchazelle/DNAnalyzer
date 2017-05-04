@@ -4,6 +4,8 @@
 #include <exception>
 #include <cstring>
 
+#define UNREFERENCE_PARAMETER(P) (P)
+
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace DNAnalyzerServerTest
@@ -16,17 +18,15 @@ namespace DNAnalyzerServerTest
 		TEST_METHOD(ObtenirInstance_NotNull)
 		{
 			// L'instance retournée ne doit pas être null
-			//Assert::AreNotEqual((Mots*) NULL, ((Mots*)NULL));
-			Mots::ObtenirInstance();
-			//bool test =(& Mots::ObtenirInstance()) != (Mots*) NULL;
-			//Assert::IsTrue(test);
+			
+			Assert::IsTrue(&Mots::ObtenirInstance() != (Mots*)NULL);
 
 		}
-		/*
+		
 		TEST_METHOD(ObtenirInstance_SameReference)
 		{
 			// L'instance retournée doit toujours être la même
-			Assert::AreEqual(&(Mots::ObtenirInstance()), &(Mots::ObtenirInstance()));
+			Assert::IsTrue(&(Mots::ObtenirInstance()) == &(Mots::ObtenirInstance()));
 
 		}
 
@@ -42,6 +42,7 @@ namespace DNAnalyzerServerTest
 				Assert::Fail();
 			}
 			catch (invalid_argument const& e) {
+				UNREFERENCE_PARAMETER(e);
 				invalidArgumentException = true;
 			}
 
@@ -59,6 +60,7 @@ namespace DNAnalyzerServerTest
 				Mots::ObtenirInstance().InsererMot(mot);
 			}
 			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
 				Assert::Fail();
 			}
 
@@ -69,12 +71,12 @@ namespace DNAnalyzerServerTest
 				Assert::Fail();
 			}
 			catch (overflow_error const& e) {
+				UNREFERENCE_PARAMETER(e);
 				overflowErrorException = false;
 			}
 
 			Assert::IsTrue(overflowErrorException);
 		}
-
 
 		TEST_METHOD(InsererMot_UnkownWord)
 		{
@@ -86,6 +88,7 @@ namespace DNAnalyzerServerTest
 				Mots::ObtenirInstance().InsererMot(mot);
 			}
 			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
 				Assert::Fail();
 			}
 		}
@@ -110,6 +113,7 @@ namespace DNAnalyzerServerTest
 					Assert::AreEqual(index, i);
 				}
 				catch (std::exception const& e) {
+					UNREFERENCE_PARAMETER(e);
 					Assert::Fail();
 				}
 
@@ -135,6 +139,7 @@ namespace DNAnalyzerServerTest
 					Mots::ObtenirInstance().InsererMot(mots[i]);
 				}
 				catch (std::exception const& e) {
+					UNREFERENCE_PARAMETER(e);
 					Assert::Fail();
 				}
 
@@ -148,6 +153,7 @@ namespace DNAnalyzerServerTest
 					Assert::IsTrue(strcmp(mots[i], motRecupere) == 0);
 				}
 				catch (std::exception const& e) {
+					UNREFERENCE_PARAMETER(e);
 					Assert::Fail();
 				}
 
@@ -168,6 +174,7 @@ namespace DNAnalyzerServerTest
 				Assert::Fail();
 			}
 			catch (range_error const& e) {
+				UNREFERENCE_PARAMETER(e);
 				rangeErrorException = true;
 			}
 
@@ -195,6 +202,7 @@ namespace DNAnalyzerServerTest
 				Mots::ObtenirInstance().InsererMot(mot);
 			}
 			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
 				Assert::Fail();
 			}
 
@@ -215,6 +223,7 @@ namespace DNAnalyzerServerTest
 				Mots::ObtenirInstance().InsererMot(mot);
 			}
 			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
 				Assert::Fail();
 			}
 
@@ -225,7 +234,7 @@ namespace DNAnalyzerServerTest
 				Assert::Fail();
 			}
 			catch (std::exception const& e) {
-
+				UNREFERENCE_PARAMETER(e);
 			}
 
 			Assert::AreEqual(Mots::ObtenirInstance().ObtenirNombreMots(), (unsigned int)1);
@@ -244,6 +253,7 @@ namespace DNAnalyzerServerTest
 				Assert::Fail();
 			}
 			catch (invalid_argument const& e) {
+				UNREFERENCE_PARAMETER(e);
 				invalidArgumentException = true;
 			}
 
@@ -264,6 +274,7 @@ namespace DNAnalyzerServerTest
 				Assert::Fail();
 			}
 			catch (range_error const& e) {
+				UNREFERENCE_PARAMETER(e);
 				rangeErrorException = true;
 			}
 
@@ -280,6 +291,7 @@ namespace DNAnalyzerServerTest
 				Mots::ObtenirInstance().InsererMot(mot);
 			}
 			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
 				Assert::Fail();
 			}
 
@@ -288,9 +300,10 @@ namespace DNAnalyzerServerTest
 
 			}
 			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
 				Assert::Fail();
 			}
 		}
-		*/
+		
 	};
 }
