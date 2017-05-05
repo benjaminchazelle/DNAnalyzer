@@ -94,13 +94,14 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>_CRT_SECURE_NO_WARNINGS;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreLinkEvent>
       <Command>"$(VC_ExecutablePath_x86)\lib.exe" /out:"$(TargetDir)$(ProjectName).lib" "$(ProjectDir)$(IntermediateOutputPath)*.obj"</Command>
     </PreLinkEvent>
     <PostBuildEvent>
-      <Command>"$(VC_ExecutablePath_x86)\lib.exe" /out:"$(TargetDir)$(ProjectName).lib" "$(ProjectDir)$(IntermediateOutputPath)*.obj"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,7 +116,11 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>_CRT_SECURE_NO_WARNINGS;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreLinkEvent>
+      <Command>"$(VC_ExecutablePath_x86)\lib.exe" /out:"$(TargetDir)$(ProjectName).lib" "$(ProjectDir)$(IntermediateOutputPath)*.obj"</Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -133,7 +138,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>_CRT_SECURE_NO_WARNINGS;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreLinkEvent>
+      <Command>"$(VC_ExecutablePath_x86)\lib.exe" /out:"$(TargetDir)$(ProjectName).lib" "$(ProjectDir)$(IntermediateOutputPath)*.obj"</Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -151,7 +160,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>_CRT_SECURE_NO_WARNINGS;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreLinkEvent>
+      <Command>"$(VC_ExecutablePath_x86)\lib.exe" /out:"$(TargetDir)$(ProjectName).lib" "$(ProjectDir)$(IntermediateOutputPath)*.obj"</Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
