@@ -146,12 +146,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Dictionnaire.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mots.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dictionnaire.h" />
     <ClInclude Include="Mots.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
