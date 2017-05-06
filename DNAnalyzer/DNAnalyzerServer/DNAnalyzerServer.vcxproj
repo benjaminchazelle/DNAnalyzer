@@ -168,9 +168,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Master.cpp" />
     <ClCompile Include="Mots.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Master.h" />
     <ClInclude Include="Mots.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
