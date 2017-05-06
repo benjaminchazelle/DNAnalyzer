@@ -13,9 +13,29 @@ e-mail               :	benjamin.chazelle@insa-lyon.fr
 
 //--------------------------------------------------- Interfaces utilisées
 #include <unordered_map>
+#include <xhash>
+#include <map>
 
 using namespace std;
 
+//comparateur de clef pour l'unordered_map<char*, unsigned int ...> mots
+struct cmp_charptr {
+	bool operator()(char *first, char  *second) const
+	{
+		return strcmp(first, second) == 0;
+	}
+};
+struct hash_charptr {
+	size_t operator()(const char* p) const {
+		size_t result = 0;
+		const size_t prime = 312;
+		for (size_t i = 0; p[i]!='\0'; ++i) {
+			result = p[i] + (result * prime);
+		}
+		return result;
+	}
+};
+typedef unordered_map<char*, unsigned int, hash_charptr, cmp_charptr> unordered_map_chars_uint;
 //------------------------------------------------------------------------
 // Rôle de la classe <Mots>
 //  La classe Mots permet de manipuler (insérer, rechercher) un ensemble 
@@ -30,7 +50,8 @@ protected:
 	static Mots* instanceMots;
 	// Description : Instance singleton de Mots
 
-	unordered_map<char*, unsigned int> mots;
+	unordered_map_chars_uint mots;
+	//unordered_map<char*, unsigned int> mots;
 	// Description : Dictionnaire d'un mot vers son index
 
 	unordered_map<unsigned int, char*> mots_revers;

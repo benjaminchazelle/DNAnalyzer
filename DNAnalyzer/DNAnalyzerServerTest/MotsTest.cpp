@@ -13,16 +13,16 @@ namespace DNAnalyzerServerTest
 	TEST_CLASS(MotsTest)
 	{
 	public:
-		
+
 		//ObtenirInstance
 		TEST_METHOD(ObtenirInstance_NotNull)
 		{
 			// L'instance retournée ne doit pas être null
-			
+
 			Assert::IsTrue(&Mots::ObtenirInstance() != (Mots*)NULL);
 
 		}
-		
+
 		TEST_METHOD(ObtenirInstance_SameReference)
 		{
 			// L'instance retournée doit toujours être la même
@@ -72,7 +72,7 @@ namespace DNAnalyzerServerTest
 			}
 			catch (overflow_error const& e) {
 				UNREFERENCE_PARAMETER(e);
-				overflowErrorException = false;
+				overflowErrorException = true;
 			}
 
 			Assert::IsTrue(overflowErrorException);
@@ -209,7 +209,6 @@ namespace DNAnalyzerServerTest
 			Assert::AreEqual(Mots::ObtenirInstance().ObtenirNombreMots(), (unsigned int)1);
 
 		}
-
 
 		TEST_METHOD(ObtenirNombreMots_AddKnownWord)
 		{
