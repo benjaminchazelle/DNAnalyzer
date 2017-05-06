@@ -65,6 +65,9 @@ public:
 	static Mots& ObtenirInstance();
 	// Mode d'emploi : renvoit l'instance singleton de Mots
 
+	static void RafraichirInstance();
+	// Mode d'emploi : réinitialise l'instance singleton
+
 	unsigned int ObtenirIndex(const char []);
 	// Mode d'emploi : renvoit l'index d'un mot s'il existe
 	// Exception "invalid_argument" : si un index null est envoyé

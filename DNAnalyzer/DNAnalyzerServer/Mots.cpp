@@ -28,47 +28,56 @@ Mots & Mots::ObtenirInstance()
 	return *(Mots::instanceMots);
 }
 
+void Mots::RafraichirInstance()
+{
+	if (instanceMots != nullptr) {
+		delete instanceMots;
+	}
+
+	instanceMots = new Mots();
+}
+
 unsigned int Mots::ObtenirIndex(const char mot[])
 {
-	//Verifi si le mot n'est pas un pointeur null
+	// Vérifie si le mot n'est pas un pointeur null
 	if(mot == nullptr)
-		throw invalid_argument("nullptr n'est pas autoriser pour cette method");
+		throw invalid_argument("Un pointeur null n'est pas autorisé pour cette méthode");
 
-	//Recuperation d'un iterateur de chaque resultat obtenu (max 1)
-	unordered_map<char*, unsigned int>::iterator t = mots.find((char*)mot);
+	// Récuperation d'un itérateur de chaque resultat obtenu (max 1)
+	unordered_map<char*, unsigned int>::iterator t = mots.find((char*) mot);
 
-	//Si l'iterateur est deja a la fin (pas de resultat)
+	// Si l'itérateur est déjà à la fin (aucun résultat)
 	if (t == mots.end())
-		throw range_error("mot non trouver");
+		throw range_error("Mot non trouvé");
 	
 	return t->second;
 }
 
 unsigned int Mots::InsererMot(const char mot[])
 {
-	//Verifi des paramétre
+	// Vérifie si le mot n'est pas un pointeur null
 	if (mot == nullptr)
-		throw invalid_argument("nullptr n'est pas autoriser pour cette method");
+		throw invalid_argument("Un pointeur null n'est pas autorisé pour cette méthode");
 
-	//Recherche d'un mot deja present dans la map
-	unordered_map<char*, unsigned int>::iterator t = mots.find((char*)mot);
+	// Recherche d'un mot déjà présent dans la map
+	unordered_map<char*, unsigned int>::iterator t = mots.find((char*) mot);
 	if (t != mots.end()) {
 		throw overflow_error("Mot déja present");
 	}
 
-	//copy du mot a inserter
-	char * str = new char[strlen(mot) + 1];
+	// Copie du mot à insérer
+	char* str = new char[strlen(mot) + 1];
 	strcpy(str, mot);
 
-	//insertion du mot dans les maps
-	pair<char*, unsigned int> pair1(str, this->counter);
-	pair<unsigned int, char *> pair2(this->counter, str);
+	// Insertion du mot dans les maps
+	pair<char*, unsigned int> pair1(str, counter);
+	pair<unsigned int, char*> pair2(counter, str);
 	mots.insert(pair1);
 	mots_revers.insert(pair2);
 
-	this->counter++;
+	counter++;
 
-	return this->counter-1;
+	return counter - 1;
 }
 
 char const * Mots::RecupererMot(const unsigned int i)
@@ -87,9 +96,8 @@ unsigned int Mots::ObtenirNombreMots()
 //----------------------------------------------------------------- PRIVEE
 
 
-Mots::Mots()
+Mots::Mots() : counter(0)
 {
-	this->counter = 0;
 }
 
 

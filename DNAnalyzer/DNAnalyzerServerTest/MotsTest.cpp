@@ -14,6 +14,11 @@ namespace DNAnalyzerServerTest
 	{
 	public:
 
+		TEST_METHOD_CLEANUP(CleanUp)
+		{
+			Mots::RafraichirInstance();
+		}
+
 		//ObtenirInstance
 		TEST_METHOD(ObtenirInstance_NotNull)
 		{
