@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dictionnaire.h" />
+    <ClInclude Include="Maladie.h" />
     <ClInclude Include="Mots.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

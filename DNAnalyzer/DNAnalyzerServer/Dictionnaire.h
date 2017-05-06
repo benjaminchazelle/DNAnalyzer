@@ -16,7 +16,8 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-struct Maladie {};//TODO #include <Maladie>
+
+#include "Maladie.h"
 
 using namespace std;
 
