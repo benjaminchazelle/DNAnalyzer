@@ -15,6 +15,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //------------------------------------------------------ Include personnel
 
 #include "Dictionnaire.h"
+#include <string>
 
 //----------------------------------------------------------------- PUBLIC
 
@@ -26,9 +27,23 @@ Dictionnaire & Dictionnaire::ObtenirInstance()
 }
 
 //----------------------------------------------------------------- PRIVEE
+const Maladie Dictionnaire::ObtenirMaladie(const string name) {
+	// TODO
+	return Maladie();
+}
+
+const unordered_set<const Maladie *> ObtenirMaladies(const unsigned int indexMot) {
+	// TODO
+	return unordered_set<const Maladie *>();
+}
+
+const unordered_set<string> ObtenirNomsMaladies() {
+	// TODO
+	return unordered_set<string>();
+}
 
 
-Dictionnaire::Dictionnaire()
+Dictionnaire::Dictionnaire(string path_dictionnaire)
 {
 }
 
