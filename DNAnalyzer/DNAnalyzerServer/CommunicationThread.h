@@ -27,20 +27,12 @@ class CommunicationThread
 {
 protected:
 
-	static CommunicationThread* instanceCommunicationThread;
-	// Description : Instance singleton de CommunicationThread
-
 public:
-	static CommunicationThread& ObtenirInstance();
-	// Mode d'emploi : renvoit l'instance singleton de CommunicationThread
-
 	CommunicationThread & operator = (const CommunicationThread &);
 	// Mode d'emploi : opérateur d'affectation, non implementé
 
 	CommunicationThread(const CommunicationThread &);
 	// Mode d'emploi : constructeur de copie, non implementé
-
-protected:
 
 	CommunicationThread();
 	// Mode d'emploi : constructeur

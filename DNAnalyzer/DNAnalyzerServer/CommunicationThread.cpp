@@ -19,20 +19,13 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //----------------------------------------------------------------- PUBLIC
 
 
-CommunicationThread & CommunicationThread::ObtenirInstance()
-{
-	// TODO: changer le retour par l'instance du singleton
-	return *((CommunicationThread*) nullptr);
-}
-
-//----------------------------------------------------------------- PRIVEE
-
-
 CommunicationThread::CommunicationThread()
 {
 }
 
-
 CommunicationThread::~CommunicationThread()
 {
 }
+
+//----------------------------------------------------------------- PRIVEE
+
