@@ -25,6 +25,15 @@ Analyse & Analyse::ObtenirInstance()
 	return *((Analyse*) nullptr);
 }
 
+bool Analyse::AnalysePrecise(unsigned int size, const unsigned char genome[], const Maladie maladie) {
+	// TODO
+}
+
+bool Analyse::AnalyseGlobal(const unsigned char genome[], const Maladie maladie) {
+	// TODO
+}
+
+
 //----------------------------------------------------------------- PRIVEE
 
 
