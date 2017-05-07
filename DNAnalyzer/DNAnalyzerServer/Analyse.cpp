@@ -27,10 +27,12 @@ Analyse & Analyse::ObtenirInstance()
 
 bool Analyse::AnalysePrecise(unsigned int size, const unsigned char genome[], const Maladie maladie) {
 	// TODO
+	return false;
 }
 
-bool Analyse::AnalyseGlobal(const unsigned char genome[], const Maladie maladie) {
+unordered_map<const Maladie&, bool> Analyse::AnalyseGlobal(unsigned int size,const unsigned char genome[]) {
 	// TODO
+	return unordered_map<const Maladie&, bool>();
 }
 
 
