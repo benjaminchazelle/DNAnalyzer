@@ -1,5 +1,5 @@
 /*************************************************************************
-Analyse - Classe de [...]
+Analyse - Classe qui analyse la presance de maladie dans un genome
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par VOGEL
@@ -13,7 +13,8 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 //--------------------------------------------------- Interfaces utilisées
 
-struct Maladie {};//TODO : REPLACE TO "Maladie.h"
+#include <unordered_map>
+struct Maladie {};//TODO : REPLACE TO #include "Maladie.h"
 
 using namespace std;
 
@@ -38,10 +39,10 @@ public:
 	// Mode d'emploi : renvoit l'instance singleton de Analyse
 
 	bool AnalysePrecise(unsigned int size,const unsigned char genome[], const Maladie maladie);
-	// Mode d'emploi : [...]
+	// Mode d'emploi : donnez les données d'un genome et la maladie a verifier pour savoir si la maladie ce trouve dans le genome
 
-	bool AnalyseGlobal(const unsigned char genome[], const Maladie maladie);
-	// Mode d'emploi : [...]
+	unordered_map<const Maladie&, bool> AnalyseGlobal(unsigned int size, const unsigned char genome[]);
+	// Mode d'emploi : retourn la liste des maladies tester avec leurs presances à partir d'un génome
 
 	Analyse & operator = (const Analyse &);
 	// Mode d'emploi : opérateur d'affectation, non implementé
