@@ -27,17 +27,17 @@ Dictionnaire & Dictionnaire::ObtenirInstance()
 }
 
 //----------------------------------------------------------------- PRIVEE
-const Maladie Dictionnaire::ObtenirMaladie(const string name) {
+const Maladie & Dictionnaire::ObtenirMaladie(const string name) {
 	// TODO
 	return Maladie();
 }
 
-const unordered_set<const Maladie *> ObtenirMaladies(const unsigned int indexMot) {
+const unordered_set<Maladie *> Dictionnaire::ObtenirMaladies(const unsigned int indexMot) {
 	// TODO
-	return unordered_set<const Maladie *>();
+	return unordered_set< Maladie *>();
 }
 
-const unordered_set<string> ObtenirNomsMaladies() {
+const unordered_set<string> Dictionnaire::ObtenirNomsMaladies() {
 	// TODO
 	return unordered_set<string>();
 }

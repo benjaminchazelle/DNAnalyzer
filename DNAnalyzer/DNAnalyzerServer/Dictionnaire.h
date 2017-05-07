@@ -46,11 +46,11 @@ public:
 	static Dictionnaire& ObtenirInstance();
 	// Mode d'emploi : renvoit l'instance singleton de Dictionnaire
 
-	const Maladie ObtenirMaladie(const string name);
+	const Maladie & ObtenirMaladie(const string name);
 	// Mode d'emploi : renvoit la Maladie corespondant au nom donnée en paramétre
 	// Exception "range_error" : si la maladie demander n'existe pas
 
-	const unordered_set<const Maladie *> ObtenirMaladies(const unsigned int indexMot);
+	const unordered_set<Maladie *> ObtenirMaladies(const unsigned int indexMot);
 	// Mode d'emploi : renvoit les Maladie comptenent le mot passer en paramétre
 	//				   Si il n'y a pas de maladie renvoit un unordered_set vide
 	// Contra d'utilisation : le mot passer en paramétre doit biencorespondre a un Mot
