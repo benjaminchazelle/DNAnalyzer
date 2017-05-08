@@ -49,5 +49,22 @@ namespace std
 			return res;
 		}
 	};
+
+	template<> struct hash<Maladie*>
+	{
+		size_t operator()(const Maladie *const& maladie) const
+		{// NON SUR (FAIR DES TESTS)
+			std::size_t res = 0;
+			hash<string> stringHash;
+			res ^= stringHash(maladie->nom) + 0x9e3779b9 + (res << 6) + (res >> 2);
+			unordered_set<unsigned int>::iterator iter = maladie->definition.begin();
+
+			for (; iter != maladie->definition.end(); iter++)
+			{
+				res += *iter;
+			}
+			return res;
+		}
+	};
 }
 #endif
