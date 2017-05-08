@@ -13,7 +13,7 @@ namespace DNAnalyzerClientTest
 	{
 	protected:
 
-		const string _fichierServeurs = "test_" + Configuration::fichierServeurs;
+		const string _fichierServeurs = "serveurs.test.config";
 
 	public:
 
@@ -52,6 +52,8 @@ namespace DNAnalyzerClientTest
 		{
 			FileUtil::write(_fichierServeurs, "");
 
+			Assert::IsTrue(Configuration::ObtenirInstance().ChargerFichier(_fichierServeurs));
+
 			Assert::IsTrue(Configuration::ObtenirInstance().ObtenirListeServeur().size() == 0);
 		}
 
@@ -60,12 +62,16 @@ namespace DNAnalyzerClientTest
 
 			Assert::IsFalse(FileUtil::exists(_fichierServeurs));
 
+			Assert::IsFalse(Configuration::ObtenirInstance().ChargerFichier(_fichierServeurs));
+
 			Assert::IsTrue(Configuration::ObtenirInstance().ObtenirListeServeur().size() == 0);
 		}
 
 		TEST_METHOD(ObtenirListeServeur_NotEmpty)
 		{
 			FileUtil::write(_fichierServeurs, "127.0.0.1:80\n127.0.0.2:8080\n");
+
+			Assert::IsTrue(Configuration::ObtenirInstance().ChargerFichier(_fichierServeurs));
 
 			Assert::IsTrue(Configuration::ObtenirInstance().ObtenirListeServeur().size() == 2);
 
@@ -80,6 +86,8 @@ namespace DNAnalyzerClientTest
 		{
 			FileUtil::write(_fichierServeurs, "127.0.0.1");
 
+			Assert::IsTrue(Configuration::ObtenirInstance().ChargerFichier(_fichierServeurs));
+
 			Assert::IsTrue(Configuration::ObtenirInstance().ObtenirListeServeur().size() == 0);
 
 		}
@@ -87,6 +95,8 @@ namespace DNAnalyzerClientTest
 		TEST_METHOD(ObtenirListeServeur_CorruptFile2)
 		{
 			FileUtil::write(_fichierServeurs, "127.0.0.180\n127.0.0.2:8080\n");
+
+			Assert::IsTrue(Configuration::ObtenirInstance().ChargerFichier(_fichierServeurs));
 
 			Assert::IsTrue(Configuration::ObtenirInstance().ObtenirListeServeur().size() == 1);
 

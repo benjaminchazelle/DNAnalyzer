@@ -13,8 +13,6 @@ e-mail               :	benjamin.chazelle@insa-lyon.fr
 
 #include "Serveur.h"
 
-const string Configuration::fichierServeurs = "servers.config";
-
 Configuration & Configuration::ObtenirInstance()
 {
 	// TODO: instance singleton
@@ -29,6 +27,11 @@ void Configuration::RafraichirInstance()
 vector<struct Serveur> Configuration::ObtenirListeServeur()
 {
 	return vector<struct Serveur>();
+}
+
+bool Configuration::ChargerFichier(string fichierServeurs)
+{
+	return false;
 }
 
 Configuration::Configuration()

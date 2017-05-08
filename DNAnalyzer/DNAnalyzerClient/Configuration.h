@@ -30,10 +30,6 @@ using namespace std;
 
 class Configuration
 {
-public:
-
-	static const string fichierServeurs;
-
 protected:
 	
 	static Configuration* instanceConfiguration;
@@ -51,6 +47,9 @@ public:
 	vector<struct Serveur> ObtenirListeServeur();
 	// Mode d'emploi : Cette méthode permet de renvoyer un ensemble de configurations de connexions serveurs.
 
+	bool ChargerFichier(string fichierServeurs);
+	// Mode d'emploi : Cette méthode lit le contenu du fichier <fichierServeurs> pour le stocker dans <serveurs>
+
 	Configuration & operator = (const Configuration &);
 	// Mode d'emploi : opérateur d'affectation, non implementé
 
@@ -60,7 +59,7 @@ public:
 protected:
 	
 	Configuration();
-	// Mode d'emploi : constructeur, lit le contenu du fichier <fichierServeurs> pour le stocker dans <serveurs>
+	// Mode d'emploi : constructeur
 
 	~Configuration();
 	// Mode d'emploi : destructeur
