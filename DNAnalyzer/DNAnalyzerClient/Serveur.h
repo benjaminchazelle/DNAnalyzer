@@ -1,5 +1,5 @@
 /*************************************************************************
-Mots - Structure d'une configuration serveur
+Serveur - Structure d'une configuration serveur
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par CHAZELLE

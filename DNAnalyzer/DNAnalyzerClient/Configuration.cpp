@@ -1,5 +1,5 @@
 /*************************************************************************
-Mots - Classe de lecture d'un fichier de configurations serveurs
+Configuration - Classe de lecture d'un fichier de configurations serveurs
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par CHAZELLE
