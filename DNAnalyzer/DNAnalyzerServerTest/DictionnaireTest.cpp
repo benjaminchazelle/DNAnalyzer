@@ -17,7 +17,7 @@ namespace DNAnalyzerServerTest
 		TEST_METHOD_CLEANUP(CleanUp)
 		{
 			Mots::RafraichirInstance();
-			DictionnaireTest::RafraichirInstance();
+			Dictionnaire::RafraichirInstance();
 		}
 
 		//ObtenirInstance
@@ -41,8 +41,8 @@ namespace DNAnalyzerServerTest
 		TEST_METHOD(ObtenirMaladies_NoMaladies) {
 			char motInexistant[] = "ATCGINEXISTANT";
 			unsigned int indexMotInexistant = Mots::ObtenirInstance().InsererMot(motInexistant);
-			const unordered_set<const Maladie*> resultat = Dictionnaire::ObtenirInstance().ObtenirMaladies(indexMotInexistant);
-			Assert::AreEqual(resultat.size, 0);
+			const unordered_set<Maladie*> resultat = Dictionnaire::ObtenirInstance().ObtenirMaladies(indexMotInexistant);
+			Assert::AreEqual((int)resultat.size(), 0);
 		}
 		TEST_METHOD(ObtenirMaladies_OneMaladies) {
 

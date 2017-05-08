@@ -14,6 +14,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 #include <string>
 #include <unordered_set>
 #include <utility>
+//#include <boost/functional/hash.hpp>
 
 using namespace std;
 
@@ -35,12 +36,16 @@ namespace std
 	template<> struct hash<Maladie>
 	{
 		size_t operator()(Maladie const& maladie) const
-		{
+		{// NON SUR (FAIR DES TESTS)
 			std::size_t res = 0;
 			hash<string> stringHash;
-			hash<unordered_set<unsigned int>> uintSetHash;
 			res ^= stringHash(maladie.nom) + 0x9e3779b9 + (res << 6) + (res >> 2);
-			res ^= uintSetHash(maladie.definition) + 0x9e3779b9 + (res << 6) + (res >> 2);
+			unordered_set<unsigned int>::iterator iter = maladie.definition.begin();
+
+			for (; iter != maladie.definition.end(); iter++)
+			{
+				res += *iter;
+			}
 			return res;
 		}
 	};
