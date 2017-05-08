@@ -1,5 +1,5 @@
 /*************************************************************************
-Analyse - Classe de [...]
+Analyse - Classe qui analyse la présence de maladies dans un génome
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par VOGEL

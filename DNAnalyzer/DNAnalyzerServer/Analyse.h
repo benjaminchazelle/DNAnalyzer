@@ -1,5 +1,5 @@
 /*************************************************************************
-Analyse - Classe qui analyse la presance de maladie dans un genome
+Analyse - Classe qui analyse la présence de maladies dans un génome
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par VOGEL
@@ -39,10 +39,10 @@ public:
 	// Mode d'emploi : renvoit l'instance singleton de Analyse
 
 	bool AnalysePrecise(unsigned int size,const unsigned char genome[], const Maladie maladie);
-	// Mode d'emploi : donnez les données d'un genome et la maladie a verifier pour savoir si la maladie ce trouve dans le genome
+	// Mode d'emploi : Renvoit true si la maladie se trouve dans le génome de taille , sinon false
 
 	unordered_map<const Maladie&, bool> AnalyseGlobal(unsigned int size, const unsigned char genome[]);
-	// Mode d'emploi : retourn la liste des maladies tester avec leurs presances à partir d'un génome
+	// Mode d'emploi : Retourne un tableau associant les maladies avec leur présence (true) ou non (false) dans le génome de taille
 
 	Analyse & operator = (const Analyse &);
 	// Mode d'emploi : opérateur d'affectation, non implementé
