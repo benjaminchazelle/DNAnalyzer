@@ -21,9 +21,9 @@ using namespace std;
 
 //------------------------------------------------------------------------
 // Rôle de la classe <Analyse>
-//  La classe Analyse permet Permet d'annaliser un génome grace a 2 methode
-//  d'annalyse. L'une permet de verifier la présence d'une maladie et
-//  l'autre de trouver les paladies potentielle
+//  La classe Analyse permet d'analyser un génome grâce à 2 méthodes d'analyse.
+//  L'un permet de vérifier la présence d'une seule maladie, l'autre de trouver 
+//  l'ensemble des potentielles maladies
 //------------------------------------------------------------------------
 
 
