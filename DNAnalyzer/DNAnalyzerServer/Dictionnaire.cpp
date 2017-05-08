@@ -37,7 +37,11 @@ void Dictionnaire::RafraichirInstance()
 	*/
 }
 
-//----------------------------------------------------------------- PRIVEE
+void Dictionnaire::ChargerFichier(const string fichierDico)
+{
+	// TODO
+}
+
 const Maladie & Dictionnaire::ObtenirMaladie(const string name) {
 	// TODO
 	return Maladie();
@@ -54,7 +58,9 @@ const unordered_set<string> Dictionnaire::ObtenirNomsMaladies() {
 }
 
 
-Dictionnaire::Dictionnaire(string path_dictionnaire)
+//----------------------------------------------------------------- PRIVEE
+
+Dictionnaire::Dictionnaire()
 {
 }
 

@@ -49,6 +49,9 @@ public:
 	static void RafraichirInstance();
 	// Mode d'emploi : réinitialise l'instance singleton
 
+	void ChargerFichier(const string fichierDico);
+	// Mode d'emploi : Cette méthode lit le contenu du fichier <fichierDico> pour charger son contenu
+
 	const Maladie & ObtenirMaladie(const string name);
 	// Mode d'emploi : renvoit la Maladie correspondant au nom donné en paramètre
 	// Exception "range_error" : si la maladie demandée n'existe pas
@@ -69,7 +72,7 @@ public:
 
 protected:
 
-	Dictionnaire(const string path_dictionnaire);
+	Dictionnaire();
 	// Mode d'emploi : constructeur
 
 	virtual ~Dictionnaire();
