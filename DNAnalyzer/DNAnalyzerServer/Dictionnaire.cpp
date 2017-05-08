@@ -1,5 +1,5 @@
 /*************************************************************************
-Dictionnaire - Classe de stockage des données de maladie
+Dictionnaire - Classe de stockage des données de maladies
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par VOGEL
