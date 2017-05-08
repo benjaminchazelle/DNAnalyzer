@@ -46,6 +46,9 @@ public:
 	static Dictionnaire& ObtenirInstance();
 	// Mode d'emploi : renvoit l'instance singleton de Dictionnaire
 
+	static void RafraichirInstance();
+	// Mode d'emploi : réinitialise l'instance singleton
+
 	const Maladie & ObtenirMaladie(const string name);
 	// Mode d'emploi : renvoit la Maladie corespondant au nom donnée en paramétre
 	// Exception "range_error" : si la maladie demander n'existe pas

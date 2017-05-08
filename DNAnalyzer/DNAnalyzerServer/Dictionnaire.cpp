@@ -26,6 +26,17 @@ Dictionnaire & Dictionnaire::ObtenirInstance()
 	return *((Dictionnaire*) nullptr);
 }
 
+void Dictionnaire::RafraichirInstance()
+{
+	/* EXEMPLE
+	if (instanceMots != nullptr) {
+		delete instanceMots;
+	}
+
+	instanceMots = new Mots();
+	*/
+}
+
 //----------------------------------------------------------------- PRIVEE
 const Maladie & Dictionnaire::ObtenirMaladie(const string name) {
 	// TODO
