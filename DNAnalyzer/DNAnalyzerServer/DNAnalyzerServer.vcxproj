@@ -172,9 +172,11 @@
     <ClCompile Include="Dictionnaire.cpp" />
     <ClCompile Include="Analyse.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Master.cpp" />
     <ClCompile Include="Mots.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Master.h" />
     <ClInclude Include="CommunicationThread.h" />
     <ClInclude Include="Dictionnaire.h" />
     <ClInclude Include="Maladie.h" />
