@@ -167,6 +167,7 @@
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Communication.cpp" />
     <ClCompile Include="CommunicationThread.cpp" />
     <ClCompile Include="Dictionnaire.cpp" />
     <ClCompile Include="Analyse.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Dictionnaire.h" />
     <ClInclude Include="Maladie.h" />
     <ClInclude Include="Analyse.h" />
+    <ClInclude Include="Communication.h" />
     <ClInclude Include="Mots.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
