@@ -52,7 +52,7 @@ public:
 
 protected:
 
-	void threadServeur();
+	static void threadServeur(unsigned int port);
 	// Mode d'emploi : thread du serveur (intialisation socket + boucle d'écoute)
 
 	void recevoirRequete();

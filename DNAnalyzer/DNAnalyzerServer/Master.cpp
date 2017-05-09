@@ -22,6 +22,11 @@ void Master::InterpreterRequete(string & requete, CommunicationThread & thread)
 {
 }
 
+Route Master::routerRequete(string & requete)
+{
+	return Route();
+}
+
 void Master::analysePrecise(string & requete, CommunicationThread & thread)
 {
 }

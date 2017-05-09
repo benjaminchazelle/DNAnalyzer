@@ -44,7 +44,7 @@ public:
 	// Mode d'emploi : constructeur de copie, non implementé
 
 	CommunicationThread(SOCKET * csock);
-	// Mode d'emploi : constructeur
+	// Mode d'emploi : constructeur, appel de traiter()
 
 	virtual ~CommunicationThread();
 	// Mode d'emploi : destructeur

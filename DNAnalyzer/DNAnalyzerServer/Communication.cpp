@@ -25,8 +25,25 @@ Communication & Communication::ObtenirInstance()
 	return *((Communication*) nullptr);
 }
 
+void Communication::Ecouter(unsigned int port)
+{
+}
+
 //----------------------------------------------------------------- PRIVEE
 
+
+void Communication::threadServeur(unsigned int port)
+{
+}
+
+void Communication::recevoirRequete()
+{
+}
+
+DWORD Communication::threadRequete(void * p)
+{
+	return 0;
+}
 
 Communication::Communication()
 {
