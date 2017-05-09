@@ -29,19 +29,12 @@ using namespace std;
 
 class Analyse
 {
-protected:
-
-	static Analyse* instanceAnalyse;
-	// Description : Instance singleton de Analyse
-
 public:
-	static Analyse& ObtenirInstance();
-	// Mode d'emploi : renvoit l'instance singleton de Analyse
 
-	bool AnalysePrecise(unsigned int size,const unsigned char genome[], const Maladie maladie);
+	static bool AnalysePrecise(string & genome, const Maladie maladie);
 	// Mode d'emploi : Renvoit true si la maladie se trouve dans le génome de taille , sinon false
 
-	unordered_map<Maladie, bool> AnalyseGlobal(unsigned int size, const unsigned char genome[]);
+	static unordered_map<Maladie, bool> AnalyseGlobale(string & genome);
 	// Mode d'emploi : Retourne un tableau associant les maladies avec leur présence (true) ou non (false) dans le génome de taille
 
 	Analyse & operator = (const Analyse &);
@@ -53,9 +46,10 @@ public:
 protected:
 
 	Analyse();
-	// Mode d'emploi : constructeur
+	// Mode d'emploi : constructeur, non implementé
 
 	virtual ~Analyse();
+	// Mode d'emploi : destructeur, non implementé
 };
 
 #endif

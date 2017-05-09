@@ -12,13 +12,15 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 //-------------------------------------------------------- Include système
 
+#include <string>
+
 //------------------------------------------------------ Include personnel
 
 #include "CommunicationThread.h"
 
 //----------------------------------------------------------------- PUBLIC
 
-void CommunicationThread::Traiter()
+void CommunicationThread::traiter()
 {
 	/* EXAMPLE
 	cout << "Traiter" << endl;
@@ -100,7 +102,7 @@ void CommunicationThread::Traiter()
 }
 
 
-void CommunicationThread::Repondre(const unsigned char[] data, const unsigned int longeur)
+void CommunicationThread::Repondre(string & reponse)
 {
 	/* EXAMPLE pour un paramétre (string msg)
 	int iSendResult = send(*csock, msg.c_str(), msg.length(), 0);

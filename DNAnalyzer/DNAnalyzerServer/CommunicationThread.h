@@ -6,7 +6,7 @@ copyright            :	(C) 2017 par VOGEL
 e-mail               :	hugues.vogel@insa-lyon.fr
 *************************************************************************/
 
-//----------- Interface de la classe <CommunicationThread> (fichier CommunicationThread.h)  ----------//
+//Interface de la classe <CommunicationThread> (CommunicationThread.h)  //
 
 #if ! defined ( COMMUNICATION_THREAD_H )
 #define COMMUNICATION_THREAD_H
@@ -14,15 +14,14 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //--------------------------------------------------- Interfaces utilisées
 
 #include <winsock2.h>
-#pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
 
 
 //------------------------------------------------------------------------
 // Rôle de la classe <CommunicationThread>
-//  La classe CommunicationThread permet [...
-//  ...]
+//  La classe CommunicationThread de gérer le traitement d'une requête et 
+//  l'envoit de sa réponse
 //------------------------------------------------------------------------
 
 
@@ -31,14 +30,12 @@ class CommunicationThread
 protected:
 
 	SOCKET * csock;
-	//socket de la communication entre le serveur et le cleint
-
-	void Traiter();
-	// Methode de utiliser pour la resseption de la requette
+	// Description : socket client
 
 public:
-	void Repondre(const unsigned char data[],const unsigned int longeur);
-	// Permet de repondre a une requette d'un client
+	void Repondre(string & reponse);
+	// Mode d'emploi : permet d'envoyer un flux de sortie sur la socket
+	// <csock> puis de fermer la connexion
 
 	CommunicationThread & operator = (const CommunicationThread &);
 	// Mode d'emploi : opérateur d'affectation, non implementé
@@ -49,8 +46,15 @@ public:
 	CommunicationThread(SOCKET * csock);
 	// Mode d'emploi : constructeur
 
-
 	virtual ~CommunicationThread();
+	// Mode d'emploi : destructeur
+
+protected:
+
+	void traiter();
+	// Mode d'emploi : lit le flux entrant sur la socket <csock> puis
+	// transfert la requête au traitement Master spécifique
+
 };
 
 #endif

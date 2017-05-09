@@ -18,56 +18,26 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 #include "CommunicationThread.h"
 //----------------------------------------------------------------- PUBLIC
 
-
-Master & Master::ObtenirInstance()
+void Master::InterpreterRequete(string & requete, CommunicationThread & thread)
 {
-	// TODO: changer le retour par l'instance du singleton
-	return *((Master*) nullptr);
 }
 
-//----------------------------------------------------------------- PRIVEE
-void Master::InterpreterRequete(unsigned char request[], unsigned int taille, CommunicationThread & thread)
+void Master::analysePrecise(string & requete, CommunicationThread & thread)
 {
-	
 }
 
-void Master::AnalysePrecise(unsigned char request[], unsigned int taille, CommunicationThread & thread)
+void Master::analyseGlobale(string & requete, CommunicationThread & thread)
 {
-
 }
 
-void Master::AnalyseGlobale(unsigned char request[], unsigned int taille, CommunicationThread & thread)
+void Master::obtenirListeMaladies(string & requete, CommunicationThread & thread)
 {
-
 }
 
-void Master::ObtenirListeMaladies(unsigned char request[], unsigned int taille, CommunicationThread & thread)
+void Master::repondreServiceInconnu(string & requete, CommunicationThread & thread)
 {
-
 }
 
-void Master::RepondreServiceInconnu(unsigned char request[], unsigned int taille, CommunicationThread & thread)
+void Master::repondreErreurRequete(string & requete, CommunicationThread & thread)
 {
-
-}
-
-void Master::RepondreRequetteHeaderInvalise(unsigned char request[], unsigned int taille, CommunicationThread & thread)
-{
-
-}
-
-void Master::RepondreRequetteBodyInvalise(unsigned char request[], unsigned int taille, CommunicationThread & thread)
-{
-
-}
-
-Master::Master()
-{
-
-}
-
-
-Master::~Master()
-{
-
 }
