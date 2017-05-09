@@ -14,7 +14,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //--------------------------------------------------- Interfaces utilisées
 
 #include <unordered_map>
-struct Maladie {};//TODO : REPLACE TO #include "Maladie.h"
+#include "Maladie.h"
 
 using namespace std;
 
@@ -41,7 +41,7 @@ public:
 	bool AnalysePrecise(unsigned int size,const unsigned char genome[], const Maladie maladie);
 	// Mode d'emploi : Renvoit true si la maladie se trouve dans le génome de taille , sinon false
 
-	unordered_map<const Maladie&, bool> AnalyseGlobal(unsigned int size, const unsigned char genome[]);
+	unordered_map<Maladie, bool> AnalyseGlobal(unsigned int size, const unsigned char genome[]);
 	// Mode d'emploi : Retourne un tableau associant les maladies avec leur présence (true) ou non (false) dans le génome de taille
 
 	Analyse & operator = (const Analyse &);

@@ -30,9 +30,9 @@ bool Analyse::AnalysePrecise(unsigned int size, const unsigned char genome[], co
 	return false;
 }
 
-unordered_map<const Maladie&, bool> Analyse::AnalyseGlobal(unsigned int size,const unsigned char genome[]) {
+unordered_map<Maladie, bool> Analyse::AnalyseGlobal(unsigned int size,const unsigned char genome[]) {
 	// TODO
-	return unordered_map<const Maladie&, bool>();
+	return unordered_map<Maladie, bool>();
 }
 
 
