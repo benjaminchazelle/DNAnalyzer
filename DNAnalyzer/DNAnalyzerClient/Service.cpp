@@ -1,12 +1,12 @@
 /*************************************************************************
-Configuration - Classe de lecture d'un fichier de configurations serveurs
+Service - Classe d'interface des services de traitement distants
 -------------------
-début                :	06/05/17
+début                :	10/05/17
 copyright            :	(C) 2017 par CHAZELLE
 e-mail               :	benjamin.chazelle@insa-lyon.fr
 *************************************************************************/
 
-// Réalisation de la classe <Configuration> (fichier Configuration.cpp) //
+//      Réalisation de la classe <Service> (fichier Service.cpp)        //
 
 //---------------------------------------------------------------- INCLUDE
 
@@ -14,41 +14,31 @@ e-mail               :	benjamin.chazelle@insa-lyon.fr
 
 #include "stdafx.h"
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
 //------------------------------------------------------ Include personnel
 
-#include "Configuration.h"
+#include "Service.h"
 #include "Serveur.h"
 
 //----------------------------------------------------------------- PUBLIC
 
-Configuration & Configuration::ObtenirInstance()
-{
-	// TODO: instance singleton
 
-	return *((Configuration*) nullptr);
+unordered_map<string, bool> Service::AnalysePrecise(const Serveur & serveur, const string & filename, const string & maladie)
+{
+	return unordered_map<string, bool>();
 }
 
-void Configuration::RafraichirInstance()
+unordered_map<string, bool> Service::AnalyseGlobale(const Serveur & serveur, const string & filename)
 {
+	return unordered_map<string, bool>();
 }
 
-vector<struct Serveur> Configuration::ObtenirListeServeur() const
+unordered_set<string> Service::ObtenirMaladies(const Serveur & serveur)
 {
-	return vector<struct Serveur>();
+	return unordered_set<string>();
 }
 
-bool Configuration::ChargerFichier(const string & fichierServeurs)
-{
-	return false;
-}
-
-Configuration::Configuration()
-{
-}
-
-Configuration::~Configuration()
-{
-}

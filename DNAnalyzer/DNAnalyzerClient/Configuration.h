@@ -44,17 +44,17 @@ public:
 	static void RafraichirInstance();
 	// Mode d'emploi : réinitialise l'instance singleton
 
-	vector<struct Serveur> ObtenirListeServeur();
+	vector<struct Serveur> ObtenirListeServeur() const;
 	// Mode d'emploi : Cette méthode permet de renvoyer un ensemble de configurations de connexions serveurs.
 
-	bool ChargerFichier(string fichierServeurs);
+	bool ChargerFichier(const string &  fichierServeurs);
 	// Mode d'emploi : Cette méthode lit le contenu du fichier <fichierServeurs> pour le stocker dans <serveurs>
 
 	Configuration & operator = (const Configuration &);
-	// Mode d'emploi : opérateur d'affectation, non implementé
+	// Mode d'emploi : opérateur d'affectation, non implémenté
 
 	Configuration(const Configuration &);
-	// Mode d'emploi : constructeur de copie, non implementé
+	// Mode d'emploi : constructeur de copie, non implémenté
 
 protected:
 	
