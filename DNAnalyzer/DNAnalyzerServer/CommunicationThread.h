@@ -1,5 +1,5 @@
 /*************************************************************************
-CommunicationThread - Classe de [...]
+CommunicationThread - Classe de traitement d'une requête
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par VOGEL
@@ -33,15 +33,15 @@ protected:
 	// Description : socket client
 
 public:
-	void Repondre(string & reponse);
+	void Repondre(const string & reponse);
 	// Mode d'emploi : permet d'envoyer un flux de sortie sur la socket
 	// <csock> puis de fermer la connexion
 
 	CommunicationThread & operator = (const CommunicationThread &);
-	// Mode d'emploi : opérateur d'affectation, non implementé
+	// Mode d'emploi : opérateur d'affectation, non implémenté
 
 	CommunicationThread(const CommunicationThread &);
-	// Mode d'emploi : constructeur de copie, non implementé
+	// Mode d'emploi : constructeur de copie, non implémenté
 
 	CommunicationThread(SOCKET * csock);
 	// Mode d'emploi : constructeur, appel de traiter()

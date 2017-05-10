@@ -6,7 +6,7 @@ copyright            :	(C) 2017 par VOGEL
 e-mail               :	hugues.vogel@insa-lyon.fr
 *************************************************************************/
 
-//----------- Interface de la classe <Communication> (fichier Communication.h)  ----------//
+//   Interface de la classe <Communication> (fichier Communication.h)   //
 
 #if ! defined ( COMMUNICATION_H )
 #define COMMUNICATION_H
@@ -45,10 +45,10 @@ public:
 	// Mode d'emploi : lance un serveur (thread de threadServeur) sur le port <port>
 
 	Communication & operator = (const Communication &);
-	// Mode d'emploi : opérateur d'affectation, non implementé
+	// Mode d'emploi : opérateur d'affectation, non implémenté
 
 	Communication(const Communication &);
-	// Mode d'emploi : constructeur de copie, non implementé
+	// Mode d'emploi : constructeur de copie, non implémenté
 
 protected:
 

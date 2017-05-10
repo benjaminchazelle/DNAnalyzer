@@ -32,40 +32,40 @@ class Master
 {
 public:
 
-	static void InterpreterRequete(string & requete, CommunicationThread & thread);
-	// Mode d'emploi : interprete la requête pour invoquer le traitement qui lui est spécifique
+	static void InterpreterRequete(const string & requete, CommunicationThread & thread);
+	// Mode d'emploi : Interprete la requête pour invoquer le traitement qui lui est spécifique
 
 	Master & operator = (const Master &);
-	// Mode d'emploi : opérateur d'affectation, non implementé
+	// Mode d'emploi : Opérateur d'affectation, non implémenté
 
 	Master(const Master &);
-	// Mode d'emploi : constructeur de copie, non implementé
+	// Mode d'emploi : Constructeur de copie, non implémenté
 
 protected:
 
-	static Route routerRequete(string & requete);
-	// Mode d'emploi : renvoie le traitement à invoquer en fonction de la requête
+	static Route routerRequete(const string & requete);
+	// Mode d'emploi : Renvoie le traitement à invoquer en fonction de la requête
 
-	static void analysePrecise(string & requete, CommunicationThread & thread);
-	// Mode d'emploi : retourne au client le résultat de l'analyse précise demandée
+	static void analysePrecise(const string & requete, CommunicationThread & thread);
+	// Mode d'emploi : Retourne au client le résultat de l'analyse précise demandée
 
-	static void analyseGlobale(string & requete, CommunicationThread & thread);
-	// Mode d'emploi : retourne au client le résultat de l'analyse globale demandée
+	static void analyseGlobale(const string & requete, CommunicationThread & thread);
+	// Mode d'emploi : Retourne au client le résultat de l'analyse globale demandée
 
-	static void obtenirListeMaladies(string & requete, CommunicationThread & thread);
-	// Mode d'emploi : retourne au client la liste des maladies connues par le serveur
+	static void obtenirListeMaladies(const string & requete, CommunicationThread & thread);
+	// Mode d'emploi : Retourne au client la liste des maladies connues par le serveur
 
-	static void repondreServiceInconnu(string & requete, CommunicationThread & thread);
+	static void repondreServiceInconnu(const string & requete, CommunicationThread & thread);
 	// Mode d'emploi : Informe le client qu'aucun service n'existe pour traiter sa requête
 
-	static void repondreErreurRequete(string & requete, CommunicationThread & thread);
+	static void repondreErreurRequete(const string & requete, CommunicationThread & thread);
 	// Mode d'emploi : Informe le client que sa requête est syntaxiquement invalide 
 
 	Master();
-	// Mode d'emploi : Constructeur, non implementé
+	// Mode d'emploi : Constructeur, non implémenté
 
 	virtual ~Master();
-	// Mode d'emploi : Destructeur, non implementé
+	// Mode d'emploi : Destructeur, non implémenté
 };
 
 #endif

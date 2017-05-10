@@ -6,7 +6,7 @@ copyright            :	(C) 2017 par VOGEL
 e-mail               :	hugues.vogel@insa-lyon.fr
 *************************************************************************/
 
-//----------- Interface de la classe <Dictionnaire> (fichier Dictionnaire.h)  ----------//
+//--  Interface de la classe <Dictionnaire> (fichier Dictionnaire.h)  --//
 
 #if ! defined ( DICTIONNAIRE_H )
 #define DICTIONNAIRE_H
@@ -49,10 +49,10 @@ public:
 	static void RafraichirInstance();
 	// Mode d'emploi : réinitialise l'instance singleton
 
-	void ChargerFichier(const string fichierDico);
+	void ChargerFichier(const string & fichierDico);
 	// Mode d'emploi : Cette méthode lit le contenu du fichier <fichierDico> pour charger son contenu
 
-	const Maladie & ObtenirMaladie(const string name);
+	const Maladie & ObtenirMaladie(const string & name);
 	// Mode d'emploi : renvoit la Maladie correspondant au nom donné en paramètre
 	// Exception "range_error" : si la maladie demandée n'existe pas
 
@@ -65,10 +65,10 @@ public:
 	// Mode d'emploi : renvoit la liste des noms de toutes les maladie du dictionnaire
 
 	Dictionnaire & operator = (const Dictionnaire &);
-	// Mode d'emploi : opérateur d'affectation, non implementé
+	// Mode d'emploi : opérateur d'affectation, non implémenté
 
 	Dictionnaire(const Dictionnaire &);
-	// Mode d'emploi : constructeur de copie, non implementé
+	// Mode d'emploi : constructeur de copie, non implémenté
 
 protected:
 

@@ -1,12 +1,12 @@
 /*************************************************************************
-Communication - Classe de [...]
+Communication - Classe de récéption des requêtes réseau
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par VOGEL
 e-mail               :	hugues.vogel@insa-lyon.fr
 *************************************************************************/
 
-//--------- Réalisation de la classe <Communication> (fichier Communication.cpp) ---------//
+// Réalisation de la classe <Communication> (fichier Communication.cpp) //
 
 //---------------------------------------------------------------- INCLUDE
 

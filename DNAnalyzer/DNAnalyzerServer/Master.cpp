@@ -6,7 +6,7 @@ copyright            :	(C) 2017 par VOGEL
 e-mail               :	hugues.vogel@insa-lyon.fr
 *************************************************************************/
 
-//--------- Réalisation de la classe <Master> (fichier Master.cpp) ---------//
+//------- Réalisation de la classe <Master> (fichier Master.cpp) -------//
 
 //---------------------------------------------------------------- INCLUDE
 
@@ -16,33 +16,36 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 #include "Master.h"
 #include "CommunicationThread.h"
+
 //----------------------------------------------------------------- PUBLIC
 
-void Master::InterpreterRequete(string & requete, CommunicationThread & thread)
+void Master::InterpreterRequete(const string & requete, CommunicationThread & thread)
 {
 }
 
-Route Master::routerRequete(string & requete)
+//----------------------------------------------------------------- PRIVEE
+
+Route Master::routerRequete(const string & requete)
 {
 	return Route();
 }
 
-void Master::analysePrecise(string & requete, CommunicationThread & thread)
+void Master::analysePrecise(const string & requete, CommunicationThread & thread)
 {
 }
 
-void Master::analyseGlobale(string & requete, CommunicationThread & thread)
+void Master::analyseGlobale(const string & requete, CommunicationThread & thread)
 {
 }
 
-void Master::obtenirListeMaladies(string & requete, CommunicationThread & thread)
+void Master::obtenirListeMaladies(const string & requete, CommunicationThread & thread)
 {
 }
 
-void Master::repondreServiceInconnu(string & requete, CommunicationThread & thread)
+void Master::repondreServiceInconnu(const string & requete, CommunicationThread & thread)
 {
 }
 
-void Master::repondreErreurRequete(string & requete, CommunicationThread & thread)
+void Master::repondreErreurRequete(const string & requete, CommunicationThread & thread)
 {
 }

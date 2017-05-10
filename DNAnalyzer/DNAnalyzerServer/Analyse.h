@@ -6,7 +6,7 @@ copyright            :	(C) 2017 par VOGEL
 e-mail               :	hugues.vogel@insa-lyon.fr
 *************************************************************************/
 
-//----------- Interface de la classe <Analyse> (fichier Analyse.h)  ----------//
+//------- Interface de la classe <Analyse> (fichier Analyse.h)  --------//
 
 #if ! defined ( ANALYSE_H )
 #define ANALYSE_H
@@ -31,25 +31,25 @@ class Analyse
 {
 public:
 
-	static bool AnalysePrecise(string & genome, const Maladie maladie);
-	// Mode d'emploi : Renvoit true si la maladie se trouve dans le génome de taille , sinon false
+	static bool AnalysePrecise(const string & genome, const Maladie & maladie);
+	// Mode d'emploi : Renvoie true si la maladie se trouve dans le génome de taille , sinon false
 
-	static unordered_map<Maladie, bool> AnalyseGlobale(string & genome);
+	static unordered_map<Maladie, bool> AnalyseGlobale(const string & genome);
 	// Mode d'emploi : Retourne un tableau associant les maladies avec leur présence (true) ou non (false) dans le génome de taille
 
 	Analyse & operator = (const Analyse &);
-	// Mode d'emploi : opérateur d'affectation, non implementé
+	// Mode d'emploi : opérateur d'affectation, non implémenté
 
 	Analyse(const Analyse &);
-	// Mode d'emploi : constructeur de copie, non implementé
+	// Mode d'emploi : constructeur de copie, non implémenté
 
 protected:
 
 	Analyse();
-	// Mode d'emploi : constructeur, non implementé
+	// Mode d'emploi : constructeur, non implémenté
 
 	virtual ~Analyse();
-	// Mode d'emploi : destructeur, non implementé
+	// Mode d'emploi : destructeur, non implémenté
 };
 
 #endif

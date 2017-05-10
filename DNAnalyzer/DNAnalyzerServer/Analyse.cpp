@@ -6,7 +6,7 @@ copyright            :	(C) 2017 par VOGEL
 e-mail               :	hugues.vogel@insa-lyon.fr
 *************************************************************************/
 
-//--------- Réalisation de la classe <Analyse> (fichier Analyse.cpp) ---------//
+//------ Réalisation de la classe <Analyse> (fichier Analyse.cpp) ------//
 
 //---------------------------------------------------------------- INCLUDE
 
@@ -20,12 +20,12 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 
 
-bool Analyse::AnalysePrecise(string & genome, const Maladie maladie) {
+bool Analyse::AnalysePrecise(const string & genome, const Maladie & maladie) {
 	// TODO
 	return false;
 }
 
-unordered_map<Maladie, bool> Analyse::AnalyseGlobale(string & genome) {
+unordered_map<Maladie, bool> Analyse::AnalyseGlobale(const string & genome) {
 	// TODO
 	return unordered_map<Maladie, bool>();
 }
