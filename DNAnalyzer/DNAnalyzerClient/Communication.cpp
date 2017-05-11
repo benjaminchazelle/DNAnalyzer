@@ -1,12 +1,12 @@
 /*************************************************************************
-Configuration - Classe de lecture d'un fichier de configurations serveurs
+Communication - Classe de gestion des communications réseaux
 -------------------
-début                :	06/05/17
+début                :	10/05/17
 copyright            :	(C) 2017 par CHAZELLE
 e-mail               :	benjamin.chazelle@insa-lyon.fr
 *************************************************************************/
 
-// Réalisation de la classe <Configuration> (fichier Configuration.cpp) //
+// Réalisation de la classe <Communication> (fichier Communication.cpp) //
 
 //---------------------------------------------------------------- INCLUDE
 
@@ -19,36 +19,12 @@ using namespace std;
 
 //------------------------------------------------------ Include personnel
 
-#include "Configuration.h"
+#include "Communication.h"
 #include "Serveur.h"
 
 //----------------------------------------------------------------- PUBLIC
 
-Configuration & Configuration::ObtenirInstance()
+string Communication::EnvoyerMessage(const Serveur & serveur, const string & message)
 {
-	// TODO: instance singleton
-
-	return *((Configuration*) nullptr);
-}
-
-void Configuration::RafraichirInstance()
-{
-}
-
-vector<struct Serveur> Configuration::ObtenirListeServeur() const
-{
-	return vector<struct Serveur>();
-}
-
-bool Configuration::ChargerFichier(const string & fichierServeurs)
-{
-	return false;
-}
-
-Configuration::Configuration()
-{
-}
-
-Configuration::~Configuration()
-{
+	return string();
 }
