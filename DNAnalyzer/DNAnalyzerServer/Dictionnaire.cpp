@@ -6,7 +6,7 @@ copyright            :	(C) 2017 par VOGEL
 e-mail               :	hugues.vogel@insa-lyon.fr
 *************************************************************************/
 
-//--------- Réalisation de la classe <Dictionnaire> (fichier Dictionnaire.cpp) ---------//
+//- Réalisation de la classe <Dictionnaire> (fichier Dictionnaire.cpp) -//
 
 //---------------------------------------------------------------- INCLUDE
 
@@ -37,12 +37,12 @@ void Dictionnaire::RafraichirInstance()
 	*/
 }
 
-void Dictionnaire::ChargerFichier(const string fichierDico)
+void Dictionnaire::ChargerFichier(const string & fichierDico)
 {
 	// TODO
 }
 
-const Maladie & Dictionnaire::ObtenirMaladie(const string name) {
+const Maladie & Dictionnaire::ObtenirMaladie(const string & name) {
 	// TODO
 	return Maladie();
 }

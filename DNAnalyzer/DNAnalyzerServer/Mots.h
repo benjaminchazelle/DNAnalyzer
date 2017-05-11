@@ -87,10 +87,10 @@ public:
 
 
 	Mots & operator = (const Mots &);
-	// Mode d'emploi : opérateur d'affectation, non implementé
+	// Mode d'emploi : opérateur d'affectation, non implémenté
 
 	Mots(const Mots &);
-	// Mode d'emploi : constructeur de copie, non implementé
+	// Mode d'emploi : constructeur de copie, non implémenté
 
 protected:
 

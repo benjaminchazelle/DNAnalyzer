@@ -6,6 +6,8 @@ copyright            :	(C) 2017 par VOGEL
 e-mail               :	hugues.vogel@insa-lyon.fr
 *************************************************************************/
 
+//-------  Interface de la classe <Maladie> (fichier Maladie.h)  -------//
+
 #if ! defined ( MALADIE_H )
 #define MALADIE_H
 
