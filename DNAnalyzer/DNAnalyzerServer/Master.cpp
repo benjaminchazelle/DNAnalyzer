@@ -25,7 +25,7 @@ void Master::InterpreterRequete(const string & requete, CommunicationThread & th
 
 //----------------------------------------------------------------- PRIVEE
 
-Route Master::routerRequete(const string & requete)
+Route Master::RouterRequete(const string & requete)
 {
 	return Route();
 }
