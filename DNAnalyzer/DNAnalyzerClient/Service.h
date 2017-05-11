@@ -34,15 +34,18 @@ public:
 	// Mode d'emploi : Requête le serveur <serveur>, pour savoir si la maladie <maladie> se trouve dans le fichier genome <filename>
 	//                 Retourne un dictionnaire dont la seule entrée est le nom de la maladie associée à sa présence (true) ou non (false) 
 	//                 Si la maladie n'est pas connu du serveur, le dictionnaire retourné ne contient aucune entrée
+	// Exception "invalid_argument" : si le fichier <filename> ne peut être ouvert
 	// Exception "runtime_error" : si le serveur est injoignable
 
 	static unordered_map<string, bool> AnalyseGlobale(const struct Serveur & serveur, const string & filename );
 	// Mode d'emploi : Requête le serveur <serveur>, pour savoir s'il connait une maladie dans le fichier genome <filename>
 	//                 Retourne un dictionnaire dont les entrées sont le nom des maladies associées à leur présence (true) ou non (false) 
+	// Exception "invalid_argument" : si le fichier <filename> ne peut être ouvert
 	// Exception "runtime_error" : si le serveur est injoignable
 
 	static unordered_set<string> ObtenirMaladies(const struct Serveur & serveur);
 	// Mode d'emploi : Requête le serveur <serveur>, pour obtenir l'ensemble des noms de maladies que celui-ci connait
+	// Exception "invalid_argument" : si le fichier <filename> ne peut être ouvert
 	// Exception "runtime_error" : si le serveur est injoignable
 
 	Service & operator = (const Service &);
