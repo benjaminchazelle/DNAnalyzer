@@ -18,6 +18,11 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 using namespace std;
 
 
+struct Peer {
+	SOCKADDR_IN* cin;
+	SOCKET* csock;
+};
+
 //------------------------------------------------------------------------
 // Rôle de la classe <CommunicationThread>
 //  La classe CommunicationThread de gérer le traitement d'une requête et 
@@ -30,7 +35,10 @@ class CommunicationThread
 protected:
 
 	SOCKET * csock;
-	// Description : socket client
+	// Description : socket clientInfo
+
+	string clientInfo;
+	// Description : adresse ip et port de connexion du clientInfo
 
 public:
 	void Repondre(const string & reponse);
@@ -43,7 +51,7 @@ public:
 	CommunicationThread(const CommunicationThread &);
 	// Mode d'emploi : constructeur de copie, non implémenté
 
-	CommunicationThread(SOCKET * csock);
+	CommunicationThread(Peer* peer);
 	// Mode d'emploi : constructeur, appel de traiter()
 
 	virtual ~CommunicationThread();
