@@ -31,7 +31,7 @@ namespace DNAnalyzerServerTest
 
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("AAAA"));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("AAAA CCCC TTTT", maladie));
+			Assert::IsTrue(Analyse::AnalysePrecise("AAAA;CCCC;TTTT", maladie));
 		}
 
 		TEST_METHOD(AnalysePrecise_AllKnownWords)
@@ -45,17 +45,17 @@ namespace DNAnalyzerServerTest
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("AAAA"));
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("CCCC"));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("AAAA CCCC TTTT", maladie));
+			Assert::IsTrue(Analyse::AnalysePrecise("AAAA;CCCC;TTTT", maladie));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("TTTT CCCC AAAA", maladie));
+			Assert::IsTrue(Analyse::AnalysePrecise("TTTT;CCCC;AAAA", maladie));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("TTTT AAAA CCCC", maladie));
+			Assert::IsTrue(Analyse::AnalysePrecise("TTTT;AAAA;CCCC", maladie));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("CCCC AAAA TTTT", maladie));
+			Assert::IsTrue(Analyse::AnalysePrecise("CCCC;AAAA;TTTT", maladie));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("AAAA TTTT CCCC", maladie));
+			Assert::IsTrue(Analyse::AnalysePrecise("AAAA;TTTT;CCCC", maladie));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("CCCC TTTT AAAA", maladie));
+			Assert::IsTrue(Analyse::AnalysePrecise("CCCC;TTTT;AAAA", maladie));
 		}
 
 		TEST_METHOD(AnalysePrecise_UnknownWord)
@@ -68,7 +68,7 @@ namespace DNAnalyzerServerTest
 
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("GGGG"));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("AAAA CCCC TTTT", maladie));
+			Assert::IsFalse(Analyse::AnalysePrecise("AAAA;CCCC;TTTT", maladie));
 		}
 
 		TEST_METHOD(AnalysePrecise_AnyUnknownWords)
@@ -82,17 +82,17 @@ namespace DNAnalyzerServerTest
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("AAAA"));
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("GGGG"));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("AAAA CCCC TTTT", maladie));
+			Assert::IsFalse(Analyse::AnalysePrecise("AAAA;CCCC;TTTT", maladie));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("TTTT CCCC AAAA", maladie));
+			Assert::IsFalse(Analyse::AnalysePrecise("TTTT;CCCC;AAAA", maladie));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("TTTT AAAA CCCC", maladie));
+			Assert::IsFalse(Analyse::AnalysePrecise("TTTT;AAAA;CCCC", maladie));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("CCCC AAAA TTTT", maladie));
+			Assert::IsFalse(Analyse::AnalysePrecise("CCCC;AAAA;TTTT", maladie));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("AAAA TTTT CCCC", maladie));
+			Assert::IsFalse(Analyse::AnalysePrecise("AAAA;TTTT;CCCC", maladie));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("CCCC TTTT AAAA", maladie));
+			Assert::IsFalse(Analyse::AnalysePrecise("CCCC;TTTT;AAAA", maladie));
 		}
 
 		TEST_METHOD(AnalysePrecise_EmptyDefinition)
@@ -105,7 +105,7 @@ namespace DNAnalyzerServerTest
 
 			// Pas de maladie.definition.insert();
 
-			Assert::IsFalse(Analyse::AnalysePrecise("AAAA TTTT CCCC", maladie));
+			Assert::IsFalse(Analyse::AnalysePrecise("AAAA;TTTT;CCCC", maladie));
 		}
 
 
@@ -118,7 +118,7 @@ namespace DNAnalyzerServerTest
 
 			Dictionnaire::ObtenirInstance().ChargerFichier("data.test.dico");
 
-			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("AAAA CCCC GGGG");
+			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("AAAA;CCCC;GGGG");
 
 			Maladie TEST_A = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_A");
 			Maladie TEST_B = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_B");
@@ -135,7 +135,7 @@ namespace DNAnalyzerServerTest
 
 			Dictionnaire::ObtenirInstance().ChargerFichier("data.test.dico");
 
-			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("AAAA CCCC GGGG");
+			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("AAAA;CCCC;GGGG");
 
 			try {
 				Maladie TEST_Z = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_Z");
@@ -158,7 +158,7 @@ namespace DNAnalyzerServerTest
 
 			Dictionnaire::ObtenirInstance().ChargerFichier("data.test.dico");
 
-			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("GA GG TA TT CA CC AA");
+			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("GA;GG;TA;TT;CA;CC;AA");
 
 			Maladie TEST_C = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_C");
 			Maladie TEST_D = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_D");
