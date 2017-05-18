@@ -9,11 +9,24 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace DNAnalyzerServerTest
 {
+
+
+	#ifndef TEST_MASTER_INTERFACE
+	#define TEST_MASTER_INTERFACE
+
+	class TestMasterInterface : public Master {
+	public:
+		static Route routerRequete(const string & requete) {
+			return Master::routerRequete(requete);
+		}
+	};
+	#endif // TEST_MASTER_INTERFACE
+
 	TEST_CLASS(MasterTest)
 	{
 	public:
 
-	
+
 		//routerRequete
 		TEST_METHOD(routerRequete_Empty)
 		{
@@ -21,12 +34,12 @@ namespace DNAnalyzerServerTest
 
 			string requete = "";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::ERREUR_SYNTAXE);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::ERREUR_SYNTAXE);
 
 		}
 
 		//routerRequete
-		TEST_METHOD(routerRequete_AnalyseGlobale_Cool)
+		TEST_METHOD(routerRequete_AnalyseGlobale_OK)
 		{
 			// Requête d'analyse globale bien formée
 
@@ -35,7 +48,7 @@ namespace DNAnalyzerServerTest
 			requete += "CHECK ALL\r\n";
 			requete += "AA;CC;TT;GG;\r\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::ANALYSE_GLOBALE);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::ANALYSE_GLOBALE);
 
 		}
 
@@ -48,11 +61,11 @@ namespace DNAnalyzerServerTest
 			requete += "CHECK ALL\r\n";
 			requete += "\r\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::ERREUR_SYNTAXE);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::ERREUR_SYNTAXE);
 
 		}
 
-		TEST_METHOD(routerRequete_AnalysePrecise_Cool)
+		TEST_METHOD(routerRequete_AnalysePrecise_OK)
 		{
 			// Requête d'analyse globale bien formée
 
@@ -61,7 +74,7 @@ namespace DNAnalyzerServerTest
 			requete += "CHECK DISEASE\r\n";
 			requete += "AA;CC;TT;GG;\r\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::ANALYSE_PRECISE);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::ANALYSE_PRECISE);
 
 		}
 
@@ -74,11 +87,11 @@ namespace DNAnalyzerServerTest
 			requete += "CHECK DISEASE\r\n";
 			requete += "\r\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::ERREUR_SYNTAXE);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::ERREUR_SYNTAXE);
 
 		}
 
-		TEST_METHOD(routerRequete_ListeMaladie_Cool)
+		TEST_METHOD(routerRequete_ListeMaladies_OK)
 		{
 			// Requête de listage des maladies bien formée
 
@@ -87,11 +100,11 @@ namespace DNAnalyzerServerTest
 			requete += "GET DISEASES\r\n";
 			requete += "\r\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::LISTE_MALADIES);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::LISTE_MALADIES);
 
 		}
 
-		TEST_METHOD(routerRequete_ServiceInconnu_Cool)
+		TEST_METHOD(routerRequete_ServiceInconnu_OK)
 		{
 			// Requête d'analyse globale bien formée
 
@@ -100,14 +113,14 @@ namespace DNAnalyzerServerTest
 			requete += "UNKNOWN SERVICE\r\n";
 			requete += "AA;CC;TT;GG;\r\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::SERVICE_INCONNU);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::SERVICE_INCONNU);
 
 			requete = "";
 			requete += "MA v1.0\r\n";
 			requete += "UNKNOWN SERVICE\r\n";
 			requete += "\r\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::SERVICE_INCONNU);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::SERVICE_INCONNU);
 
 		}
 
@@ -120,14 +133,14 @@ namespace DNAnalyzerServerTest
 			requete += "CHECK ALL\r\n";
 			requete += "AA;CC;TT;GG;\r\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::ERREUR_SYNTAXE);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::ERREUR_SYNTAXE);
 
 			requete = "";
 			requete += "INCORRECT HEADER\r\n";
 			requete += "CHECK ALL\r\n";
 			requete += "\r\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::ERREUR_SYNTAXE);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::ERREUR_SYNTAXE);
 
 		}
 
@@ -140,17 +153,17 @@ namespace DNAnalyzerServerTest
 			requete += "CHECK ALL\n";
 			requete += "AA;CC;TT;GG;\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::ERREUR_SYNTAXE);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::ERREUR_SYNTAXE);
 
 			requete = "";
 			requete += "MA v1.0\n";
 			requete += "CHECK ALL\n";
 			requete += "\n";
 
-			Assert::IsTrue(Master::routerRequete(requete) == Route::ERREUR_SYNTAXE);
+			Assert::IsTrue(TestMasterInterface::routerRequete(requete) == Route::ERREUR_SYNTAXE);
 
 		}
 
-	
+
 	};
 }

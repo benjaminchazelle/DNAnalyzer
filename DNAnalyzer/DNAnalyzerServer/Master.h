@@ -41,10 +41,11 @@ public:
 	Master(const Master &);
 	// Mode d'emploi : Constructeur de copie, non implémenté
 	
-	static Route RouterRequete(const string & requete);
-	// Mode d'emploi : Renvoie le traitement à invoquer en fonction de la requête
 
 protected:
+
+	static Route routerRequete(const string & requete);
+	// Mode d'emploi : Renvoie le traitement à invoquer en fonction de la requête
 
 
 	static void analysePrecise(const string & requete, CommunicationThread & thread);
