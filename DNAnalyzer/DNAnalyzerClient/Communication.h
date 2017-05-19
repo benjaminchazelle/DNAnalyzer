@@ -32,7 +32,7 @@ public:
 
 	static string EnvoyerMessage(const struct Serveur & serveur, const string & message);
 	// Mode d'emploi : envoie une requête <message> au serveur <serveur> et renvoie sa réponse
-	// Exception "runtime_error" : si le serveur est injoignable
+	// Exception "runtime_error" : si une erreur de communication survient
 
 	Communication & operator = (const Communication &);
 	// Mode d'emploi : opérateur d'affectation, non implémenté
