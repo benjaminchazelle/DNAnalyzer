@@ -13,6 +13,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //-------------------------------------------------------- Include système
 #include <iostream>
 #include <string>
+#include <stdexcept>
 
 //------------------------------------------------------ Include personnel
 
@@ -37,57 +38,51 @@ void CommunicationThread::Repondre(const string & reponse)
 }
 
 
-CommunicationThread::CommunicationThread(Peer * peer) : csock(peer->csock), clientInfo("")
+CommunicationThread::CommunicationThread(Peer * peer) : csock(peer->csock), clientInfo(""), tailleRB(512), curseurPosRB(0), bytesReadRB(0), isCloseRB(false)
 {
 	clientInfo = string(inet_ntoa(peer->cin->sin_addr));
 	clientInfo += ":" + to_string(peer->cin->sin_port);
 
 	delete peer;
+	readerBuffer = new char[tailleRB];
+}
+void CommunicationThread::traiter(){
+	Master::InterpreterRequete(*this);
 
-	traiter();
 }
 
 CommunicationThread::~CommunicationThread()
 {
+	delete[] readerBuffer;
 }
-
-//----------------------------------------------------------------- PRIVEE
-
-void CommunicationThread::traiter()
-{
-	string request("");
-
-	int bytesReceived;
-
-	do {
-
-		const int bufferSize = 512;
-
-		char buffer[bufferSize + 1];
-
-		bytesReceived = recv(*csock, buffer, bufferSize, 0);
-
-		if (bytesReceived > 0) {
-
-			buffer[bytesReceived] = '\0';
-
-			request += buffer;
-
-			if (request.rfind("\r\n\r\n") != string::npos || request.rfind(";\r\n") != string::npos) {
-
-				Master::InterpreterRequete(request, *this);
-
-				break;
+string CommunicationThread::lireLigne() {
+	if (isCloseRB) {
+		throw runtime_error("socketIsCosed");
+	}
+	string res("");
+	char lastChar('\0');
+	while (1) {
+		unsigned int startedPos = curseurPosRB;
+		while (curseurPosRB < bytesReadRB) {
+			if (lastChar = '\r' && readerBuffer[curseurPosRB] == '\n') {
+				res.append(&readerBuffer[startedPos], (size_t)(curseurPosRB - startedPos - 2));
+				return res;
 			}
-
+			lastChar = readerBuffer[curseurPosRB];
+			curseurPosRB++;
 		}
-		else if (bytesReceived == 0) {
+		res.append(&readerBuffer[startedPos], (size_t)(bytesReadRB - startedPos));
+		curseurPosRB = 0;
 
-			Master::InterpreterRequete(request, *this);
+		bytesReadRB = recv(*csock, readerBuffer, tailleRB, 0);
 
-			break;
+		if (bytesReadRB == 0) {
+			isCloseRB = true;
+			throw runtime_error("socketIsCosed");
 		}
-		else {
+		else if (bytesReadRB < 0) {
+
+			isCloseRB = true;
 
 			if (10054 == WSAGetLastError()) {
 				printf("%s : Connection closed by client\n", clientInfo.c_str());
@@ -96,14 +91,19 @@ void CommunicationThread::traiter()
 			{
 				printf("%s : Error %d during receiving\n", clientInfo.c_str(), WSAGetLastError());
 			}
-
-			
-			break;
+			throw runtime_error("socketFail");
 		}
 
-	} while (bytesReceived > 0);
+		if (lastChar == '\r'&&readerBuffer[0] == '\n') {
+			res = res.substr(res.length() - 1);
+			curseurPosRB++;
+			return res;
+		}
+	}
+}
+void CommunicationThread::close() {
 
-	bytesReceived = shutdown(*csock, SD_SEND);
+	unsigned int bytesReceived = shutdown(*csock, SD_SEND);
 
 	if (bytesReceived == SOCKET_ERROR) {
 
@@ -112,8 +112,8 @@ void CommunicationThread::traiter()
 	}
 
 	printf("%s : Connection closed by server\n", clientInfo.c_str());
-	
+
 
 	delete csock;
-
 }
+//----------------------------------------------------------------- PRIVEE

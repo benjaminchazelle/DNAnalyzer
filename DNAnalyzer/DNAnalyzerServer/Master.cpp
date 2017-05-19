@@ -20,35 +20,34 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 //----------------------------------------------------------------- PUBLIC
 
-void Master::InterpreterRequete(const string & requete, CommunicationThread & thread)
+void Master::InterpreterRequete(CommunicationThread & thread)
 {
 	//TODO : Change
-	thread.Repondre(requete);
 }
 
 //----------------------------------------------------------------- PRIVEE
 
-Route Master::routerRequete(const string & requete)
+Route Master::routerRequete(const string & serviceLigne)
 {
 	return Route();
 }
 
-void Master::analysePrecise(const string & requete, CommunicationThread & thread)
+void Master::analysePrecise(const string & maladie, unordered_set<string> & genome, CommunicationThread & thread)
 {
 }
 
-void Master::analyseGlobale(const string & requete, CommunicationThread & thread)
+void Master::analyseGlobale(const unordered_set<string> & genome, CommunicationThread & thread)
 {
 }
 
-void Master::obtenirListeMaladies(const string & requete, CommunicationThread & thread)
+void Master::obtenirListeMaladies(CommunicationThread & thread)
 {
 }
 
-void Master::repondreServiceInconnu(const string & requete, CommunicationThread & thread)
+void Master::repondreServiceInconnu(const string & serviceName, CommunicationThread & thread)
 {
 }
 
-void Master::repondreErreurRequete(const string & requete, CommunicationThread & thread)
+void Master::repondreErreurRequete(const string & textes, CommunicationThread & thread)
 {
 }
