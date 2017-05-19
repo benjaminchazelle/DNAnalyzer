@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClCompile Include="..\TestUtil\FileUtil.cpp" />
     <ClCompile Include="..\TestUtil\FileUtilTest.cpp" />
+    <ClCompile Include="AnalyseTest.cpp" />
     <ClCompile Include="DictionnaireTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

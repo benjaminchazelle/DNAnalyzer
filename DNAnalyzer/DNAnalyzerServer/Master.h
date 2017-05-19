@@ -23,7 +23,7 @@ enum Route {ANALYSE_PRECISE, ANALYSE_GLOBALE, LISTE_MALDIES, SERVICE_INCONNU, ER
 // Rôle de la classe <Master>
 //  La classe Master contient different methode pour chaqu'un des service
 //  proposer par le server. Elle a pour objectif de recupérer les donnée du
-//  client et de lui repondres
+//  clientInfo et de lui repondres
 //  
 //------------------------------------------------------------------------
 
@@ -47,19 +47,19 @@ protected:
 	// Mode d'emploi : Renvoie le traitement à invoquer en fonction de la requête
 
 	static void analysePrecise(const string & requete, CommunicationThread & thread);
-	// Mode d'emploi : Retourne au client le résultat de l'analyse précise demandée
+	// Mode d'emploi : Retourne au clientInfo le résultat de l'analyse précise demandée
 
 	static void analyseGlobale(const string & requete, CommunicationThread & thread);
-	// Mode d'emploi : Retourne au client le résultat de l'analyse globale demandée
+	// Mode d'emploi : Retourne au clientInfo le résultat de l'analyse globale demandée
 
 	static void obtenirListeMaladies(const string & requete, CommunicationThread & thread);
-	// Mode d'emploi : Retourne au client la liste des maladies connues par le serveur
+	// Mode d'emploi : Retourne au clientInfo la liste des maladies connues par le serveur
 
 	static void repondreServiceInconnu(const string & requete, CommunicationThread & thread);
-	// Mode d'emploi : Informe le client qu'aucun service n'existe pour traiter sa requête
+	// Mode d'emploi : Informe le clientInfo qu'aucun service n'existe pour traiter sa requête
 
 	static void repondreErreurRequete(const string & requete, CommunicationThread & thread);
-	// Mode d'emploi : Informe le client que sa requête est syntaxiquement invalide 
+	// Mode d'emploi : Informe le clientInfo que sa requête est syntaxiquement invalide 
 
 	Master();
 	// Mode d'emploi : Constructeur, non implémenté

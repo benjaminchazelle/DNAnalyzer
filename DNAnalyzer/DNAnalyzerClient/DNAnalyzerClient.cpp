@@ -6,6 +6,9 @@
 #include "DNAnalyzerClient.h"
 #include "DNAnalyzerClientDlg.h"
 
+#include "Communication.h"
+#include <iostream>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -27,6 +30,12 @@ CDNAnalyzerClientApp::CDNAnalyzerClientApp()
 
 	// TODO: ajoutez ici du code de construction,
 	// Placez toutes les initialisations significatives dans InitInstance
+	Serveur s;
+
+	s.host = "exemple.com";
+	s.port = 80;
+
+	cout << Communication::EnvoyerMessage(s, "GET / HTTP/1.1\r\nHost : exemple.com\r\n\r\n");
 }
 
 
