@@ -20,14 +20,41 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 
 
-bool Analyse::AnalysePrecise(const string & genome, const Maladie & maladie) {
-	// TODO
-	return false;
+bool Analyse::AnalysePrecise(const unordered_set<string> & genome, const Maladie & maladie) {
+	unsigned int count = 0;
+	for (unordered_set<string>::iterator motGenom = genome.begin(); motGenom != genome.end(); motGenom++) {
+		try {
+			unsigned int indexMotGenom = Mots::ObtenirInstance().ObtenirIndex((*motGenom).c_str());
+			if (maladie.definition.find(indexMotGenom) != maladie.definition.end()) {
+				count++;
+			}
+		}
+		catch (exception const& e) {
+			//si le mot n'est pas reférancer il n'est pas dans une maladie (rien a faire)
+		}
+	}
+	return count == maladie.definition.size();
 }
 
-unordered_map<Maladie, bool> Analyse::AnalyseGlobale(const string & genome) {
-	// TODO
-	return unordered_map<Maladie, bool>();
+const unordered_set<Maladie *> Analyse::AnalyseGlobale(const unordered_set<string> & genome) {
+	unordered_map<Maladie *, unsigned int> nbMotMaladieFind;
+	unordered_set<Maladie *> resutat;
+	for (unordered_set<string>::iterator motGenom = genome.begin(); motGenom != genome.end(); motGenom++) {
+		try {
+			unsigned int indexMotGenom = Mots::ObtenirInstance().ObtenirIndex((*motGenom).c_str());
+			const unordered_set<Maladie *> maladiesDuMot = Dictionnaire::ObtenirInstance().ObtenirMaladies(indexMotGenom);
+			for (unordered_set<Maladie *>::iterator uneMaladieDuMotIt = maladiesDuMot.begin(); uneMaladieDuMotIt != maladiesDuMot.end(); uneMaladieDuMotIt++) {
+				Maladie * uneMaladieDuMot = *uneMaladieDuMotIt;
+				if (uneMaladieDuMot->definition.size() == ++nbMotMaladieFind[uneMaladieDuMot]) {
+					resutat.insert(uneMaladieDuMot);
+				}
+			}
+		}
+		catch (exception const& e) {
+			//si le mot n'est pas reférancer il n'est pas dans une maladie (rien a faire)
+		}
+	}
+	return resutat;
 }
 
 
