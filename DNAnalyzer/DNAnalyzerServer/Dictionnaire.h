@@ -51,6 +51,14 @@ public:
 
 	void ChargerFichier(const string & fichierDico);
 	// Mode d'emploi : Cette méthode lit le contenu du fichier <fichierDico> pour charger son contenu
+	// Exception "runtime_error" : si le fichier ne peut être lu
+	// Exception "invalid_argument" : si le fichier n'est pas valide
+	// Fichier valide : 
+	//		MA v1.0\r\n
+	//		([a-Z0-9_ ]+(;<mot>*)+;?(\r\n))*
+	//		[a-Z0-9_ ]+(;<mot>*)+;?(\r\n)?
+	//
+	//		Un <mot> différent de /[ATCG]+/ est ignoré
 
 	const Maladie & ObtenirMaladie(const string & name);
 	// Mode d'emploi : renvoit la Maladie correspondant au nom donné en paramètre

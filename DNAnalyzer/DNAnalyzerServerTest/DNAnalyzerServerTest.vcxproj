@@ -154,10 +154,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\TestUtil\FileUtil.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\TestUtil\FileUtil.cpp" />
+    <ClCompile Include="..\TestUtil\FileUtilTest.cpp" />
     <ClCompile Include="AnalyseTest.cpp" />
     <ClCompile Include="DictionnaireTest.cpp" />
     <ClCompile Include="stdafx.cpp">

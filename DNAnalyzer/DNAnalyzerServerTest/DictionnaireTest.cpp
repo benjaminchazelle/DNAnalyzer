@@ -6,6 +6,9 @@
 #include <unordered_set>
 #include <cstring>
 #include <string>
+#include "../TestUtil/FileUtil.h"
+
+#define UNREFERENCE_PARAMETER(P) (P)
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -13,6 +16,10 @@ namespace DNAnalyzerServerTest
 {
 	TEST_CLASS(DictionnaireTest)
 	{
+	protected:
+
+		const string _dicoTestFile = "data.test.dico";
+
 	public:
 		TEST_CLASS_INITIALIZE(initialize) {
 			Mots::RafraichirInstance();
@@ -29,7 +36,7 @@ namespace DNAnalyzerServerTest
 		TEST_METHOD(ObtenirInstance_NotNull)
 		{
 			// L'instance retournée ne doit pas être null
-			Assert::IsTrue(&(Dictionnaire::ObtenirInstance())!=(Dictionnaire*) nullptr);
+			Assert::IsTrue(&(Dictionnaire::ObtenirInstance()) != (Dictionnaire*) nullptr);
 		}
 
 		TEST_METHOD(ObtenirInstance_SameReference)
@@ -37,29 +44,347 @@ namespace DNAnalyzerServerTest
 			// L'instance retournée doit toujours être la même
 			Assert::IsTrue(&(Dictionnaire::ObtenirInstance()) == &(Dictionnaire::ObtenirInstance()));
 		}
+
+		TEST_METHOD(ChargerFichier_InexistantFile)
+		{
+			// Un fichier inexistant lève une exception "runtime_error"
+
+			FileUtil::unlink(_dicoTestFile);
+
+			bool runtimeErrorException = false;
+
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Assert::Fail();
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+
+				runtimeErrorException = true;
+			}
+
+			Assert::IsTrue(runtimeErrorException);
+						
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_OK_One)
+		{
+			// Syntaxe de fichier mono maladie correcte
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
+				Assert::IsTrue(NAME.definition.size() == 4);
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+
+				Assert::Fail();
+			}
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 1);
+
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_OK_Multiple)
+		{
+			// Syntaxe de fichier multi maladie correcte
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT\r\nNAME2;AAAA;CCCC\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
+				Assert::IsTrue(NAME.definition.size() == 4);
+				Maladie NAME2 = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2");
+				Assert::IsTrue(NAME2.definition.size() == 2);
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+				Assert::Fail();
+			}
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EmptyWord_One)
+		{
+			// Mots vides ignorés dans un dictionnaire à une entrée
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;;AA;CC;;GG;TT;;\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
+				Assert::IsTrue(NAME.definition.size() == 4);
+
+				for (auto i : NAME.definition)
+				{
+					Assert::IsTrue(Mots::ObtenirInstance().RecupererMot(i) != "");
+				}
+
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+				Assert::Fail();
+			}
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 1);
+
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EmptyWord_Multiple)
+		{
+			// Mots vides ignorés dans un dictionnaire à plusieurs entrées
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;;AA;CC;;GG;TT\r\nNAME2;AAAA;;;CCCC\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
+				Assert::IsTrue(NAME.definition.size() == 4);
+
+				for (auto i : NAME.definition)
+				{
+					Assert::IsTrue(Mots::ObtenirInstance().RecupererMot(i) != "");
+				}
+
+				Maladie NAME2 = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2");
+				Assert::IsTrue(NAME2.definition.size() == 2);
+
+				for (auto i : NAME2.definition)
+				{
+					Assert::IsTrue(Mots::ObtenirInstance().RecupererMot(i) != "");
+				}
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+				Assert::Fail();
+			}
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_BadHeader)
+		{
+			// Le header du fichier doit être correcte, sinon quoi le fichier n'est pas chargé
+
+			bool invalidArgumentException = false;
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "Mauvais header\r\nNAME;AA;CC;GG;TT\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Assert::Fail();				
+			}
+			catch (invalid_argument const& e) {
+				UNREFERENCE_PARAMETER(e);
+
+				invalidArgumentException = true;
+
+				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+			}
+
+			Assert::IsTrue(invalidArgumentException);
+
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EndlComma_One)
+		{
+			// Les lignes peuvent se finir avec une virgule sans incidence
+			// Test sur un dictionnaire à une entrée unique
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT;\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 1);
+				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
+				Assert::IsTrue(NAME.definition.size() == 4);
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+				Assert::Fail();
+			}
+
+		}
+	
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EndlComma_Multiple)
+		{
+			// Les lignes peuvent se finir avec une virgule sans incidence
+			// Test sur un dictionnaire à plusieurs entrées
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT;\r\nNAME2;AAAA;CCCC;\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
+				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
+				Assert::IsTrue(NAME.definition.size() == 4);
+				Maladie NAME2 = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2");
+				Assert::IsTrue(NAME2.definition.size() == 2);
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+				Assert::Fail();
+			}
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_NoLastCRLF_One)
+		{
+			// La dernière ligne peut omettre \r\n
+			// Test sur un dictionnaire à une entrée unique
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 1);
+				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
+				Assert::IsTrue(NAME.definition.size() == 4);
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+				Assert::Fail();
+			}
+
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_NoLastCRLF_Multiple)
+		{
+			// La dernière ligne peut omettre \r\n
+			// Test sur un dictionnaire à plusieurs entrées
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+			
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT\r\nNAME2;AAAA;CCCC");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
+				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
+				Assert::IsTrue(NAME.definition.size() == 4);
+				Maladie NAME2 = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2");
+				Assert::IsTrue(NAME2.definition.size() == 2);
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+				Assert::Fail();
+			}
+		}
+
 		TEST_METHOD(ObtenirMaladie_KnownMaladie) {
-			Assert::Fail();// TODO
+
+			// Maladie connue
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
+				Assert::IsTrue(NAME.definition.size() == 4);
+				Assert::IsTrue(NAME.nom == "NAME");
+
+				Assert::IsTrue((*(Dictionnaire::ObtenirInstance().ObtenirMaladies(0).find(&NAME)))->nom == "NAME");
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+				Assert::Fail();
+			}
+
 		}
-		TEST_METHOD(ObtenirMaladie_UnKnownMaladie) {
-			Assert::Fail();// TODO
+
+		TEST_METHOD(ObtenirMaladie_UnknownMaladie) {
+
+			// Maladie inconnue lève une exception "range_error"
+
+			bool rangeErrorException = false;
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				
+				Dictionnaire::ObtenirInstance().ObtenirMaladie("MALADIE_INEXISTANTE");
+
+				Assert::Fail();
+			}
+			catch (range_error const& e) {
+				UNREFERENCE_PARAMETER(e);
+				
+				rangeErrorException = true;
+
+			}
+			
+			Assert::IsTrue(rangeErrorException);
+
 		}
+
+		TEST_METHOD(ObtenirMaladie_KnownMaladies) {
+
+			// Maladies connues
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT\r\nNAME2;AA;CCCC\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+
+				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
+
+				unordered_set<Maladie*> maladies = Dictionnaire::ObtenirInstance().ObtenirMaladies(0);
+
+				Assert::IsTrue(maladies.size() == 2);
+
+				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME").nom == "NAME");
+
+				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2").nom == "NAME2");
+
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+				Assert::Fail();
+			}
+		}
+	
 		TEST_METHOD(ObtenirMaladies_NoMaladies) {
+
+			// Aucune maladie
+
 			char motInexistant[] = "ATCGINEXISTANT";
+			
 			unsigned int indexMotInexistant = Mots::ObtenirInstance().InsererMot(motInexistant);
 			const unordered_set<Maladie*> resultat = Dictionnaire::ObtenirInstance().ObtenirMaladies(indexMotInexistant);
-			Assert::AreEqual((int)resultat.size(), 0);
+			
+			Assert::IsTrue(0 == resultat.size());
 		}
-		TEST_METHOD(ObtenirMaladies_OneMaladies) {
-			Assert::Fail();// TODO
+
+		TEST_METHOD(ObtenirNomsMaladies_EmptyDictionnaire) {
+			
+			// Dictionnaire vide
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\n");
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			unsigned int inexistantMaladieId = 42;
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirMaladies(inexistantMaladieId).size() == 0);
+
+			FileUtil::write(_dicoTestFile, "");
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirMaladies(inexistantMaladieId).size() == 0);
+
 		}
-		TEST_METHOD(ObtenirMaladies_TwoMaladies) {
-			Assert::Fail();// TODO
-		}
-		TEST_METHOD(ObtenirNomMaladies_EmptyDictionnaire) {
-			Assert::Fail();// TODO
-		}
-		TEST_METHOD(ObtenirNomMaladies_NotEmptyDictionnaire) {
-			Assert::Fail();// TODO
-		}
+	
+
 	};
 }
