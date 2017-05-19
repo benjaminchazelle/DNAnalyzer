@@ -32,6 +32,12 @@ struct Maladie
 
 	unordered_set<unsigned int> definition;
 	// Description : contien la list de l'index de chaqu'un des mots de la maladie
+
+
+	bool operator==(const Maladie& m)const
+	{
+		return m.nom == nom && m.definition == definition;
+	}
 };
 namespace std
 {
