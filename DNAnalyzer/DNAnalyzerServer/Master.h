@@ -14,6 +14,8 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //--------------------------------------------------- Interfaces utilisées
 
 #include <string>
+#include <unordered_set>
+
 #include "CommunicationThread.h"
 using namespace std;
 
@@ -32,7 +34,7 @@ class Master
 {
 public:
 
-	static void InterpreterRequete(const string & requete, CommunicationThread & thread);
+	static void InterpreterRequete(CommunicationThread & thread);
 	// Mode d'emploi : Interprete la requête pour invoquer le traitement qui lui est spécifique
 
 	Master & operator = (const Master &);
@@ -43,22 +45,22 @@ public:
 
 protected:
 
-	static Route routerRequete(const string & requete);
+	static Route routerRequete(const string & serviceLigne);
 	// Mode d'emploi : Renvoie le traitement à invoquer en fonction de la requête
 
-	static void analysePrecise(const string & requete, CommunicationThread & thread);
+	static void analysePrecise(const string & maladie, unordered_set<string> & genome, CommunicationThread & thread);
 	// Mode d'emploi : Retourne au clientInfo le résultat de l'analyse précise demandée
 
-	static void analyseGlobale(const string & requete, CommunicationThread & thread);
+	static void analyseGlobale(const unordered_set<string> & genome, CommunicationThread & thread);
 	// Mode d'emploi : Retourne au clientInfo le résultat de l'analyse globale demandée
 
-	static void obtenirListeMaladies(const string & requete, CommunicationThread & thread);
+	static void obtenirListeMaladies(CommunicationThread & thread);
 	// Mode d'emploi : Retourne au clientInfo la liste des maladies connues par le serveur
 
-	static void repondreServiceInconnu(const string & requete, CommunicationThread & thread);
+	static void repondreServiceInconnu(const string & serviceName, CommunicationThread & thread);
 	// Mode d'emploi : Informe le clientInfo qu'aucun service n'existe pour traiter sa requête
 
-	static void repondreErreurRequete(const string & requete, CommunicationThread & thread);
+	static void repondreErreurRequete(const string & texte, CommunicationThread & thread);
 	// Mode d'emploi : Informe le clientInfo que sa requête est syntaxiquement invalide 
 
 	Master();
