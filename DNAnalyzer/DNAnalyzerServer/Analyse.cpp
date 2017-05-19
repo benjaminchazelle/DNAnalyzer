@@ -15,6 +15,8 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //------------------------------------------------------ Include personnel
 
 #include "Analyse.h"
+#include "Mots.h"
+#include "Dictionnaire.h"
 
 //----------------------------------------------------------------- PUBLIC
 
