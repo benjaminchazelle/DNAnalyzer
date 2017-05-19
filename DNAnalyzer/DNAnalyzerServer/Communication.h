@@ -28,10 +28,10 @@ class Communication
 {
 protected:
 
-	SOCKADDR_IN csin;
-	// Description : adresse serveur
+	static HANDLE threadServeurHandle;
+	// Description : thread du serveur
 
-	SOCKET sock;
+	static SOCKET sock;
 	// Description : socket serveur d'écoute
 
 	static Communication* instanceCommunication;
@@ -42,7 +42,7 @@ public:
 	// Mode d'emploi : renvoit l'instance singleton de Communication
 
 	void Ecouter(unsigned int port);
-	// Mode d'emploi : lance un serveur (thread de threadServeur) sur le port <port>
+	// Mode d'emploi : lance un serveur sur le port <port>
 
 	Communication & operator = (const Communication &);
 	// Mode d'emploi : opérateur d'affectation, non implémenté
@@ -52,10 +52,7 @@ public:
 
 protected:
 
-	static void threadServeur(unsigned int port);
-	// Mode d'emploi : thread du serveur (intialisation socket + boucle d'écoute)
-
-	void recevoirRequete();
+	static void recevoirRequete();
 	// Mode d'emploi : attend une nouvelle connexion entrante puis lance un threadRequete
 
 	static DWORD WINAPI threadRequete(void* p);
@@ -65,7 +62,7 @@ protected:
 	// Mode d'emploi : constructeur
 
 	virtual ~Communication();
-	// Moe d'emploi : destructeur
+	// Mode d'emploi : destructeur
 };
 
 #endif

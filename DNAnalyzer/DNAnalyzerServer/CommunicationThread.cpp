@@ -11,36 +11,40 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //---------------------------------------------------------------- INCLUDE
 
 //-------------------------------------------------------- Include système
-
+#include <iostream>
 #include <string>
 
 //------------------------------------------------------ Include personnel
 
 #include "CommunicationThread.h"
+#include "Master.h"
 
 //----------------------------------------------------------------- PUBLIC
 
 void CommunicationThread::Repondre(const string & reponse)
 {
-	/* EXAMPLE pour un paramétre (string msg)
-	int iSendResult = send(*csock, msg.c_str(), msg.length(), 0);
-	if (iSendResult == SOCKET_ERROR) {
-		printf("send failed with error: %d\n", WSAGetLastError());
+	int bytesSent = send(*csock, reponse.c_str(), reponse.length(), 0);
+	
+	if (bytesSent == SOCKET_ERROR) {
+
+		printf("%s : Error %d during responding\n", clientInfo.c_str(), WSAGetLastError());
+
 		closesocket(*csock);
 		WSACleanup();
-		//	return 1;
 	}
-	printf("Bytes sent: %d\n", iSendResult);
-	*/
+
+	printf("%s : Response sent (%d bytes)\n", clientInfo.c_str(), bytesSent);
 }
 
 
-CommunicationThread::CommunicationThread(SOCKET * csock)
+CommunicationThread::CommunicationThread(Peer * peer) : csock(peer->csock), clientInfo("")
 {
-	/* EXEMPLE
-	cout << "Thread inited" << endl;
-	Traiter();
-	*/
+	clientInfo = string(inet_ntoa(peer->cin->sin_addr));
+	clientInfo += ":" + to_string(peer->cin->sin_port);
+
+	delete peer;
+
+	traiter();
 }
 
 CommunicationThread::~CommunicationThread()
@@ -51,81 +55,65 @@ CommunicationThread::~CommunicationThread()
 
 void CommunicationThread::traiter()
 {
-	/* EXAMPLE
-	cout << "Traiter" << endl;
-
 	string request("");
 
-	int iResult;
-	// Receive until the peer shuts down the connection
+	int bytesReceived;
+
 	do {
 
-	const int recvbuflen = 512;
-	char recvbuf[recvbuflen + 1];
+		const int bufferSize = 512;
 
+		char buffer[bufferSize + 1];
 
+		bytesReceived = recv(*csock, buffer, bufferSize, 0);
 
-	iResult = recv(*csock, recvbuf, recvbuflen, 0);
-	cout << "recv " << iResult << endl;
+		if (bytesReceived > 0) {
 
-	if (iResult > 0) {
+			buffer[bytesReceived] = '\0';
 
+			request += buffer;
 
-	//char* sub = new char[iResult + 1];
-	//memcpy(sub, &recvbuf[recvbuflen], iResult);
-	//sub[iResult] = '\0';
+			if (request.rfind("\r\n\r\n") != string::npos || request.rfind(";\r\n") != string::npos) {
 
+				Master::InterpreterRequete(request, *this);
 
+				break;
+			}
 
-	//cout << "iResult" << iResult << endl;
-	recvbuf[iResult] = '\0';
+		}
+		else if (bytesReceived == 0) {
 
-	request += recvbuf;
+			Master::InterpreterRequete(request, *this);
 
-	cout << "nreq " << request << endl;
+			break;
+		}
+		else {
 
-	if (request.rfind("\r\n\r\n") != string::npos || request.rfind(";\r\n") != string::npos) {
-	Master::Handle(request, *this);
+			if (10054 == WSAGetLastError()) {
+				printf("%s : Connection closed by client\n", clientInfo.c_str());
+			}
+			else
+			{
+				printf("%s : Error %d during receiving\n", clientInfo.c_str(), WSAGetLastError());
+			}
 
-	break;
+			
+			break;
+		}
+
+	} while (bytesReceived > 0);
+
+	bytesReceived = shutdown(*csock, SD_SEND);
+
+	if (bytesReceived == SOCKET_ERROR) {
+
+		closesocket(*csock);
+		WSACleanup();
 	}
 
+	printf("%s : Connection closed by server\n", clientInfo.c_str());
+	
 
-
-	//printf("Bytes received: %d\n", iResult);
-
-	// Echo the buffer back to the sender
-
-	//					cout << recvbuf;
-
-
-	}
-	else if (iResult == 0) {
-
-	cout << "pre handle" << endl;
-
-	Master::Handle(request, *this);
-
-	printf("Connection closing...\n");
-	}
-	else {
-	printf("recv failed with error: %d\n", WSAGetLastError());
-	//closesocket(*csock);
-	//WSACleanup();
-	//return 1;
-	break;
-	}
-
-	} while (iResult > 0);
-
-	// shutdown the connection since we're done
-	iResult = shutdown(*csock, SD_SEND);
-	if (iResult == SOCKET_ERROR) {
-	printf("shutdown failed with error: %d\n", WSAGetLastError());
-	closesocket(*csock);
-	WSACleanup();
-	//	return 1;
-	}
-	*/
+	delete csock;
 
 }

@@ -1,5 +1,5 @@
 /*************************************************************************
-Master - Classe qui gére la communication entre un client et le service demander 
+Master - Classe qui gére la communication entre un clientInfo et le service demander 
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par VOGEL
@@ -11,6 +11,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //---------------------------------------------------------------- INCLUDE
 
 //-------------------------------------------------------- Include système
+#include <iostream>
 
 //------------------------------------------------------ Include personnel
 
@@ -21,6 +22,8 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 void Master::InterpreterRequete(const string & requete, CommunicationThread & thread)
 {
+	//TODO : Change
+	thread.Repondre(requete);
 }
 
 //----------------------------------------------------------------- PRIVEE
