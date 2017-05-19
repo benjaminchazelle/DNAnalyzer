@@ -45,7 +45,30 @@ namespace DNAnalyzerServerTest
 			Assert::IsTrue(&(Dictionnaire::ObtenirInstance()) == &(Dictionnaire::ObtenirInstance()));
 		}
 
-		TEST_METHOD(ChargerFichier_CorrectSyntaxes_Cool)
+		TEST_METHOD(ChargerFichier_InexistantFile)
+		{
+			// Un fichier inexistant lève une exception "runtime_error"
+
+			FileUtil::unlink(_dicoTestFile);
+
+			bool runtimeErrorException = false;
+
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				Assert::Fail();
+			}
+			catch (std::exception const& e) {
+				UNREFERENCE_PARAMETER(e);
+
+				runtimeErrorException = true;
+			}
+
+			Assert::IsTrue(runtimeErrorException);
+						
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_OK)
 		{
 			// Syntaxe de fichier correcte
 
@@ -82,7 +105,7 @@ namespace DNAnalyzerServerTest
 
 		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EmptyWord)
 		{
-			// Mots vides non sauvegardés
+			// Mots vides ignorés
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
@@ -131,38 +154,45 @@ namespace DNAnalyzerServerTest
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
 		}
 
-		TEST_METHOD(ChargerFichier_CorrectSyntaxes_IgnoreFirstLine)
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_BadHeader)
 		{
-			// Pemière ligne du fichier sans importance
+			// Le header du fichier doit être correcte, sinon quoi le fichier n'est pas chargé
+
+			bool invalidArgumentException = false;
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
-			FileUtil::write(_dicoTestFile, "FIRST LINE IGNORED\r\nNAME;AA;CC;GG;TT\r\n");
+			FileUtil::write(_dicoTestFile, "Mauvais header\r\nNAME;AA;CC;GG;TT\r\n");
 			try {
 				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
-				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 1);
-				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
-				Assert::IsTrue(NAME.definition.size() == 4);
+				Assert::Fail();				
 			}
-			catch (std::exception const& e) {
+			catch (invalid_argument const& e) {
 				UNREFERENCE_PARAMETER(e);
-				Assert::Fail();
+
+				invalidArgumentException = true;
+
+				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 			}
 
+			Assert::IsTrue(invalidArgumentException);
 
-			FileUtil::write(_dicoTestFile, "FIRST LINE IGNORED\r\nNAME;AA;CC;GG;TT\r\nNAME2;AAAA;CCCC\r\n");
+			invalidArgumentException = false;
+
+			FileUtil::write(_dicoTestFile, "Mauvais header\r\nNAME;AA;CC;GG;TT\r\nNAME2;AAAA;CCCC\r\n");
 			try {
 				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
-				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
-				Maladie NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
-				Assert::IsTrue(NAME.definition.size() == 4);
-				Maladie NAME2 = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2");
-				Assert::IsTrue(NAME2.definition.size() == 2);
-			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
 				Assert::Fail();
 			}
+			catch (invalid_argument const& e) {
+				UNREFERENCE_PARAMETER(e);
+
+				invalidArgumentException = true;
+
+				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+			}
+
+			Assert::IsTrue(invalidArgumentException);
 
 		}
 
@@ -255,8 +285,36 @@ namespace DNAnalyzerServerTest
 				UNREFERENCE_PARAMETER(e);
 				Assert::Fail();
 			}
-			
+
 		}
+
+		TEST_METHOD(ObtenirMaladie_UnknownMaladie) {
+
+			// Maladie inconnue lève une exception "range_error"
+
+			bool rangeErrorException = false;
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+
+			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT\r\n");
+			try {
+				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
+				
+				Dictionnaire::ObtenirInstance().ObtenirMaladie("MALADIE_INEXISTANTE");
+
+				Assert::Fail();
+			}
+			catch (range_error const& e) {
+				UNREFERENCE_PARAMETER(e);
+				
+				rangeErrorException = true;
+
+			}
+			
+			Assert::IsTrue(rangeErrorException);
+
+		}
+
 		TEST_METHOD(ObtenirMaladie_KnownMaladies) {
 
 			// Maladies connues
@@ -286,12 +344,14 @@ namespace DNAnalyzerServerTest
 			// Aucune maladie
 
 			char motInexistant[] = "ATCGINEXISTANT";
+			
 			unsigned int indexMotInexistant = Mots::ObtenirInstance().InsererMot(motInexistant);
 			const unordered_set<Maladie*> resultat = Dictionnaire::ObtenirInstance().ObtenirMaladies(indexMotInexistant);
-			Assert::AreEqual((int)resultat.size(), 0);
+			
+			Assert::IsTrue(0 == resultat.size());
 		}
 
-		TEST_METHOD(ObtenirNomMaladies_EmptyDictionnaire) {
+		TEST_METHOD(ObtenirNomsMaladies_EmptyDictionnaire) {
 			
 			// Dictionnaire vide
 
@@ -299,13 +359,15 @@ namespace DNAnalyzerServerTest
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
-			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirMaladies(42).size() == 0);
+			unsigned int inexistantMaladieId = 42;
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirMaladies(inexistantMaladieId).size() == 0);
 
 			FileUtil::write(_dicoTestFile, "");
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
-			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirMaladies(42).size() == 0);
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirMaladies(inexistantMaladieId).size() == 0);
 
 		}
 	
