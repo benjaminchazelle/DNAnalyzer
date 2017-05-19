@@ -68,9 +68,9 @@ namespace DNAnalyzerServerTest
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 		}
 
-		TEST_METHOD(ChargerFichier_CorrectSyntaxes_OK)
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_OK_One)
 		{
-			// Syntaxe de fichier correcte
+			// Syntaxe de fichier mono maladie correcte
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
@@ -87,6 +87,13 @@ namespace DNAnalyzerServerTest
 			}
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 1);
 
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_OK_Multiple)
+		{
+			// Syntaxe de fichier multi maladie correcte
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
 			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT\r\nNAME2;AAAA;CCCC\r\n");
 			try {
@@ -103,9 +110,9 @@ namespace DNAnalyzerServerTest
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
 		}
 
-		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EmptyWord)
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EmptyWord_One)
 		{
-			// Mots vides ignorés
+			// Mots vides ignorés dans un dictionnaire à une entrée
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
@@ -127,6 +134,13 @@ namespace DNAnalyzerServerTest
 			}
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 1);
 
+		}
+
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EmptyWord_Multiple)
+		{
+			// Mots vides ignorés dans un dictionnaire à plusieurs entrées
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
 			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;;AA;CC;;GG;TT\r\nNAME2;AAAA;;;CCCC\r\n");
 			try {
@@ -177,28 +191,12 @@ namespace DNAnalyzerServerTest
 
 			Assert::IsTrue(invalidArgumentException);
 
-			invalidArgumentException = false;
-
-			FileUtil::write(_dicoTestFile, "Mauvais header\r\nNAME;AA;CC;GG;TT\r\nNAME2;AAAA;CCCC\r\n");
-			try {
-				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
-				Assert::Fail();
-			}
-			catch (invalid_argument const& e) {
-				UNREFERENCE_PARAMETER(e);
-
-				invalidArgumentException = true;
-
-				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
-			}
-
-			Assert::IsTrue(invalidArgumentException);
-
 		}
 
-		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EndlComma)
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EndlComma_One)
 		{
 			// Les lignes peuvent se finir avec une virgule sans incidence
+			// Test sur un dictionnaire à une entrée unique
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
@@ -214,6 +212,14 @@ namespace DNAnalyzerServerTest
 				Assert::Fail();
 			}
 
+		}
+	
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EndlComma_Multiple)
+		{
+			// Les lignes peuvent se finir avec une virgule sans incidence
+			// Test sur un dictionnaire à plusieurs entrées
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
 			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT;\r\nNAME2;AAAA;CCCC;\r\n");
 			try {
@@ -230,9 +236,10 @@ namespace DNAnalyzerServerTest
 			}
 		}
 
-		TEST_METHOD(ChargerFichier_CorrectSyntaxes_NoLastCRLF)
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_NoLastCRLF_One)
 		{
 			// La dernière ligne peut omettre \r\n
+			// Test sur un dictionnaire à une entrée unique
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
@@ -248,7 +255,15 @@ namespace DNAnalyzerServerTest
 				Assert::Fail();
 			}
 
+		}
 
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_NoLastCRLF_Multiple)
+		{
+			// La dernière ligne peut omettre \r\n
+			// Test sur un dictionnaire à plusieurs entrées
+
+			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
+			
 			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT\r\nNAME2;AAAA;CCCC");
 			try {
 				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
@@ -264,11 +279,9 @@ namespace DNAnalyzerServerTest
 			}
 		}
 
-
-
 		TEST_METHOD(ObtenirMaladie_KnownMaladie) {
 
-			// Maladie connu
+			// Maladie connue
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
@@ -339,6 +352,7 @@ namespace DNAnalyzerServerTest
 				Assert::Fail();
 			}
 		}
+	
 		TEST_METHOD(ObtenirMaladies_NoMaladies) {
 
 			// Aucune maladie
