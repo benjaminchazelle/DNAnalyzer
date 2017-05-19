@@ -31,11 +31,13 @@ class Analyse
 {
 public:
 
-	static bool AnalysePrecise(const string & genome, const Maladie & maladie);
+	static bool AnalysePrecise(const unordered_set<string> & genome, const Maladie & maladie);
 	// Mode d'emploi : Renvoie true si la maladie se trouve dans le génome de taille , sinon false
+	//				   Le genome ne doit pas comporter 2 fois le même mot
 
-	static unordered_map<Maladie, bool> AnalyseGlobale(const string & genome);
+	static const unordered_set<Maladie *> AnalyseGlobale(const unordered_set<string> & genome);
 	// Mode d'emploi : Retourne un tableau associant les maladies avec leur présence (true) ou non (false) dans le génome de taille
+	//				   Le genome ne doit pas comporter 2 fois le même mot
 
 	Analyse & operator = (const Analyse &);
 	// Mode d'emploi : opérateur d'affectation, non implémenté
