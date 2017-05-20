@@ -74,7 +74,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 		else {
 			//Recuperation du nom de la maladie
 			unsigned int pos = ligne.find(';');
-			if (pos = string::npos || pos == ligne.length-1) {
+			if (pos = string::npos || pos == ligne.length()-1) {
 				throw runtime_error("Nom de maladie sans definition : " + ligne + " (L " + to_string(l) + ")");
 			}
 			Maladie * onreadMaladie = new Maladie();
@@ -88,7 +88,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 				unsigned int lastpos = pos;
 				unsigned int pos = ligne.find(';', lastpos + 1);
 				if (pos == string::npos) {
-					pos = ligne.length;
+					pos = ligne.length();
 				}
 				unsigned int length = pos - lastpos - 1; //longeur du mot
 				if (length) {
@@ -133,7 +133,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 			}
 			else {//Fist definition
 				maladies.insert(pair<string,Maladie *>(onreadMaladie->nom, onreadMaladie));
-				for (unordered_set<unsigned int>::iterator motIt = onreadMaladie->definition.begin; motIt != onreadMaladie->definition.begin.end; motIt++) {
+				for (set<unsigned int>::iterator motIt = onreadMaladie->definition.begin(); motIt != onreadMaladie->definition.end(); motIt++) {
 					maladiesParMot[*motIt].insert(onreadMaladie);
 				}
 			}
@@ -155,7 +155,7 @@ const unordered_set<Maladie *> Dictionnaire::ObtenirMaladies(const unsigned int 
 
 const unordered_set<string> Dictionnaire::ObtenirNomsMaladies() {
 	unordered_set<string> * res = new unordered_set<string>();
-	for (unordered_map<string, Maladie *>::iterator it = maladies.begin; it != maladies.end; it++)
+	for (unordered_map<string, Maladie *>::iterator it = maladies.begin(); it != maladies.end(); it++)
 		res->insert(it->first);
 	return *res;
 }
