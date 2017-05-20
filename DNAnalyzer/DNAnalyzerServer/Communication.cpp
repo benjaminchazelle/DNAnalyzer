@@ -97,7 +97,7 @@ DWORD Communication::threadRequete(void * p)
 
 	CommunicationThread t((Peer*) p);
 
-	t.traiter();
+	t.Traiter();
 
 	return 0;
 }

@@ -40,27 +40,26 @@ protected:
 	string clientInfo;
 	// Description : adresse ip et port de connexion du clientInfo
 
-
-	char* readerBuffer;
-	// Description : 
-	unsigned int curseurPosRB;
-	// Position du curseur dans readerBuffer
-	unsigned int bytesReadRB;
-	// Position de fin de donnée de readerBuffer
-	const unsigned int tailleRB;
-	// Taille de readerBuffer
-	bool isCloseRB;
-	// Taille de readerBuffer
+	string requestBuffer;
+	// Description : buffer de lecture de la requête
 
 public:
+
+	void Traiter();
+	// Mode d'emploi : lit le flux entrant sur la socket <csock> puis
+	// transfert la requête au traitement Master spécifique
+
 	void Repondre(const string & reponse);
 	// Mode d'emploi : permet d'envoyer un flux de sortie sur la socket
 	// <csock>
 
-	string lireLigne();
-	//runtime_error -> connexion close
+	string LireLigne();
+	// Mode d'emploi : lit une ligne de la requête du client depuis le buffer, 
+	// puis depuis la socket si le buffer ne contient pas de ligne entière
+	//runtime_error -> connexion FermerConnexion
 
-	void close();
+	void FermerConnexion();
+	// Mode d'emploi : ferme la connexion avec le client
 
 	CommunicationThread & operator = (const CommunicationThread &);
 	// Mode d'emploi : opérateur d'affectation, non implémenté
@@ -69,16 +68,11 @@ public:
 	// Mode d'emploi : constructeur de copie, non implémenté
 
 	CommunicationThread(Peer* peer);
-	// Mode d'emploi : constructeur, appel de traiter()
+	// Mode d'emploi : constructeur
 
 	virtual ~CommunicationThread();
 	// Mode d'emploi : destructeur
 
-	void traiter();
-	// Mode d'emploi : lit le flux entrant sur la socket <csock> puis
-	// transfert la requête au traitement Master spécifique
-
-protected:
 
 };
 

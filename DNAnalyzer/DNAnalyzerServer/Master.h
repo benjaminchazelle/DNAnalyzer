@@ -48,19 +48,16 @@ protected:
 	static Route routerRequete(const string & serviceLigne);
 	// Mode d'emploi : Renvoie le traitement à invoquer en fonction de la requête
 
-	static void analysePrecise(const string & maladie, unordered_set<string> & genome, CommunicationThread & thread);
+	static void analysePrecise(const string & maladie, const string & genome, CommunicationThread & thread);
 	// Mode d'emploi : Retourne au clientInfo le résultat de l'analyse précise demandée
 
-	static void analyseGlobale(const unordered_set<string> & genome, CommunicationThread & thread);
+	static void analyseGlobale(const string & genome, CommunicationThread & thread);
 	// Mode d'emploi : Retourne au clientInfo le résultat de l'analyse globale demandée
 
 	static void obtenirListeMaladies(CommunicationThread & thread);
 	// Mode d'emploi : Retourne au clientInfo la liste des maladies connues par le serveur
 
-	static void repondreServiceInconnu(const string & serviceName, CommunicationThread & thread);
-	// Mode d'emploi : Informe le clientInfo qu'aucun service n'existe pour traiter sa requête
-
-	static void repondreErreurRequete(const string & texte, CommunicationThread & thread);
+	static void repondreErreurRequete(const string & error, CommunicationThread & thread);
 	// Mode d'emploi : Informe le clientInfo que sa requête est syntaxiquement invalide 
 
 	Master();

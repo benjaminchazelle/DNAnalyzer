@@ -25,7 +25,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 void CommunicationThread::Repondre(const string & reponse)
 {
 	int bytesSent = send(*csock, reponse.c_str(), reponse.length(), 0);
-	
+
 	if (bytesSent == SOCKET_ERROR) {
 
 		printf("%s : Error %d during responding\n", clientInfo.c_str(), WSAGetLastError());
@@ -38,51 +38,92 @@ void CommunicationThread::Repondre(const string & reponse)
 }
 
 
-CommunicationThread::CommunicationThread(Peer * peer) : csock(peer->csock), clientInfo(""), tailleRB(512), curseurPosRB(0), bytesReadRB(0), isCloseRB(false)
+CommunicationThread::CommunicationThread(Peer * peer) : csock(peer->csock), clientInfo("")
 {
 	clientInfo = string(inet_ntoa(peer->cin->sin_addr));
 	clientInfo += ":" + to_string(peer->cin->sin_port);
 
 	delete peer;
-	readerBuffer = new char[tailleRB];
 }
-void CommunicationThread::traiter(){
+void CommunicationThread::Traiter() {
+	
 	Master::InterpreterRequete(*this);
 
 }
 
 CommunicationThread::~CommunicationThread()
 {
-	delete[] readerBuffer;
 }
-string CommunicationThread::lireLigne() {
-	if (isCloseRB) {
-		throw runtime_error("socketIsCosed");
+
+string CommunicationThread::LireLigne() {
+
+	const string eolMarker = "\r\n";
+	const size_t eolMarkerLength = eolMarker.size();
+
+
+	if (requestBuffer.size() > 0) {
+
+		size_t eolPosition = requestBuffer.find(eolMarker);
+
+		if (eolPosition != string::npos) {
+
+			string line = requestBuffer.substr(0, eolPosition);
+
+			requestBuffer = requestBuffer.substr(eolPosition + eolMarkerLength);
+
+			return line;
+
+		}
+
 	}
-	string res("");
-	char lastChar('\0');
-	while (1) {
-		unsigned int startedPos = curseurPosRB;
-		while (curseurPosRB < bytesReadRB) {
-			if (lastChar = '\r' && readerBuffer[curseurPosRB] == '\n') {
-				res.append(&readerBuffer[startedPos], (size_t)(curseurPosRB - startedPos - 2));
-				return res;
+
+	int bytesReceived;
+
+	do {
+
+		const int inputBufferSize = 512;
+
+		char inputBuffer[inputBufferSize + 1];
+
+		bytesReceived = recv(*csock, inputBuffer, inputBufferSize, 0);
+
+		if (bytesReceived > 0) {
+
+			inputBuffer[bytesReceived] = '\0';
+
+			size_t findFrom;
+
+			if (requestBuffer.length() >= eolMarkerLength)
+			{
+				findFrom = requestBuffer.length() - eolMarkerLength;
 			}
-			lastChar = readerBuffer[curseurPosRB];
-			curseurPosRB++;
+			else
+			{
+				findFrom = 0;
+			}
+
+			requestBuffer += inputBuffer;
+
+			size_t eolPosition = requestBuffer.find(eolMarker, findFrom);
+
+			if (eolPosition != string::npos) {
+
+				string line = requestBuffer.substr(0, eolPosition);
+
+				requestBuffer = requestBuffer.substr(eolPosition + eolMarkerLength);
+
+				return line;
+
+			}
+
 		}
-		res.append(&readerBuffer[startedPos], (size_t)(bytesReadRB - startedPos));
-		curseurPosRB = 0;
+		else if (bytesReceived == 0) {
 
-		bytesReadRB = recv(*csock, readerBuffer, tailleRB, 0);
+			cerr << "erreur"; // TODO
 
-		if (bytesReadRB == 0) {
-			isCloseRB = true;
-			throw runtime_error("socketIsCosed");
+			break;
 		}
-		else if (bytesReadRB < 0) {
-
-			isCloseRB = true;
+		else {
 
 			if (10054 == WSAGetLastError()) {
 				printf("%s : Connection closed by client\n", clientInfo.c_str());
@@ -91,17 +132,15 @@ string CommunicationThread::lireLigne() {
 			{
 				printf("%s : Error %d during receiving\n", clientInfo.c_str(), WSAGetLastError());
 			}
-			throw runtime_error("socketFail");
+
+
+			break;
 		}
 
-		if (lastChar == '\r'&&readerBuffer[0] == '\n') {
-			res = res.substr(res.length() - 1);
-			curseurPosRB++;
-			return res;
-		}
-	}
+	} while (bytesReceived > 0);
+
 }
-void CommunicationThread::close() {
+void CommunicationThread::FermerConnexion() {
 
 	unsigned int bytesReceived = shutdown(*csock, SD_SEND);
 
