@@ -36,10 +36,10 @@ protected:
 	static Dictionnaire* instanceDictionnaire;
 	// Description : Instance singleton de Dictionnaire
 
-	unordered_map<string, Maladie*> maladies;
+	unordered_map<string,const Maladie*> maladies;
 	// Description : Maladies retrouvable depuit son nom
 
-	unordered_map<unsigned int, unordered_set<Maladie*>> maladiesParMot;
+	unordered_map<unsigned int, unordered_set<const Maladie*>> maladiesParMot;
 	// Description : Maladies retrouvable depuit un mot qui le compose
 
 public:
@@ -54,17 +54,17 @@ public:
 	// Exception "runtime_error" : si le fichier ne peut être lu
 	// Exception "invalid_argument" : si le fichier n'est pas valide
 	// Fichier valide : 
-	//		MA v1.0\r\n
-	//		([a-Z0-9_ ]+(;<mot>*)+;?(\r\n))*
-	//		[a-Z0-9_ ]+(;<mot>*)+;?(\r\n)?
+	//		MA v1.0(\r\n)+
+	//		([a-Z0-9_ ]+(;<mot>*)+;?(\r\n)+)*
+	//		([a-Z0-9_ ]+(;<mot>*)+;?(\r\n)?)?
 	//
 	//		Un <mot> différent de /[ATCG]+/ est ignoré
 
-	const Maladie & ObtenirMaladie(const string & name);
+	const Maladie * ObtenirMaladie(const string & name);
 	// Mode d'emploi : renvoit la Maladie correspondant au nom donné en paramètre
 	// Exception "range_error" : si la maladie demandée n'existe pas
 
-	const unordered_set<Maladie *> ObtenirMaladies(const unsigned int indexMot);
+	const unordered_set<const Maladie *> ObtenirMaladies(const unsigned int indexMot);
 	// Mode d'emploi : renvoit les Maladie contenant le mot passé en paramètre
 	//                 Si il n'y a pas de maladie renvoit un unordered_set vide
 	// Contrat d'utilisation : le mot passé en paramètre doit bien correspondre à un Mot

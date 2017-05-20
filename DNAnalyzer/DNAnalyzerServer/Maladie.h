@@ -14,7 +14,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //--------------------------------------------------- Interfaces utilisées
 
 #include <string>
-#include <unordered_set>
+#include <set>
 #include <utility>
 //#include <boost/functional/hash.hpp>
 
@@ -30,7 +30,7 @@ struct Maladie
 	string nom;
 		// Description : nom de la maladie
 
-	unordered_set<unsigned int> definition;
+	set<unsigned int> definition;
 	// Description : contien la list de l'index de chaqu'un des mots de la maladie
 
 
@@ -49,7 +49,7 @@ namespace std
 			hash<string> stringHash;
 			hash<unsigned int> uintHash;
 			res ^= stringHash(maladie.nom) + 0x9e3779b9 + (res << 6) + (res >> 2);
-			unordered_set<unsigned int>::iterator iter = maladie.definition.begin();
+			set<unsigned int>::iterator iter = maladie.definition.begin();
 
 			for (; iter != maladie.definition.end(); iter++)
 			{
