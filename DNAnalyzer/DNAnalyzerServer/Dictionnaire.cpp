@@ -150,8 +150,7 @@ const Maladie & Dictionnaire::ObtenirMaladie(const string & name) {
 }
 
 const unordered_set<Maladie *> Dictionnaire::ObtenirMaladies(const unsigned int indexMot) {
-	// TODO
-	return unordered_set<Maladie *>();
+	return maladiesParMot[indexMot];
 }
 
 const unordered_set<string> Dictionnaire::ObtenirNomsMaladies() {
