@@ -71,11 +71,6 @@ void Master::InterpreterRequete(CommunicationThread & thread)
 
 //----------------------------------------------------------------- PRIVEE
 
-Route Master::routerRequete(const string & serviceLigne)
-{
-	return Route();
-}
-
 void Master::analysePrecise(const string & nomMaladie, const string & genome, CommunicationThread & thread)
 {
 	string response = "MA v1.0\r\n";
