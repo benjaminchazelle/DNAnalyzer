@@ -56,7 +56,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 	//1er ligne
 	l++;
 	if (!getline(inDico, ligne)||(ligne != "MA v1.0"&&ligne != "MA v1.0\r")) {//Si on n'arrive pas a lire la 1er ligne
-		throw runtime_error("Type de fichier invalide");
+		throw invalid_argument("Type de fichier invalide");
 	}
 
 	//boucle sur tous les autres ligne (les maladies)
@@ -72,7 +72,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 			//Recuperation du nom de la maladie
 			unsigned int pos = ligne.find(';');
 			if (pos == string::npos || pos == ligne.length()-1) {
-				throw runtime_error("Nom de maladie sans definition : " + ligne + " (L " + to_string(l) + ")");
+				throw invalid_argument("Nom de maladie sans definition : " + ligne + " (L " + to_string(l) + ")");
 			}
 			Maladie * onreadMaladie = new Maladie();
 			onreadMaladie->nom = ligne.substr(0, pos);
@@ -85,41 +85,44 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 				unsigned int lastpos = pos;
 				for (pos = lastpos + 1; pos < ligne.length() && ligne[pos] != ';'; pos++);
 				unsigned int length = pos - lastpos - 1; //longeur du mot
-				if (length==0) {
-					throw runtime_error("Maladie avec un mot de taille 0 : " + onreadMaladie->nom);
-				}
+				if (length!=0) {
+					//recuperation du mot dans un char *
+					char * mot = new char[length + 1];
+					for (int i = 0; i < length; i++) {
+						mot[i] = ligne.at(i + lastpos + 1);
+						if (mot[i] != 'A'    &&    mot[i] != 'T'    &&    mot[i] != 'C'    &&    mot[i] != 'G') {
+							throw invalid_argument("Maladie avec un mot invalide : " + onreadMaladie->nom + " contien un mot avec '" + mot[i] + "' (L " + to_string(l) + ")");
+						}
+					}
+					mot[length] = '\0';
 
-				//recuperation du mot dans un char *
-				char * mot = new char[length + 1];
-				for (int i = 0; i < length; i++) {
-					mot[i] = ligne.at(i + lastpos + 1);
-					if (mot[i] != 'A'    &&    mot[i] != 'T'    &&    mot[i] != 'C'    &&    mot[i] != 'G') {
-						throw runtime_error("Maladie avec un mot invalide : " + onreadMaladie->nom + " contien un mot avec '" + mot[i] + "' (L " + to_string(l) + ")");
+					//indexation du mot
+					unsigned int indexMot;
+					try {
+						indexMot = Mots::ObtenirInstance().ObtenirIndex(mot);
+					}
+					catch (const range_error &e) {
+						indexMot = Mots::ObtenirInstance().InsererMot(mot);
+					}
+
+					//Ajout du mot a la definition
+					if (onreadMaladie->definition.find(indexMot) == onreadMaladie->definition.end()) {// Si le mot n'est pas dans la definition (filtre doublon)
+						onreadMaladie->definition.insert(indexMot);
 					}
 				}
-				mot[length] = '\0';
-
-				//indexation du mot
-				unsigned int indexMot;
-				try {
-					indexMot = Mots::ObtenirInstance().ObtenirIndex(mot);
-				}
-				catch (const range_error &e) {
-					indexMot = Mots::ObtenirInstance().InsererMot(mot);
-				}
-
-				//Ajout du mot a la definition
-				if (onreadMaladie->definition.find(indexMot) == onreadMaladie->definition.end()) {// Si le mot n'est pas dans la definition (filtre doublon)
-					onreadMaladie->definition.insert(indexMot);
-				}
 			} while (pos < ligne.length() - 1 || (pos == ligne.length() - 1 && ligne.at(pos) != ';'));
-
+			
+			//Nom de maladie sans definition?
+			if (onreadMaladie->definition.size() == 0) {
+				throw invalid_argument("Nom de maladie sans definition : " + ligne + " (L " + to_string(l) + ")");
+			}
+			
 			//Multi definition
 			unordered_map<string,const Maladie*>::iterator it = maladies.find(onreadMaladie->nom);
 			if (it != maladies.end()) {// Si le Maladie est deja referancer
 				if (!(*(it->second) == *onreadMaladie)) {
 					delete onreadMaladie;
-					throw runtime_error("Different definition d'une meme maladie : " + it->first + " (L " + to_string(l) + ")");
+					throw invalid_argument("Different definition d'une meme maladie : " + it->first + " (L " + to_string(l) + ")");
 				}
 				delete onreadMaladie;
 			}
