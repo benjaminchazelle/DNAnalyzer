@@ -54,9 +54,9 @@ public:
 	// Exception "runtime_error" : si le fichier ne peut être lu
 	// Exception "invalid_argument" : si le fichier n'est pas valide
 	// Fichier valide : 
-	//		MA v1.0\r\n
-	//		([a-Z0-9_ ]+(;<mot>*)+;?(\r\n))*
-	//		[a-Z0-9_ ]+(;<mot>*)+;?(\r\n)?
+	//		MA v1.0(\r\n)+
+	//		([a-Z0-9_ ]+(;<mot>*)+;?(\r\n)+)*
+	//		([a-Z0-9_ ]+(;<mot>*)+;?(\r\n)?)?
 	//
 	//		Un <mot> différent de /[ATCG]+/ est ignoré
 
