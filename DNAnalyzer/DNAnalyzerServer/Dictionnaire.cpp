@@ -26,21 +26,16 @@ using namespace std;
 //----------------------------------------------------------------- PUBLIC
 
 
+Dictionnaire* Dictionnaire::instanceDictionnaire = new Dictionnaire();
+
 Dictionnaire & Dictionnaire::ObtenirInstance()
 {
-	// TODO: changer le retour par l'instance du singleton
-	return *((Dictionnaire*) nullptr);
+	return *(instanceDictionnaire);
 }
 
 void Dictionnaire::RafraichirInstance()
 {
-	/* EXEMPLE
-	if (instanceMots != nullptr) {
-		delete instanceMots;
-	}
-
-	instanceMots = new Mots();
-	*/
+	instanceDictionnaire = new Dictionnaire();
 }
 
 void Dictionnaire::ChargerFichier(const string & fichierDico)
