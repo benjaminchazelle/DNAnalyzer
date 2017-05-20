@@ -20,6 +20,8 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 #include <fstream>
 #include <sstream>
 
+#define UNREFERENCE_PARAMETER(P) (P)
+
 using namespace std;
 
 //----------------------------------------------------------------- PUBLIC
@@ -88,7 +90,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 				if (length!=0) {
 					//recuperation du mot dans un char *
 					char * mot = new char[length + 1];
-					for (int i = 0; i < length; i++) {
+					for (unsigned int i = 0; i < length; i++) {
 						mot[i] = ligne.at(i + lastpos + 1);
 						if (mot[i] != 'A'    &&    mot[i] != 'T'    &&    mot[i] != 'C'    &&    mot[i] != 'G') {
 							throw invalid_argument("Maladie avec un mot invalide : " + onreadMaladie->nom + " contien un mot avec '" + mot[i] + "' (L " + to_string(l) + ")");
@@ -102,6 +104,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 						indexMot = Mots::ObtenirInstance().ObtenirIndex(mot);
 					}
 					catch (const range_error &e) {
+						UNREFERENCE_PARAMETER(e);
 						indexMot = Mots::ObtenirInstance().InsererMot(mot);
 					}
 

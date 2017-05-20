@@ -18,6 +18,8 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 #include "Mots.h"
 #include "Dictionnaire.h"
 
+#define UNREFERENCE_PARAMETER(P) (P)
+
 //----------------------------------------------------------------- PUBLIC
 
 
@@ -32,6 +34,7 @@ bool Analyse::AnalysePrecise(const unordered_set<string> & genome, const Maladie
 			}
 		}
 		catch (exception const& e) {
+			UNREFERENCE_PARAMETER(e);
 			//si le mot n'est pas reférancer il n'est pas dans une maladie (rien a faire)
 		}
 	}
@@ -53,6 +56,7 @@ const unordered_set<const Maladie *> Analyse::AnalyseGlobale(const unordered_set
 			}
 		}
 		catch (exception const& e) {
+			UNREFERENCE_PARAMETER(e);
 			//si le mot n'est pas reférancer il n'est pas dans une maladie (rien a faire)
 		}
 	}
