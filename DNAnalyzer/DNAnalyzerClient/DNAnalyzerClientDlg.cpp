@@ -6,11 +6,15 @@
 #include "DNAnalyzerClient.h"
 #include "DNAnalyzerClientDlg.h"
 #include "afxdialogex.h"
+#include <iostream>
+#include "string.h"
+#include "Configuration.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+using namespace std;
 
 // boîte de dialogue CAboutDlg utilisée pour la boîte de dialogue 'À propos de' pour votre application
 
@@ -51,6 +55,7 @@ END_MESSAGE_MAP()
 
 CDNAnalyzerClientDlg::CDNAnalyzerClientDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_DNANALYZERCLIENT_DIALOG, pParent)
+	, pathname(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -58,12 +63,16 @@ CDNAnalyzerClientDlg::CDNAnalyzerClientDlg(CWnd* pParent /*=NULL*/)
 void CDNAnalyzerClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_MFCEDITBROWSE1, pathname);
 }
 
 BEGIN_MESSAGE_MAP(CDNAnalyzerClientDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_CBN_SELCHANGE(IDC_COMBO1, &CDNAnalyzerClientDlg::OnCbnSelchangeCombo1)
+	ON_BN_CLICKED(IDC_MFCMENUBUTTON1, &CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1)
+	ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1)
 END_MESSAGE_MAP()
 
 
@@ -99,6 +108,23 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Définir une petite icône
 
 	// TODO: ajoutez ici une initialisation supplémentaire
+
+	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
+
+	Configuration & cf = Configuration::ObtenirInstance();
+	vector<struct Serveur> liste = cf.ObtenirListeServeur();
+	for(vector<struct Serveur>::iterator i = liste.begin(); i!=liste.end();i++)
+	{
+		Serveur serv = liste[i];
+		CString aAfficher = (CString) serv.host.c_str();
+		pCombo->AddString((LPCTSTR) aAfficher);
+
+	}
+	
+	pCombo->AddString(L"SAMPLE2");
+	pCombo->AddString(L"SAMPLE3");
+	pCombo->AddString(L"SAMPLE4");
+	pCombo->SetWindowText(L"Choisir un Serveur");
 
 	return TRUE;  // retourne TRUE, sauf si vous avez défini le focus sur un contrôle
 }
@@ -152,3 +178,51 @@ HCURSOR CDNAnalyzerClientDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CDNAnalyzerClientDlg::OnCbnSelchangeCombo1()
+{
+	// TODO: ajoutez ici le code de votre gestionnaire de notification de contrôle
+
+}
+
+
+void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
+{
+	// TODO: ajoutez ici le code de votre gestionnaire de notification de contrôle
+}
+
+
+void CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1()
+{
+	UpdateData(true);
+
+	CString a = L"aSQSD3.";
+	//LPCTSTR str = (LPCTSTR)pathname;
+
+	SetWindowTextW((LPCTSTR) pathname);
+
+
+	
+	// TODO:  S'il s'agit d'un contrôle RICHEDIT, le contrôle ne
+	// envoyez cette notification sauf si vous substituez CDialogEx::OnInitDialog()
+	// fonction et appelle CRichEditCtrl().SetEventMask()
+	// avec l'indicateur ENM_CHANGE ajouté au masque grâce à l'opérateur OR.
+
+	// TODO:  Ajoutez ici le code de votre gestionnaire de notification de contrôle
+/*	UpdateData(true);
+	affichageDebug;
+	
+	CFileDialog dlg(TRUE);
+	//(*dlg).m_ofn.nMaxFile = 511;
+	CString filename;
+
+	if (dlg.DoModal() == IDOK)
+	{
+		filename = dlg.GetFileName();
+		// filename = (*dlg).GetPathName(); // return full path and filename
+	}
+
+	CStatic * fen = (CStatic *) GetDlgItem(IDC_STATIC);
+*/
+}
