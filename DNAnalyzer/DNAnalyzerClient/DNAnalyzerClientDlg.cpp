@@ -109,23 +109,21 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 
 	// TODO: ajoutez ici une initialisation supplémentaire
 
-	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
+	//CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
 
+	/*
 	Configuration & cf = Configuration::ObtenirInstance();
 	vector<struct Serveur> liste = cf.ObtenirListeServeur();
 	for(vector<struct Serveur>::iterator i = liste.begin(); i!=liste.end();i++)
 	{
-		Serveur serv = liste[i];
-		CString aAfficher = (CString) serv.host.c_str();
-		pCombo->AddString((LPCTSTR) aAfficher);
+		//Serveur serv = *i;
+		//CString aAfficher = (CString) serv.host.c_str();
+		//pCombo->AddString((LPCTSTR) aAfficher);
 
 	}
 	
-	pCombo->AddString(L"SAMPLE2");
-	pCombo->AddString(L"SAMPLE3");
-	pCombo->AddString(L"SAMPLE4");
 	pCombo->SetWindowText(L"Choisir un Serveur");
-
+	*/
 	return TRUE;  // retourne TRUE, sauf si vous avez défini le focus sur un contrôle
 }
 
@@ -197,12 +195,24 @@ void CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1()
 {
 	UpdateData(true);
 
-	CString a = L"aSQSD3.";
-	//LPCTSTR str = (LPCTSTR)pathname;
+	
+	/*
+	Configuration::RafraichirInstance();
+	Configuration & cf = Configuration::ObtenirInstance();
+	CT2CA pszConvertedAnsiString(pathname);
+	std::string path(pszConvertedAnsiString);
 
-	SetWindowTextW((LPCTSTR) pathname);
+	bool test = cf.ChargerFichier(path);
 
-
+	if (test)
+	{
+		SetWindowTextW((LPCTSTR)"Chargement OK");
+	}
+	else
+	{
+		SetWindowTextW((LPCTSTR)"Fail");
+	}
+	*/
 	
 	// TODO:  S'il s'agit d'un contrôle RICHEDIT, le contrôle ne
 	// envoyez cette notification sauf si vous substituez CDialogEx::OnInitDialog()
@@ -210,19 +220,5 @@ void CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1()
 	// avec l'indicateur ENM_CHANGE ajouté au masque grâce à l'opérateur OR.
 
 	// TODO:  Ajoutez ici le code de votre gestionnaire de notification de contrôle
-/*	UpdateData(true);
-	affichageDebug;
-	
-	CFileDialog dlg(TRUE);
-	//(*dlg).m_ofn.nMaxFile = 511;
-	CString filename;
 
-	if (dlg.DoModal() == IDOK)
-	{
-		filename = dlg.GetFileName();
-		// filename = (*dlg).GetPathName(); // return full path and filename
-	}
-
-	CStatic * fen = (CStatic *) GetDlgItem(IDC_STATIC);
-*/
 }
