@@ -117,22 +117,17 @@ namespace DNAnalyzerServerTest
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
 			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;;AA;CC;;GG;TT;;\r\n");
+
+			bool as_runtime_error = false;
 			try {
 				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
-				const Maladie * NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
-				Assert::IsTrue(NAME->definition.size() == 4);
-
-				for (auto i : NAME->definition)
-				{
-					Assert::IsTrue(Mots::ObtenirInstance().RecupererMot(i) != "");
-				}
-
-			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
 				Assert::Fail();
 			}
-			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 1);
+			catch (std::runtime_error const& e) {
+				UNREFERENCE_PARAMETER(e);
+				as_runtime_error = true;
+			}
+			Assert::IsTrue(as_runtime_error);
 
 		}
 
@@ -143,29 +138,17 @@ namespace DNAnalyzerServerTest
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
 			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;;AA;CC;;GG;TT\r\nNAME2;AAAA;;;CCCC\r\n");
+
+			bool as_runtime_error = false;
 			try {
 				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
-				const Maladie * NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
-				Assert::IsTrue(NAME->definition.size() == 4);
-
-				for (auto i : NAME->definition)
-				{
-					Assert::IsTrue(Mots::ObtenirInstance().RecupererMot(i) != "");
-				}
-
-				const Maladie * NAME2 = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2");
-				Assert::IsTrue(NAME2->definition.size() == 2);
-
-				for (auto i : NAME2->definition)
-				{
-					Assert::IsTrue(Mots::ObtenirInstance().RecupererMot(i) != "");
-				}
-			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
 				Assert::Fail();
 			}
-			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
+			catch (std::runtime_error const& e) {
+				UNREFERENCE_PARAMETER(e);
+				as_runtime_error = true;
+			}
+			Assert::IsTrue(as_runtime_error);
 		}
 
 		TEST_METHOD(ChargerFichier_CorrectSyntaxes_BadHeader)
@@ -181,7 +164,7 @@ namespace DNAnalyzerServerTest
 				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
 				Assert::Fail();				
 			}
-			catch (invalid_argument const& e) {
+			catch (runtime_error const& e) {
 				UNREFERENCE_PARAMETER(e);
 
 				invalidArgumentException = true;
