@@ -206,6 +206,20 @@ void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
 }
 
 
+
+void CDNAnalyzerClientDlg::OnCbnSelchangeCombo1()
+{
+	// TODO: ajoutez ici le code de votre gestionnaire de notification de contrôle
+
+}
+
+
+void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
+{
+	// TODO: ajoutez ici le code de votre gestionnaire de notification de contrôle
+}
+
+
 void CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1()
 {
 	UpdateData(true);
