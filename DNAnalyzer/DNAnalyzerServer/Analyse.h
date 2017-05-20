@@ -14,6 +14,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //--------------------------------------------------- Interfaces utilisées
 
 #include <unordered_map>
+#include <unordered_set>
 #include "Maladie.h"
 
 using namespace std;
@@ -31,10 +32,10 @@ class Analyse
 {
 public:
 
-	static bool AnalysePrecise(const string & genome, const Maladie & maladie);
+	static bool AnalysePrecise(const unordered_set<string> & genome, const Maladie & maladie);
 	// Mode d'emploi : Renvoie true si la maladie se trouve dans le génome de taille , sinon false
 
-	static unordered_map<Maladie, bool> AnalyseGlobale(const string & genome);
+	static const unordered_set<const Maladie *> AnalyseGlobale(const unordered_set<string> & genome);
 	// Mode d'emploi : Retourne un tableau associant les maladies avec leur présence (true) ou non (false) dans le génome de taille
 
 	Analyse & operator = (const Analyse &);

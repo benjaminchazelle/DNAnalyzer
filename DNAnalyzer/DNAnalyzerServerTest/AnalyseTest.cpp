@@ -7,6 +7,7 @@
 #include <exception>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
@@ -19,7 +20,10 @@ namespace DNAnalyzerServerTest
 	TEST_CLASS(AnalyseTest)
 	{
 	public:
-
+		TEST_METHOD_INITIALIZE(Analyse_init) {
+			Mots::RafraichirInstance();
+			Dictionnaire::RafraichirInstance();
+		}
 		//AnalysePrecise
 		TEST_METHOD(AnalysePrecise_KnownWord)
 		{
@@ -31,9 +35,9 @@ namespace DNAnalyzerServerTest
 
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("AAAA"));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("AAAA;CCCC;TTTT", maladie));
+			unordered_set<string> genome({"AAAA", "CCCC", "TTTT"});
+			Assert::IsTrue(Analyse::AnalysePrecise(genome, maladie));
 		}
-
 		TEST_METHOD(AnalysePrecise_AllKnownWords)
 		{
 			// Tout les mots d'une définition doivent bien être tous retrouvés
@@ -42,20 +46,28 @@ namespace DNAnalyzerServerTest
 
 			maladie.nom = "Nom de maladie test";
 
+			
+
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("AAAA"));
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("CCCC"));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("AAAA;CCCC;TTTT", maladie));
+			unordered_set<string> genome1({ "AAAA", "CCCC", "TTTT" });
+			Assert::IsTrue(Analyse::AnalysePrecise(genome1, maladie));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("TTTT;CCCC;AAAA", maladie));
+			unordered_set<string> genome2({ "TTTT" , "CCCC" , "AAAA"});
+			Assert::IsTrue(Analyse::AnalysePrecise(genome2, maladie));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("TTTT;AAAA;CCCC", maladie));
+			unordered_set<string> genome3({ "TTTT" , "AAAA" , "CCCC" });
+			Assert::IsTrue(Analyse::AnalysePrecise(genome3, maladie));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("CCCC;AAAA;TTTT", maladie));
+			unordered_set<string> genome4({ "CCCC" , "AAAA" , "TTTT" });
+			Assert::IsTrue(Analyse::AnalysePrecise(genome4, maladie));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("AAAA;TTTT;CCCC", maladie));
+			unordered_set<string> genome5({ "AAAA" , "TTTT" , "CCCC" });
+			Assert::IsTrue(Analyse::AnalysePrecise(genome5, maladie));
 
-			Assert::IsTrue(Analyse::AnalysePrecise("CCCC;TTTT;AAAA", maladie));
+			unordered_set<string> genome6({ "CCCC" , "TTTT" , "AAAA" });
+			Assert::IsTrue(Analyse::AnalysePrecise(genome6, maladie));
 		}
 
 		TEST_METHOD(AnalysePrecise_UnknownWord)
@@ -68,7 +80,8 @@ namespace DNAnalyzerServerTest
 
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("GGGG"));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("AAAA;CCCC;TTTT", maladie));
+			unordered_set<string> genome({ "AAAA", "CCCC", "TTTT" });
+			Assert::IsFalse(Analyse::AnalysePrecise(genome, maladie));
 		}
 
 		TEST_METHOD(AnalysePrecise_AnyUnknownWords)
@@ -82,30 +95,23 @@ namespace DNAnalyzerServerTest
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("AAAA"));
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("GGGG"));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("AAAA;CCCC;TTTT", maladie));
+			unordered_set<string> genome1({ "AAAA", "CCCC", "TTTT" });
+			Assert::IsFalse(Analyse::AnalysePrecise(genome1, maladie));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("TTTT;CCCC;AAAA", maladie));
+			unordered_set<string> genome2({ "TTTT" , "CCCC" , "AAAA" });
+			Assert::IsFalse(Analyse::AnalysePrecise(genome2, maladie));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("TTTT;AAAA;CCCC", maladie));
+			unordered_set<string> genome3({ "TTTT" , "AAAA" , "CCCC" });
+			Assert::IsFalse(Analyse::AnalysePrecise(genome3, maladie));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("CCCC;AAAA;TTTT", maladie));
+			unordered_set<string> genome4({ "CCCC" , "AAAA" , "TTTT" });
+			Assert::IsFalse(Analyse::AnalysePrecise(genome4, maladie));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("AAAA;TTTT;CCCC", maladie));
+			unordered_set<string> genome5({ "AAAA" , "TTTT" , "CCCC" });
+			Assert::IsFalse(Analyse::AnalysePrecise(genome5, maladie));
 
-			Assert::IsFalse(Analyse::AnalysePrecise("CCCC;TTTT;AAAA", maladie));
-		}
-
-		TEST_METHOD(AnalysePrecise_EmptyDefinition)
-		{
-			// Une maladie sans définition ne peut être retrouvé dans un génome
-
-			Maladie maladie;
-
-			maladie.nom = "Nom de maladie test";
-
-			// Pas de maladie.definition.insert();
-
-			Assert::IsFalse(Analyse::AnalysePrecise("AAAA;TTTT;CCCC", maladie));
+			unordered_set<string> genome6({ "CCCC" , "TTTT" , "AAAA" });
+			Assert::IsFalse(Analyse::AnalysePrecise(genome6, maladie));
 		}
 
 
@@ -118,38 +124,20 @@ namespace DNAnalyzerServerTest
 
 			Dictionnaire::ObtenirInstance().ChargerFichier("data.test.dico");
 
-			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("AAAA;CCCC;GGGG");
+			string genomeData[] = { "AAAA", "CCCC", "GGGG" };
+			unordered_set<string> genome (genomeData, genomeData + sizeof(genomeData) / sizeof(genomeData[0]));
+			const unordered_set<const Maladie *> resultats = Analyse::AnalyseGlobale(genome);
 
 			const Maladie * TEST_A = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_A");
-			const Maladie * TEST_B = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_B");
 			
-			Assert::IsTrue(resultats.at(*TEST_A));	// AAAA trouvé
-			Assert::IsFalse(resultats.at(*TEST_B));  // TTTT non trouvé
+			unordered_set<const Maladie *>::iterator itResultat = resultats.begin();
+			Assert::IsFalse(itResultat == resultats.end());	// si 0 Maladie trouvé
+			Assert::IsTrue((*itResultat)->nom == TEST_A->nom);	// AAAA trouvé
+			itResultat++;
+			Assert::IsTrue(itResultat == resultats.end());  // Pas d'autre maladie trouver*/
 		}
 
-		TEST_METHOD(AnalyseGlobale_EmptyDefinition)
-		{
-			// Une maladie sans définition ne peut être trouvée
-
-			FileUtil::write("data.test.dico", "MA v1.0\r\nTEST_A;AAAA\r\nTEST_B;TTTT\r\nTEST_Z;\r\n");
-
-			Dictionnaire::ObtenirInstance().ChargerFichier("data.test.dico");
-
-			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("AAAA;CCCC;GGGG");
-
-			try {
-				const Maladie * TEST_Z = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_Z");
-
-				Assert::IsFalse(resultats.at(*TEST_Z));
-			}
-			catch (range_error const& e) {
-
-				UNREFERENCE_PARAMETER(e);
-			}
-
-
-		}
-
+		
 		TEST_METHOD(AnalyseGlobale_Complex)
 		{
 			// Trouve ou non une maladie parmi plusieurs, version complexe
@@ -158,13 +146,17 @@ namespace DNAnalyzerServerTest
 
 			Dictionnaire::ObtenirInstance().ChargerFichier("data.test.dico");
 
-			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("GA;GG;TA;TT;CA;CC;AA");
+			unordered_set<string> genome({ "GA", "GG", "TA", "TT", "CA", "CC", "AA"});
+			const unordered_set<const Maladie *> resultats = Analyse::AnalyseGlobale(genome);
 
 			const Maladie * TEST_C = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_C");
 			const Maladie * TEST_D = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_D");
 
-			Assert::IsTrue(resultats.at(*TEST_C));  // Dans le désordre, mais ok
-			Assert::IsFalse(resultats.at(*TEST_D)); // Manque AAA et AAAA
+			unordered_set<const Maladie *>::iterator itResultat = resultats.begin();
+			Assert::IsFalse(itResultat == resultats.end());	// si 0 Maladie trouvé
+			Assert::IsTrue((*itResultat)->nom == TEST_C->nom);	// TEST_C trouvé
+			itResultat++;
+			Assert::IsTrue(itResultat == resultats.end());  // Pas d'autre maladie trouver
 		}
 
 
