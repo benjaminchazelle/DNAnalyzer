@@ -135,13 +135,13 @@ namespace DNAnalyzerServerTest
 
 			string genomeData[] = { "AAAA", "CCCC", "GGGG" };
 			unordered_set<string> genome (genomeData, genomeData + sizeof(genomeData) / sizeof(genomeData[0]));
-			const unordered_set<Maladie *> resultats = Analyse::AnalyseGlobale(genome);
+			const unordered_set<const Maladie *> resultats = Analyse::AnalyseGlobale(genome);
 
-			Maladie TEST_A = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_A");
+			const Maladie * TEST_A = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_A");
 			
-			unordered_set<Maladie *>::iterator itResultat = resultats.begin();
+			unordered_set<const Maladie *>::iterator itResultat = resultats.begin();
 			Assert::IsFalse(itResultat == resultats.end());	// si 0 Maladie trouvé
-			Assert::IsTrue((*itResultat)->nom == TEST_A.nom);	// AAAA trouvé
+			Assert::IsTrue((*itResultat)->nom == TEST_A->nom);	// AAAA trouvé
 			itResultat++;
 			Assert::IsTrue(itResultat == resultats.end());  // Pas d'autre maladie trouver*/
 		}
@@ -155,13 +155,13 @@ namespace DNAnalyzerServerTest
 			Dictionnaire::ObtenirInstance().ChargerFichier("data.test.dico");
 
 			unordered_set<string> genome({ "AAAA", "CCCC", "GGGG" });
-			const unordered_set<Maladie *> resultats = Analyse::AnalyseGlobale(genome);
+			const unordered_set<const Maladie *> resultats = Analyse::AnalyseGlobale(genome);
 
 			try {
-				Maladie TEST_Z = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_Z");
+				const Maladie * TEST_Z = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_Z");
 
-				for (unordered_set<Maladie *>::iterator itResultat = resultats.begin(); itResultat != resultats.end(); itResultat++) {
-					Assert::IsFalse((*itResultat)->nom == TEST_Z.nom);
+				for (unordered_set<const Maladie *>::iterator itResultat = resultats.begin(); itResultat != resultats.end(); itResultat++) {
+					Assert::IsFalse((*itResultat)->nom == TEST_Z->nom);
 				}
 			}
 			catch (range_error const& e) {
@@ -181,14 +181,14 @@ namespace DNAnalyzerServerTest
 			Dictionnaire::ObtenirInstance().ChargerFichier("data.test.dico");
 
 			unordered_set<string> genome({ "GA", "GG", "TA", "TT", "CA", "CC", "AA"});
-			const unordered_set<Maladie *> resultats = Analyse::AnalyseGlobale(genome);
+			const unordered_set<const Maladie *> resultats = Analyse::AnalyseGlobale(genome);
 
-			Maladie TEST_C = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_C");
-			Maladie TEST_D = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_D");
+			const Maladie * TEST_C = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_C");
+			const Maladie * TEST_D = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_D");
 
-			unordered_set<Maladie *>::iterator itResultat = resultats.begin();
+			unordered_set<const Maladie *>::iterator itResultat = resultats.begin();
 			Assert::IsFalse(itResultat == resultats.end());	// si 0 Maladie trouvé
-			Assert::IsTrue((*itResultat)->nom == TEST_C.nom);	// TEST_C trouvé
+			Assert::IsTrue((*itResultat)->nom == TEST_C->nom);	// TEST_C trouvé
 			itResultat++;
 			Assert::IsTrue(itResultat == resultats.end());  // Pas d'autre maladie trouver
 		}

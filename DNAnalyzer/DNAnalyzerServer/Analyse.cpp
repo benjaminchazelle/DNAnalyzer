@@ -38,15 +38,15 @@ bool Analyse::AnalysePrecise(const unordered_set<string> & genome, const Maladie
 	return count == maladie.definition.size();
 }
 
-const unordered_set<Maladie *> Analyse::AnalyseGlobale(const unordered_set<string> & genome) {
-	unordered_map<Maladie *, unsigned int> nbMotMaladieFind;
-	unordered_set<Maladie *> resutat;
+const unordered_set<const Maladie *> Analyse::AnalyseGlobale(const unordered_set<string> & genome) {
+	unordered_map<const Maladie *, unsigned int> nbMotMaladieFind;
+	unordered_set<const Maladie *> resutat;
 	for (unordered_set<string>::iterator motGenom = genome.begin(); motGenom != genome.end(); motGenom++) {
 		try {
 			unsigned int indexMotGenom = Mots::ObtenirInstance().ObtenirIndex((*motGenom).c_str());
-			const unordered_set<Maladie *> maladiesDuMot = Dictionnaire::ObtenirInstance().ObtenirMaladies(indexMotGenom);
-			for (unordered_set<Maladie *>::iterator uneMaladieDuMotIt = maladiesDuMot.begin(); uneMaladieDuMotIt != maladiesDuMot.end(); uneMaladieDuMotIt++) {
-				Maladie * uneMaladieDuMot = *uneMaladieDuMotIt;
+			const unordered_set<const Maladie *> maladiesDuMot = Dictionnaire::ObtenirInstance().ObtenirMaladies(indexMotGenom);
+			for (unordered_set<const Maladie *>::iterator uneMaladieDuMotIt = maladiesDuMot.begin(); uneMaladieDuMotIt != maladiesDuMot.end(); uneMaladieDuMotIt++) {
+				const Maladie * uneMaladieDuMot = *uneMaladieDuMotIt;
 				if (uneMaladieDuMot->definition.size() == ++nbMotMaladieFind[uneMaladieDuMot]) {
 					resutat.insert(uneMaladieDuMot);
 				}
