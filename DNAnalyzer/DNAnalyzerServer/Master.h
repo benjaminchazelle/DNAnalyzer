@@ -19,8 +19,6 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 #include "CommunicationThread.h"
 using namespace std;
 
-enum Route {ANALYSE_PRECISE, ANALYSE_GLOBALE, LISTE_MALDIES, SERVICE_INCONNU, ERREUR_SYNTAXE};
-
 //------------------------------------------------------------------------
 // Rôle de la classe <Master>
 //  La classe Master contient different methode pour chaqu'un des service
@@ -44,9 +42,6 @@ public:
 	// Mode d'emploi : Constructeur de copie, non implémenté
 
 protected:
-
-	static Route routerRequete(const string & serviceLigne);
-	// Mode d'emploi : Renvoie le traitement à invoquer en fonction de la requête
 
 	static void analysePrecise(const string & maladie, const string & genome, CommunicationThread & thread);
 	// Mode d'emploi : Retourne au clientInfo le résultat de l'analyse précise demandée
