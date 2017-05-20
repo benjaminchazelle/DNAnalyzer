@@ -42,8 +42,8 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 {
 	//TODO Destroy Maladies *
 	//Reinitialisation des attributs
-	maladies= unordered_map<string, Maladie*>();
-	maladiesParMot = unordered_map<unsigned int, unordered_set<Maladie*>>();
+	maladies= unordered_map<string,const Maladie*>();
+	maladiesParMot = unordered_map<unsigned int, unordered_set<const Maladie*>>();
 
 	//Variables local
 	unsigned int l = 0; //numero de ligne actuel
@@ -53,13 +53,16 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 
 	//1er ligne
 	l++;
-	if (!getline(inDico, ligne)||ligne != "MA v1.0") {//Si on n'arrive pas a lire la 1er ligne
+	if (!getline(inDico, ligne)||(ligne != "MA v1.0"&&ligne != "MA v1.0\r")) {//Si on n'arrive pas a lire la 1er ligne
 		throw runtime_error("FileTypeINVALIDE");
 	}
 
 	//boucle sur tous les autres ligne (les maladies)
 	while (getline(inDico, ligne)) {
 		l++;
+		if (!ligne.empty() && ligne.at(ligne.length() - 1) == '\r') {
+			ligne = ligne.substr(0, ligne.length() - 1);
+		}
 		if (ligne.empty()) {
 			//On Ignor les ligne vide
 		}
@@ -69,7 +72,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 		else {
 			//Recuperation du nom de la maladie
 			unsigned int pos = ligne.find(';');
-			if (pos = string::npos || pos == ligne.length()-1) {
+			if (pos == string::npos || pos == ligne.length()-1) {
 				throw runtime_error("Nom de maladie sans definition : " + ligne + " (L " + to_string(l) + ")");
 			}
 			Maladie * onreadMaladie = new Maladie();
@@ -81,12 +84,9 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 			do {
 
 				unsigned int lastpos = pos;
-				unsigned int pos = ligne.find(';', lastpos + 1);
-				if (pos == string::npos) {
-					pos = ligne.length();
-				}
+				for (pos = lastpos + 1; pos < ligne.length() && ligne[pos] != ';'; pos++);
 				unsigned int length = pos - lastpos - 1; //longeur du mot
-				if (length) {
+				if (length==0) {
 					throw runtime_error("Maladie avec un mot de taille 0 : " + onreadMaladie->nom);
 				}
 
@@ -113,12 +113,10 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 				if (onreadMaladie->definition.find(indexMot) == onreadMaladie->definition.end()) {// Si le mot n'est pas dans la definition (filtre doublon)
 					onreadMaladie->definition.insert(indexMot);
 				}
-
-				lastpos = pos;
 			} while (pos < ligne.length() - 1 || (pos == ligne.length() - 1 && ligne.at(pos) != ';'));
 
 			//Multi definition
-			unordered_map<string, Maladie*>::iterator it = maladies.find(onreadMaladie->nom);
+			unordered_map<string,const Maladie*>::iterator it = maladies.find(onreadMaladie->nom);
 			if (it != maladies.end()) {// Si le Maladie est deja referancer
 				if (!(*(it->second) == *onreadMaladie)) {
 					delete onreadMaladie;
@@ -136,21 +134,21 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 	}
 }
 
-const Maladie & Dictionnaire::ObtenirMaladie(const string & name) {
-	unordered_map<string, Maladie*>::iterator it = maladies.find(name);
+const Maladie * Dictionnaire::ObtenirMaladie(const string & name) {
+	unordered_map<string,const Maladie*>::iterator it = maladies.find(name);
 	if (it == maladies.end()) {
 		throw range_error("maladie " + name + " non defini");
 	}
-	return *(it->second);
+	return it->second;
 }
 
-const unordered_set<Maladie *> Dictionnaire::ObtenirMaladies(const unsigned int indexMot) {
+const unordered_set<const Maladie *> Dictionnaire::ObtenirMaladies(const unsigned int indexMot) {
 	return maladiesParMot[indexMot];
 }
 
 const unordered_set<string> Dictionnaire::ObtenirNomsMaladies() {
 	unordered_set<string> * res = new unordered_set<string>();
-	for (unordered_map<string, Maladie *>::iterator it = maladies.begin(); it != maladies.end(); it++)
+	for (unordered_map<string,const Maladie *>::iterator it = maladies.begin(); it != maladies.end(); it++)
 		res->insert(it->first);
 	return *res;
 }

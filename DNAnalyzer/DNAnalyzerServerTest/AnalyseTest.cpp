@@ -120,11 +120,11 @@ namespace DNAnalyzerServerTest
 
 			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("AAAA;CCCC;GGGG");
 
-			Maladie TEST_A = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_A");
-			Maladie TEST_B = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_B");
+			const Maladie * TEST_A = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_A");
+			const Maladie * TEST_B = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_B");
 			
-			Assert::IsTrue(resultats.at(TEST_A));	// AAAA trouvé
-			Assert::IsFalse(resultats.at(TEST_B));  // TTTT non trouvé
+			Assert::IsTrue(resultats.at(*TEST_A));	// AAAA trouvé
+			Assert::IsFalse(resultats.at(*TEST_B));  // TTTT non trouvé
 		}
 
 		TEST_METHOD(AnalyseGlobale_EmptyDefinition)
@@ -138,9 +138,9 @@ namespace DNAnalyzerServerTest
 			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("AAAA;CCCC;GGGG");
 
 			try {
-				Maladie TEST_Z = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_Z");
+				const Maladie * TEST_Z = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_Z");
 
-				Assert::IsFalse(resultats.at(TEST_Z));
+				Assert::IsFalse(resultats.at(*TEST_Z));
 			}
 			catch (range_error const& e) {
 
@@ -160,11 +160,11 @@ namespace DNAnalyzerServerTest
 
 			unordered_map<Maladie, bool> resultats = Analyse::AnalyseGlobale("GA;GG;TA;TT;CA;CC;AA");
 
-			Maladie TEST_C = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_C");
-			Maladie TEST_D = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_D");
+			const Maladie * TEST_C = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_C");
+			const Maladie * TEST_D = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_D");
 
-			Assert::IsTrue(resultats.at(TEST_C));  // Dans le désordre, mais ok
-			Assert::IsFalse(resultats.at(TEST_D)); // Manque AAA et AAAA
+			Assert::IsTrue(resultats.at(*TEST_C));  // Dans le désordre, mais ok
+			Assert::IsFalse(resultats.at(*TEST_D)); // Manque AAA et AAAA
 		}
 
 
