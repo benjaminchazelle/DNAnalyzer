@@ -20,7 +20,10 @@ namespace DNAnalyzerServerTest
 	TEST_CLASS(AnalyseTest)
 	{
 	public:
-
+		TEST_METHOD_INITIALIZE(Analyse_init) {
+			Mots::RafraichirInstance();
+			Dictionnaire::RafraichirInstance();
+		}
 		//AnalysePrecise
 		TEST_METHOD(AnalysePrecise_KnownWord)
 		{
@@ -42,6 +45,8 @@ namespace DNAnalyzerServerTest
 			Maladie maladie;
 
 			maladie.nom = "Nom de maladie test";
+
+			
 
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("AAAA"));
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("CCCC"));
@@ -109,20 +114,6 @@ namespace DNAnalyzerServerTest
 			Assert::IsFalse(Analyse::AnalysePrecise(genome6, maladie));
 		}
 
-		TEST_METHOD(AnalysePrecise_EmptyDefinition)
-		{
-			// Une maladie sans définition ne peut être retrouvé dans un génome
-
-			Maladie maladie;
-
-			maladie.nom = "Nom de maladie test";
-
-			// Pas de maladie.definition.insert();
-
-			unordered_set<string> genome({ "AAAA", "CCCC", "TTTT" });
-			Assert::IsFalse(Analyse::AnalysePrecise(genome, maladie));
-		}
-
 
 		//AnalyseGlobale
 		TEST_METHOD(AnalyseGlobale_Simple)
@@ -146,32 +137,7 @@ namespace DNAnalyzerServerTest
 			Assert::IsTrue(itResultat == resultats.end());  // Pas d'autre maladie trouver*/
 		}
 
-		TEST_METHOD(AnalyseGlobale_EmptyDefinition)
-		{
-			// Une maladie sans définition ne peut être trouvée
-
-			FileUtil::write("data.test.dico", "MA v1.0\r\nTEST_A;AAAA\r\nTEST_B;TTTT\r\nTEST_Z;\r\n");
-
-			Dictionnaire::ObtenirInstance().ChargerFichier("data.test.dico");
-
-			unordered_set<string> genome({ "AAAA", "CCCC", "GGGG" });
-			const unordered_set<const Maladie *> resultats = Analyse::AnalyseGlobale(genome);
-
-			try {
-				const Maladie * TEST_Z = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_Z");
-
-				for (unordered_set<const Maladie *>::iterator itResultat = resultats.begin(); itResultat != resultats.end(); itResultat++) {
-					Assert::IsFalse((*itResultat)->nom == TEST_Z->nom);
-				}
-			}
-			catch (range_error const& e) {
-
-				UNREFERENCE_PARAMETER(e);
-			}
-
-
-		}
-
+		
 		TEST_METHOD(AnalyseGlobale_Complex)
 		{
 			// Trouve ou non une maladie parmi plusieurs, version complexe
