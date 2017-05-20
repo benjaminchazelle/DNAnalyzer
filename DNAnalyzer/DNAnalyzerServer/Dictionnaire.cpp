@@ -154,8 +154,10 @@ const unordered_set<Maladie *> Dictionnaire::ObtenirMaladies(const unsigned int 
 }
 
 const unordered_set<string> Dictionnaire::ObtenirNomsMaladies() {
-	// TODO
-	return unordered_set<string>();
+	unordered_set<string> * res = new unordered_set<string>();
+	for (unordered_map<string, Maladie *>::iterator it = maladies.begin; it != maladies.end; it++)
+		res->insert(it->first);
+	return *res;
 }
 
 
