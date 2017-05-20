@@ -112,7 +112,7 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 
 	// TODO: ajoutez ici une initialisation supplémentaire
 
-	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
+	//CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
 
 	Configuration & cf1 = Configuration::ObtenirInstance() ;
 	string fichierConfig = "C:\\Users\\thomas\\Desktop\\testGL.txt";
