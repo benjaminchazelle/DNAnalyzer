@@ -34,12 +34,15 @@ Dictionnaire & Dictionnaire::ObtenirInstance()
 
 void Dictionnaire::RafraichirInstance()
 {
+	delete instanceDictionnaire;
 	instanceDictionnaire = new Dictionnaire();
 }
 
 void Dictionnaire::ChargerFichier(const string & fichierDico)
 {
-	//TODO Destroy Maladies *
+	for (auto maladieIt = maladies.begin(); maladieIt != maladies.end(); maladieIt++) {
+		delete maladieIt->second;
+	}
 	//Reinitialisation des attributs
 	maladies= unordered_map<string,const Maladie*>();
 	maladiesParMot = unordered_map<unsigned int, unordered_set<const Maladie*>>();
@@ -159,4 +162,7 @@ Dictionnaire::Dictionnaire()
 
 Dictionnaire::~Dictionnaire()
 {
+	for (auto maladieIt = maladies.begin(); maladieIt != maladies.end(); maladieIt++) {
+		delete maladieIt->second;
+	}
 }
