@@ -142,7 +142,11 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 }
 
 const Maladie & Dictionnaire::ObtenirMaladie(const string & name) {
-	return Maladie();
+	unordered_map<string, Maladie*>::iterator it = maladies.find(name);
+	if (it == maladies.end()) {
+		throw range_error("maladie " + name + " non defini");
+	}
+	return *(it->second);
 }
 
 const unordered_set<Maladie *> Dictionnaire::ObtenirMaladies(const unsigned int indexMot) {
