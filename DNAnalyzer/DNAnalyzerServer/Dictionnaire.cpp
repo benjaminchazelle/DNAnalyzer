@@ -19,7 +19,6 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <string>
 
 using namespace std;
 
@@ -45,7 +44,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 	maladies= unordered_map<string,const Maladie*>();
 	maladiesParMot = unordered_map<unsigned int, unordered_set<const Maladie*>>();
 
-	//Variables local
+	//Variables locales
 	unsigned int l = 0; //numero de ligne actuel
 	string ligne;
 
@@ -54,21 +53,18 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 	//1er ligne
 	l++;
 	if (!getline(inDico, ligne)||(ligne != "MA v1.0"&&ligne != "MA v1.0\r")) {//Si on n'arrive pas a lire la 1er ligne
-		throw runtime_error("FileTypeINVALIDE");
+		throw runtime_error("Type de fichier invalide");
 	}
 
 	//boucle sur tous les autres ligne (les maladies)
-	while (getline(inDico, ligne)) {
-		l++;
+	for (l++; getline(inDico, ligne);l++) {
+		
 		if (!ligne.empty() && ligne.at(ligne.length() - 1) == '\r') {
 			ligne = ligne.substr(0, ligne.length() - 1);
 		}
 		if (ligne.empty()) {
 			//On Ignor les ligne vide
 		}
-		/*else if (ligne.at(0)=='#') { // Pour l'implementation de ligne de commentaire
-			//On Ignor les ligne de commentaire
-		}*/
 		else {
 			//Recuperation du nom de la maladie
 			unsigned int pos = ligne.find(';');
@@ -94,7 +90,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 				char * mot = new char[length + 1];
 				for (int i = 0; i < length; i++) {
 					mot[i] = ligne.at(i + lastpos + 1);
-					switch (mot[i] != 'A'    &&    mot[i] != 'T'    &&    mot[i] != 'C'    &&    mot[i] != 'G') {
+					if (mot[i] != 'A'    &&    mot[i] != 'T'    &&    mot[i] != 'C'    &&    mot[i] != 'G') {
 						throw runtime_error("Maladie avec un mot invalide : " + onreadMaladie->nom + " contien un mot avec '" + mot[i] + "' (L " + to_string(l) + ")");
 					}
 				}
