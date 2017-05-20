@@ -45,10 +45,11 @@ public:
 	// Mode d'emploi : réinitialise l'instance singleton
 
 	vector<struct Serveur> ObtenirListeServeur() const;
-	// Mode d'emploi : Cette méthode permet de renvoyer un ensemble de configurations de connexions serveurs.
-
+	// Mode d'emploi : Cette méthode renvoie un ensemble de configurations de connexions serveurs.
+	
 	bool ChargerFichier(const string &  fichierServeurs);
 	// Mode d'emploi : Cette méthode lit le contenu du fichier <fichierServeurs> pour le stocker dans <serveurs>
+	// Renvoit true si le fichier a pu être chargé, false sinon
 
 	Configuration & operator = (const Configuration &);
 	// Mode d'emploi : opérateur d'affectation, non implémenté
