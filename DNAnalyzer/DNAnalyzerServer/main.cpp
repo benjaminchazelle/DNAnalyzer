@@ -55,13 +55,7 @@ int main(int argc, char** argv)
 	unsigned int portNumber = 8282;
 	string dicoFile = "./dictionnaire.dico";
 
-	int t1 = stoi("test1");
-	int t2 = stoi("test");
-	int t3 = stoi("3test");
-	int t4 = stoi("te4st");
-
-
-	for (int i = 0; i < argc; i++) {
+	for (int i = 1; i < argc; i++) {
 		string arg(argv[i]);
 		if (!arg.empty()) {
 			if (arg[0] == '-') {
@@ -79,7 +73,19 @@ int main(int argc, char** argv)
 						afficherSyntaxError("numero de port requis aprés " + arg);
 						exit(0);
 					}
-					dicoFile = argv[i];
+					try {
+						size_t st;
+						string arg_port(argv[i]);
+						portNumber = stoi(arg_port, &st);
+						if (st != arg_port.length()|| portNumber<1|| portNumber>65535) {
+							afficherSyntaxError("le numero de port requis aprés " + arg + " doit étre un nombre entre 1 et 65536");
+						}
+					}
+					catch (const invalid_argument &e) {
+						afficherSyntaxError("le numero de port requis aprés " + arg + " doit étre un nombre entre 1 et 65536");
+						exit(0);
+					}
+					 
 				}
 				else {
 					afficherSyntaxError("argument " + arg + " inconu");
