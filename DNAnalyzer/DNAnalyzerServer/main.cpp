@@ -93,7 +93,7 @@ int main(int argc, char** argv)
 				}
 			}
 			else {//pour les paramétres obligatoir (aucun pour nous)
-				if (arg == "help" && i == 0) {
+				if (arg == "help" && i == 1) {
 					afficherAide();
 					exit(0);
 				}
