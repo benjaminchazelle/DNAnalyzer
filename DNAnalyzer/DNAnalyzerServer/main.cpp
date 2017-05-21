@@ -29,8 +29,8 @@ const string DEFAULT_DICTIONNAIR_FILE = "./dictionnaire.dico";
 
 void afficherUsage() {
 	cout << "Usage :" << endl
-		<< "./DNAnalyserServer [-dico <fileName>] [-port <serverPort>]" << endl
-		<< "./DNAnalyserServer help" << endl;
+		<< "DNAnalyserServer [-dico <fileName>] [-port <serverPort>]" << endl
+		<< "DNAnalyserServer help" << endl;
 }
 void afficherSyntaxError(string erreurText) {
 	cout << "Commande non valide : " << erreurText << endl;
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 					}
 					dicoFile = argv[i];
 				}
-				if (arg == "-p" || arg == "-port") {
+				else if (arg == "-p" || arg == "-port") {
 					i++;
 					if (i == argc) {
 						afficherSyntaxError("numero de port requis aprés " + arg);
@@ -79,6 +79,7 @@ int main(int argc, char** argv)
 						portNumber = stoi(arg_port, &st);
 						if (st != arg_port.length()|| portNumber<1|| portNumber>65535) {
 							afficherSyntaxError("le numero de port requis aprés " + arg + " doit étre un nombre entre 1 et 65536");
+							exit(0);
 						}
 					}
 					catch (const invalid_argument &e) {
