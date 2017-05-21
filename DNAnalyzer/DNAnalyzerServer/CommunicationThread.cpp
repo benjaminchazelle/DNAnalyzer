@@ -139,7 +139,9 @@ string CommunicationThread::LireLigne() {
 
 	} while (bytesReceived > 0);
 
+	return "";
 }
+
 void CommunicationThread::FermerConnexion() {
 
 	unsigned int bytesReceived = shutdown(*csock, SD_SEND);

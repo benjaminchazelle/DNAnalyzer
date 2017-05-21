@@ -12,6 +12,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 //-------------------------------------------------------- Include système
 #include <iostream>
+#include <sstream>
 
 //------------------------------------------------------ Include personnel
 
@@ -77,10 +78,10 @@ void Master::analysePrecise(const string & nomMaladie, const string & genome, Co
 
 	try {
 
-		Maladie maladie = Dictionnaire::ObtenirInstance().ObtenirMaladie(nomMaladie);
-		
-		bool result = Analyse::AnalysePrecise(genome, maladie);
-		
+		const Maladie* maladie = Dictionnaire::ObtenirInstance().ObtenirMaladie(nomMaladie);
+
+		bool result = Analyse::AnalysePrecise(encoderGenome(genome), *maladie);
+
 		response += "DESEASE " + nomMaladie;
 		response += " ";
 		response += result ? "1" : "0";
@@ -101,11 +102,10 @@ void Master::analyseGlobale(const string & genome, CommunicationThread & thread)
 {
 	string response = "MA v1.0\r\n";
 
-	for (const auto& resultatMaladie : Analyse::AnalyseGlobale(genome)) {
-		if (resultatMaladie.second) {
-			response += "DESEASE ";
-			response += resultatMaladie.first.nom + "\r\n";
-		}
+	for (const auto& resultatMaladie : Analyse::AnalyseGlobale(encoderGenome(genome))) {
+
+		response += "DESEASE ";
+		response += resultatMaladie->nom + "\r\n";
 
 	}
 
@@ -136,4 +136,20 @@ void Master::repondreErreurRequete(const string & error, CommunicationThread & t
 	response += "\r\n\r\n";
 
 	thread.Repondre(response);
+}
+
+unordered_set<string> Master::encoderGenome(const string & genome)
+{
+	unordered_set<string> set;
+	unsigned int pos = -1;
+	do {
+		unsigned int startPos = pos + 1;
+		for (pos = startPos; pos < genome.length() && genome[pos] != ';'; pos++);
+		if (pos != startPos) {
+			set.insert(genome.substr(startPos, pos - startPos));
+		}
+
+	} while (pos < genome.length());
+
+	return set;
 }

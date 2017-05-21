@@ -55,6 +55,9 @@ protected:
 	static void repondreErreurRequete(const string & error, CommunicationThread & thread);
 	// Mode d'emploi : Informe le clientInfo que sa requête est syntaxiquement invalide 
 
+	static unordered_set<string> encoderGenome(const string & genome);
+	// Mode d'emploi : Retourne l'ensemble des mots d'une génome
+
 	Master();
 	// Mode d'emploi : Constructeur, non implémenté
 
