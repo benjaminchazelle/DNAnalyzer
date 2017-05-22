@@ -162,6 +162,7 @@
     <ClCompile Include="..\TestUtil\FileUtil.cpp" />
     <ClCompile Include="..\TestUtil\FileUtilTest.cpp" />
     <ClCompile Include="ConfiguationTest.cpp" />
+    <ClCompile Include="ServiceTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
