@@ -109,21 +109,34 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 
 	// TODO: ajoutez ici une initialisation supplémentaire
 
-	//CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
+	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
 
-	/*
-	Configuration & cf = Configuration::ObtenirInstance();
-	vector<struct Serveur> liste = cf.ObtenirListeServeur();
+	Configuration & cf1 = Configuration::ObtenirInstance() ;
+	string toto = "serveurs.test.config";
+	bool test = cf1.ChargerFichier(toto);
+
+	if (test)
+	{
+		SetWindowTextW((LPCTSTR)(L"Chargement OK"));
+	}
+	else
+	{
+		SetWindowTextW((LPCTSTR)(L"Fail"));
+		return TRUE;
+	}
+
+	vector<struct Serveur> liste = cf1.ObtenirListeServeur();
 	for(vector<struct Serveur>::iterator i = liste.begin(); i!=liste.end();i++)
 	{
-		//Serveur serv = *i;
-		//CString aAfficher = (CString) serv.host.c_str();
-		//pCombo->AddString((LPCTSTR) aAfficher);
+		Serveur serv = *i;
+		CString aAfficher = (CString) serv.host.c_str();
+		pCombo->AddString((LPCTSTR) aAfficher);
 
 	}
-	
+
+	//pCombo->AddString((LPCTSTR)L"PUREE");
 	pCombo->SetWindowText(L"Choisir un Serveur");
-	*/
+	
 	return TRUE;  // retourne TRUE, sauf si vous avez défini le focus sur un contrôle
 }
 
@@ -195,24 +208,9 @@ void CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1()
 {
 	UpdateData(true);
 
+	SetWindowTextW((LPCTSTR)pathname);
 	
-	/*
-	Configuration::RafraichirInstance();
-	Configuration & cf = Configuration::ObtenirInstance();
-	CT2CA pszConvertedAnsiString(pathname);
-	std::string path(pszConvertedAnsiString);
-
-	bool test = cf.ChargerFichier(path);
-
-	if (test)
-	{
-		SetWindowTextW((LPCTSTR)"Chargement OK");
-	}
-	else
-	{
-		SetWindowTextW((LPCTSTR)"Fail");
-	}
-	*/
+	
 	
 	// TODO:  S'il s'agit d'un contrôle RICHEDIT, le contrôle ne
 	// envoyez cette notification sauf si vous substituez CDialogEx::OnInitDialog()
