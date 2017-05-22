@@ -83,7 +83,7 @@ void Master::analysePrecise(const string & nomMaladie, const string & genome, Co
 		bool result = Analyse::AnalysePrecise(encoderGenome(genome), *maladie);
 
 		response += "DESEASE " + nomMaladie;
-		response += " ";
+		response += "\r\n";
 		response += result ? "1" : "0";
 		response += "\r\n\r\n";
 
