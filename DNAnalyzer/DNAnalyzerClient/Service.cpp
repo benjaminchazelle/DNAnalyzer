@@ -30,7 +30,7 @@ using namespace std;
 //----------------------------------------------------------------- PUBLIC
 
 
-unordered_map<string, bool> Service::AnalysePrecise(const Serveur & serveur, const string & filename, const string & maladie)
+bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, const string & maladie)
 {
 	string request, response;
 
@@ -53,7 +53,7 @@ unordered_map<string, bool> Service::AnalysePrecise(const Serveur & serveur, con
 		throw runtime_error("Une erreur est survenue avec le serveur");
 	}
 
-	unordered_map<string, bool> results;
+	bool results;
 
 	try {
 		results = analysePreciseParseur(response);
@@ -66,7 +66,7 @@ unordered_map<string, bool> Service::AnalysePrecise(const Serveur & serveur, con
 	return results;
 }
 
-unordered_map<string, bool> Service::AnalyseGlobale(const Serveur & serveur, const string & filename)
+unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const string & filename)
 {
 	string request, response;
 
@@ -88,7 +88,7 @@ unordered_map<string, bool> Service::AnalyseGlobale(const Serveur & serveur, con
 		throw runtime_error("Une erreur est survenue avec le serveur");
 	}
 
-	unordered_map<string, bool> results;
+	unordered_set<string> results;
 
 	try {
 		results = analyseGlobaleParseur(response);
@@ -148,9 +148,9 @@ string Service::lireFichier(const string & filename)
 
 }
 
-unordered_map<string, bool> Service::analysePreciseParseur(const string & response)
+bool Service::analysePreciseParseur(const string & response)
 {
-	unordered_map<string, bool> results;
+	bool results = false;
 
 	stringstream responseStream;
 
@@ -181,11 +181,10 @@ unordered_map<string, bool> Service::analysePreciseParseur(const string & respon
 
 	if (line == "1\r")
 	{
-		results[maladie] = true;
+		results = true;
 	}
 	else if (line == "0\r")
 	{
-		results[maladie] = false;
 	}
 	else
 	{
@@ -195,9 +194,9 @@ unordered_map<string, bool> Service::analysePreciseParseur(const string & respon
 	return results;
 }
 
-unordered_map<string, bool> Service::analyseGlobaleParseur(const string & response)
+unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 {
-	unordered_map<string, bool> results;
+	unordered_set<string> results;
 
 	stringstream responseStream;
 
@@ -224,7 +223,7 @@ unordered_map<string, bool> Service::analyseGlobaleParseur(const string & respon
 
 		string maladie = line.substr(prefixLength, line.size() - prefixLength - 1);
 
-		results[maladie] = true;
+		results.insert(maladie);
 
 	}
 

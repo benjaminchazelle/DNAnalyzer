@@ -30,14 +30,14 @@ class Service
 {
 public:
 
-	static unordered_map<string, bool> AnalysePrecise(const struct Serveur & serveur, const string & filename, const string & maladie);
+	static bool AnalysePrecise(const struct Serveur & serveur, const string & filename, const string & maladie);
 	// Mode d'emploi : Requête le serveur <serveur>, pour savoir si la maladie <maladie> se trouve dans le fichier genome <filename>
 	//                 Retourne un dictionnaire dont la seule entrée est le nom de la maladie associée à sa présence (true) ou non (false) 
 	//                 Si la maladie n'est pas connu du serveur, le dictionnaire retourné ne contient aucune entrée
 	// Exception "invalid_argument" : si le fichier <filename> ne peut être ouvert
 	// Exception "runtime_error" : si un problème survient avec le serveur
 
-	static unordered_map<string, bool> AnalyseGlobale(const struct Serveur & serveur, const string & filename);
+	static unordered_set<string> AnalyseGlobale(const struct Serveur & serveur, const string & filename);
 	// Mode d'emploi : Requête le serveur <serveur>, pour savoir s'il connait une maladie dans le fichier genome <filename>
 	//                 Retourne un dictionnaire dont les entrées sont le nom des maladies associées à leur présence (true) ou non (false) 
 	// Exception "invalid_argument" : si le fichier <filename> ne peut être ouvert
@@ -66,11 +66,11 @@ protected:
 	// Moded'emploi : retourne le contenu d'un fichier <filename>
 	// Exception "runtime_error" : si le fichier ne peut être ouvert
 
-	static unordered_map<string, bool> analysePreciseParseur(const string & response);
+	static bool analysePreciseParseur(const string & response);
 	// Mode d'emploi : parse la réponse d'une requête d'analyse précise
 	// Exception "invalid_argument" : si la réponse <response> contient une erreur de syntaxe
 
-	static unordered_map<string, bool> analyseGlobaleParseur(const string & response);
+	static unordered_set<string> analyseGlobaleParseur(const string & response);
 	// Mode d'emploi : parse la réponse d'une requête d'analyse globale
 	// Exception "invalid_argument" : si la réponse <response> contient une erreur de syntaxe
 

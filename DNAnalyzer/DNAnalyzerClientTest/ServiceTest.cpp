@@ -26,7 +26,7 @@ namespace DNAnalyzerClientTest
 
 		}
 
-		static unordered_map<string, bool> analysePreciseParseur(const string & response)
+		static bool analysePreciseParseur(const string & response)
 		{
 			try {
 				return Service::analysePreciseParseur(response);
@@ -36,7 +36,7 @@ namespace DNAnalyzerClientTest
 			}
 		}
 
-		static unordered_map<string, bool> analyseGlobaleParseur(const string & response)
+		static unordered_set<string> analyseGlobaleParseur(const string & response)
 		{
 			try {
 				return Service::analyseGlobaleParseur(response);
@@ -145,12 +145,9 @@ namespace DNAnalyzerClientTest
 				response += "1\r\n";
 				response += "\r\n";
 
-				unordered_map<string, bool> result = ServiceTestInterface::analysePreciseParseur(response);
+				bool result = ServiceTestInterface::analysePreciseParseur(response);
 
-				Assert::IsTrue(result.size() == 1);
-
-				Assert::IsTrue(result.find("Maladie1") != result.end());
-				Assert::IsTrue(result.at("Maladie1") == true);
+				Assert::IsTrue(result);
 			}
 
 			{
@@ -159,12 +156,9 @@ namespace DNAnalyzerClientTest
 				response += "0\r\n";
 				response += "\r\n";
 
-				unordered_map<string, bool> result = ServiceTestInterface::analysePreciseParseur(response);
+				bool result = ServiceTestInterface::analysePreciseParseur(response);
 
-				Assert::IsTrue(result.size() == 1);
-
-				Assert::IsTrue(result.find("Maladie1") != result.end());
-				Assert::IsTrue(result.at("Maladie1") == false);
+				Assert::IsFalse(result);
 
 			}
 		}
@@ -178,17 +172,13 @@ namespace DNAnalyzerClientTest
 			response += "DESEASE Maladie3\r\n";
 			response += "\r\n";
 
-			unordered_map<string, bool> result = ServiceTestInterface::analyseGlobaleParseur(response);
+			unordered_set<string> results = ServiceTestInterface::analyseGlobaleParseur(response);
 
-			Assert::IsTrue(result.size() == 3);
+			Assert::IsTrue(results.size() == 3);
 
-			Assert::IsTrue(result.find("Maladie1") != result.end());
-			Assert::IsTrue(result.find("Maladie2") != result.end());
-			Assert::IsTrue(result.find("Maladie3") != result.end());
-		
-			Assert::IsTrue(result.at("Maladie1") == true);
-			Assert::IsTrue(result.at("Maladie2") == true);
-			Assert::IsTrue(result.at("Maladie3") == true);
+			Assert::IsTrue(results.find("Maladie1") != results.end());
+			Assert::IsTrue(results.find("Maladie2") != results.end());
+			Assert::IsTrue(results.find("Maladie3") != results.end());	
 
 		}
 
