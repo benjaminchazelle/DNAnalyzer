@@ -3,6 +3,8 @@
 //
 
 #pragma once
+#include <unordered_map>
+#include "Serveur.h"
 
 
 // boîte de dialogue CDNAnalyzerClientDlg
@@ -37,4 +39,7 @@ public:
 	afx_msg void OnEnChangeMfceditbrowse1();
 protected:
 	CString pathname;
+	unordered_map<int,Serveur> serveurs;
+public:
+	afx_msg void OnCbnSelchangeCombo2();
 };
