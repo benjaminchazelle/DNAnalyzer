@@ -9,6 +9,8 @@
 #include <iostream>
 #include "string.h"
 #include "Configuration.h"
+#include "Service.h"
+#include "Serveur.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -73,6 +75,7 @@ BEGIN_MESSAGE_MAP(CDNAnalyzerClientDlg, CDialogEx)
 	ON_CBN_SELCHANGE(IDC_COMBO1, &CDNAnalyzerClientDlg::OnCbnSelchangeCombo1)
 	ON_BN_CLICKED(IDC_MFCMENUBUTTON1, &CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1)
 	ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1)
+	ON_CBN_SELCHANGE(IDC_COMBO2, &CDNAnalyzerClientDlg::OnCbnSelchangeCombo2)
 END_MESSAGE_MAP()
 
 
@@ -112,32 +115,31 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
 
 	Configuration & cf1 = Configuration::ObtenirInstance() ;
-	string toto = "serveurs.test.config";
-	bool test = cf1.ChargerFichier(toto);
+	string fichierConfig = "C:\\Users\\thomas\\Desktop\\testGL.txt";
+	bool test = cf1.ChargerFichier(fichierConfig);
 
-	if (test)
+	if (!test)
 	{
-		SetWindowTextW((LPCTSTR)(L"Chargement OK"));
-	}
-	else
-	{
-		SetWindowTextW((LPCTSTR)(L"Fail"));
-		return TRUE;
+		cout << "Erreur de chargement des serveur, arrêt de l'application.";
+		exit(0);
 	}
 
 	vector<struct Serveur> liste = cf1.ObtenirListeServeur();
 	for(vector<struct Serveur>::iterator i = liste.begin(); i!=liste.end();i++)
 	{
 		Serveur serv = *i;
-		CString aAfficher = (CString) serv.host.c_str();
-		pCombo->AddString((LPCTSTR) aAfficher);
+		string str = serv.host + ":" + to_string(serv.port);
+		CString aAfficher = (CString) str.c_str();
+		int position = pCombo->AddString((LPCTSTR) aAfficher);
+		serveurs[position] = *i;
 
 	}
 
-	//pCombo->AddString((LPCTSTR)L"PUREE");
 	pCombo->SetWindowText(L"Choisir un Serveur");
-	
-	return TRUE;  // retourne TRUE, sauf si vous avez défini le focus sur un contrôle
+	GetDlgItem(IDC_COMBO2)->EnableWindow(false);
+	GetDlgItem(IDC_COMBO1)->EnableWindow(false);
+	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(false);
+	return TRUE;  
 }
 
 void CDNAnalyzerClientDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -209,7 +211,7 @@ void CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1()
 	UpdateData(true);
 
 	SetWindowTextW((LPCTSTR)pathname);
-	
+	GetDlgItem(IDC_COMBO2)->EnableWindow(true);
 	
 	
 	// TODO:  S'il s'agit d'un contrôle RICHEDIT, le contrôle ne
@@ -218,5 +220,26 @@ void CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1()
 	// avec l'indicateur ENM_CHANGE ajouté au masque grâce à l'opérateur OR.
 
 	// TODO:  Ajoutez ici le code de votre gestionnaire de notification de contrôle
+
+}
+
+
+void CDNAnalyzerClientDlg::OnCbnSelchangeCombo2()
+{
+	CComboBox * pCombo1 = (CComboBox *)GetDlgItem(IDC_COMBO2);
+	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO1);
+	int index = pCombo1->GetCurSel();
+	Serveur serveur = serveurs[index];
+	pCombo->ResetContent();
+	pCombo->AddString(L"All");
+	pCombo->SetCurSel(0);
+	GetDlgItem(IDC_COMBO1)->EnableWindow(true);
+	unordered_set<string> maladies = Service::ObtenirMaladies(serveur);
+	for (unordered_set<string>::iterator i = maladies.begin(); i != maladies.end(); i++)
+	{
+		CString cs = (CString)(*i).c_str();
+		pCombo->AddString((LPCTSTR) cs);
+	}
+	
 
 }
