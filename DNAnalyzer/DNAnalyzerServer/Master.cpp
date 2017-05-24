@@ -1,5 +1,5 @@
 /*************************************************************************
-Master - Classe qui gére la communication entre un client et le service demander
+Master - Classe qui gére la communication entre un client et le service demandé
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par VOGEL
@@ -93,7 +93,7 @@ void Master::analysePrecise(const string & nomMaladie, const string & genome, Co
 
 		thread.Repondre(response);
 	}
-	catch (range_error const& e) { // Si la maldie est inconnue
+	catch (range_error const& e) { // Si la maladie est inconnue
 		UNREFERENCE_PARAMETER(e);
 
 		repondreErreurRequete("Unknown disease", thread);

@@ -127,7 +127,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 			
 			// Multi définition d'une maladie
 			unordered_map<string,const Maladie*>::iterator it = maladies.find(onreadMaladie->nom);
-			if (it != maladies.end()) {// Si la maladie est déjà réferencé
+			if (it != maladies.end()) {// Si la maladie est déjà réferencée
 				if (!(*(it->second) == *onreadMaladie)) {
 					delete onreadMaladie;
 					throw invalid_argument("Different definition d'une meme maladie : " + it->first + " (L " + to_string(l) + ")");

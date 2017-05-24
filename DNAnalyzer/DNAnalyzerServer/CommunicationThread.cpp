@@ -63,7 +63,7 @@ string CommunicationThread::LireLigne() {
 	const string eolMarker = "\r\n";
 	const size_t eolMarkerLength = eolMarker.size();
 
-	// Si le buffer est déjà remplie, on essaye d'y lire une ligne
+	// Si le buffer est déjà rempli, on essaye d'y lire une ligne
 	if (requestBuffer.size() > 0) {
 
 		size_t eolPosition = requestBuffer.find(eolMarker);
@@ -95,7 +95,7 @@ string CommunicationThread::LireLigne() {
 
 		if (bytesReceived > 0) {
 
-			// Si on a réussit à lire le réseau, on y cherche une ligne
+			// Si on a réussi à lire le réseau, on y cherche une ligne
 			// On met à jour le buffer
 
 			inputBuffer[bytesReceived] = '\0';

@@ -99,7 +99,7 @@ void Communication::recevoirRequete()
 
 DWORD Communication::threadRequete(void * p)
 {
-	// Délégation du traitement de la requpete à CommunciationThread::Traiter
+	// Délégation du traitement de la requête à CommunciationThread::Traiter
 	CommunicationThread t((Peer*) p);
 
 	t.Traiter();
