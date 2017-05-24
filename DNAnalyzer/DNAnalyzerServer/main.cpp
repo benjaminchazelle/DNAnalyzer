@@ -25,7 +25,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 using namespace std;
 
 const int DEFAULT_PORT = 8282;
-const string DEFAULT_DICTIONNARY_FILE = "dictionnaire.dico";
+const string DEFAULT_DICTIONNARY_FILE = "./dictionnaire.dico";
 
 void afficherUsage() {
 	cout << "Manual :" << endl
@@ -40,10 +40,10 @@ void afficherAide() {
 	afficherUsage();
 	cout << "Help : " << endl
 		<< "  Parameters             Alias            Comment" << endl
-		<< "" << endl
+		<< endl
 		<< "  -port <Port>          -p <Port>         Set the listening server's port" << endl
 		<< "                                          Default port is " << to_string(DEFAULT_PORT) << endl
-		<< "" << endl
+		<< endl
 		<< "  -dictionnary <file>   -d <file>         Set the dictonnary file to load" << endl
 		<< "                        -dico <file>      Default dictionnary file is " << DEFAULT_DICTIONNARY_FILE << endl;
 }
