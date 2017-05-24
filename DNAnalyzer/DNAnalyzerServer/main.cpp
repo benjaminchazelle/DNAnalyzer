@@ -1,5 +1,5 @@
 /*************************************************************************
-Main - Fichier principal de l'application content le main
+Main - Fichier principal de l'application contenant le main
 -------------------
 début                :	20/05/17
 copyright            :	(C) 2017 par VOGEL
@@ -25,44 +25,42 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 using namespace std;
 
 const int DEFAULT_PORT = 8282;
-const string DEFAULT_DICTIONNAIR_FILE = "./dictionnaire.dico";
+const string DEFAULT_DICTIONNARY_FILE = "dictionnaire.dico";
 
 void afficherUsage() {
-	cout << "Usage :" << endl
-		<< "DNAnalyserServer [-dico <fileName>] [-port <serverPort>]" << endl
-		<< "DNAnalyserServer help" << endl;
+	cout << "Manual :" << endl
+		<< "./DNAnalyserServer [-dico <fileName>] [-port <serverPort>]" << endl
+		<< "./DNAnalyserServer help" << endl;
 }
 void afficherSyntaxError(string erreurText) {
-	cout << "Commande non valide : " << erreurText << endl;
+	cout << "Invalid command : " << erreurText << endl;
 	afficherUsage();
 }
 void afficherAide() {
 	afficherUsage();
-	cout << "Aide : " << endl
-		<< "  Parametre       Alias                   Commentaire" << endl
+	cout << "Help : " << endl
+		<< "  Parameters             Alias            Comment" << endl
 		<< "" << endl
-		<< "  -port <Port>    -p <Port>               Permet de changer le port d'ecoute du server, le port" << endl
-		<< "                                          d'ecoute par default est "<< to_string(DEFAULT_PORT) << endl
+		<< "  -port <Port>          -p <Port>         Set the listening server's port" << endl
+		<< "                                          Default port is " << to_string(DEFAULT_PORT) << endl
 		<< "" << endl
-		<< "  -dico <file>    -d <file>               Permet de changer le fichier de dictionnaire charger" << endl
-		<< "                  -dictionnaire <file>    laur du demarage du server, le fichier charger par" << endl
-		<< "                                          defaut est \""+ DEFAULT_DICTIONNAIR_FILE +"\"" << endl;
-
+		<< "  -dictionnary <file>   -d <file>         Set the dictonnary file to load" << endl
+		<< "                        -dico <file>      Default dictionnary file is " << DEFAULT_DICTIONNARY_FILE << endl;
 }
 
 int main(int argc, char** argv)
 {
-	unsigned int portNumber = 8282;
-	string dicoFile = "./dictionnaire.dico";
+	unsigned int portNumber = DEFAULT_PORT;
+	string dicoFile = DEFAULT_DICTIONNARY_FILE;
 
 	for (int i = 1; i < argc; i++) {
 		string arg(argv[i]);
 		if (!arg.empty()) {
 			if (arg[0] == '-') {
-				if (arg == "-d" || arg == "-dico" || arg == "-dictionnaire") {
+				if (arg == "-d" || arg == "-dico" || arg == "-dictionnary") {
 					i++;
 					if (i == argc) {
-						afficherSyntaxError("nom de fichier requis aprés " + arg);
+						afficherSyntaxError("Filename required after " + arg);
 						exit(0);
 					}
 					dicoFile = argv[i];
@@ -70,7 +68,7 @@ int main(int argc, char** argv)
 				else if (arg == "-p" || arg == "-port") {
 					i++;
 					if (i == argc) {
-						afficherSyntaxError("numero de port requis aprés " + arg);
+						afficherSyntaxError("Port number required after " + arg);
 						exit(0);
 					}
 					try {
@@ -78,52 +76,51 @@ int main(int argc, char** argv)
 						string arg_port(argv[i]);
 						portNumber = stoi(arg_port, &st);
 						if (st != arg_port.length()|| portNumber<1|| portNumber>65535) {
-							afficherSyntaxError("le numero de port requis aprés " + arg + " doit étre un nombre entre 1 et 65536");
+							afficherSyntaxError("Port number " + arg + " must be a number 1 and 65536");
 							exit(0);
 						}
 					}
 					catch (const invalid_argument &e) {
-						afficherSyntaxError("le numero de port requis aprés " + arg + " doit étre un nombre entre 1 et 65536");
+						afficherSyntaxError("Port number " + arg + " must be a number 1 and 65536");
 						exit(0);
 					}
 					 
 				}
 				else {
-					afficherSyntaxError("argument " + arg + " inconu");
+					afficherSyntaxError("Unknown " + arg + " argument");
 					exit(0);
 				}
 			}
-			else {//pour les paramétres obligatoir (aucun pour nous)
+			else { // Pour les futures paramètres obligatoires (aucun pour nous)
 				if (arg == "help" && i == 1) {
 					afficherAide();
 					exit(0);
 				}
-				afficherSyntaxError("argument " + arg + " inconu");
+				afficherSyntaxError("Unknown " + arg + " argument");
 				exit(0);
 			}
 		}
 	}
 
-	std::cout << "Chargement du Dictionnaire :  " << dicoFile << std::endl;
+	std::cout << "Dictionnary loading :  " << dicoFile << std::endl;
 	try {
 		Dictionnaire::ObtenirInstance().ChargerFichier(dicoFile);
 	}
 	catch (const exception &e) {
-		std::cout << "Erreur lors du chargement di dictionnaire"<<endl;
-		std::cout << "ERREUR : " << e.what() << endl;
+		std::cout << "Error during dictionnary loading" << endl;
+		std::cout << "ERROR : " << e.what() << endl;
 		exit(0);
 	}
-	std::cout << "Dictionnaire Charger (" << to_string(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size()) <<" maladies charger)"<< std::endl;
-	std::cout << "Demarage du server sur le port " << to_string(portNumber) << std::endl;
+	std::cout << "Dictionnary loaded (" << to_string(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size()) << " diseases)" << std::endl;
+	std::cout << "DNAnalyzer Server starting on port " << to_string(portNumber) << std::endl;
 	try {
 		Communication::ObtenirInstance().Ecouter(portNumber);
 	}
 	catch (const exception &e) {
-		std::cout << "Erreur lors du demarage du server" << endl;
-		std::cout << "ERREUR : " << e.what() << endl;
+		std::cout << "Error during server starting" << endl;
+		std::cout << "ERROR : " << e.what() << endl;
 		exit(0);
 	}
-	std::cout << "Server sart" << std::endl;
 
 	return 0;
 }
