@@ -14,7 +14,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //--------------------------------------------------- Interfaces utilisées
 
 #include <winsock2.h>
-
+#include <unordered_set>
 using namespace std;
 
 
@@ -40,10 +40,26 @@ protected:
 	string clientInfo;
 	// Description : adresse ip et port de connexion du clientInfo
 
+	string requestBuffer;
+	// Description : buffer de lecture de la requête
+
 public:
+
+	void Traiter();
+	// Mode d'emploi : lit le flux entrant sur la socket <csock> puis
+	// transfert la requête au traitement Master spécifique
+
 	void Repondre(const string & reponse);
 	// Mode d'emploi : permet d'envoyer un flux de sortie sur la socket
-	// <csock> puis de fermer la connexion
+	// <csock>
+
+	string LireLigne();
+	// Mode d'emploi : lit une ligne de la requête du client depuis le buffer, 
+	// puis depuis la socket si le buffer ne contient pas de ligne entière
+	//runtime_error -> connexion FermerConnexion
+
+	void FermerConnexion();
+	// Mode d'emploi : ferme la connexion avec le client
 
 	CommunicationThread & operator = (const CommunicationThread &);
 	// Mode d'emploi : opérateur d'affectation, non implémenté
@@ -52,16 +68,11 @@ public:
 	// Mode d'emploi : constructeur de copie, non implémenté
 
 	CommunicationThread(Peer* peer);
-	// Mode d'emploi : constructeur, appel de traiter()
+	// Mode d'emploi : constructeur
 
 	virtual ~CommunicationThread();
 	// Mode d'emploi : destructeur
 
-protected:
-
-	void traiter();
-	// Mode d'emploi : lit le flux entrant sur la socket <csock> puis
-	// transfert la requête au traitement Master spécifique
 
 };
 

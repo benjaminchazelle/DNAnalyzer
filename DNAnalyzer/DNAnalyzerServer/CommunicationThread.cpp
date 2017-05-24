@@ -13,6 +13,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //-------------------------------------------------------- Include système
 #include <iostream>
 #include <string>
+#include <stdexcept>
 
 //------------------------------------------------------ Include personnel
 
@@ -24,7 +25,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 void CommunicationThread::Repondre(const string & reponse)
 {
 	int bytesSent = send(*csock, reponse.c_str(), reponse.length(), 0);
-	
+
 	if (bytesSent == SOCKET_ERROR) {
 
 		printf("%s : Error %d during responding\n", clientInfo.c_str(), WSAGetLastError());
@@ -43,47 +44,82 @@ CommunicationThread::CommunicationThread(Peer * peer) : csock(peer->csock), clie
 	clientInfo += ":" + to_string(peer->cin->sin_port);
 
 	delete peer;
+}
+void CommunicationThread::Traiter() {
+	
+	Master::InterpreterRequete(*this);
 
-	traiter();
 }
 
 CommunicationThread::~CommunicationThread()
 {
 }
 
-//----------------------------------------------------------------- PRIVEE
+string CommunicationThread::LireLigne() {
 
-void CommunicationThread::traiter()
-{
-	string request("");
+	const string eolMarker = "\r\n";
+	const size_t eolMarkerLength = eolMarker.size();
+
+
+	if (requestBuffer.size() > 0) {
+
+		size_t eolPosition = requestBuffer.find(eolMarker);
+
+		if (eolPosition != string::npos) {
+
+			string line = requestBuffer.substr(0, eolPosition);
+
+			requestBuffer = requestBuffer.substr(eolPosition + eolMarkerLength);
+
+			return line;
+
+		}
+
+	}
 
 	int bytesReceived;
 
 	do {
 
-		const int bufferSize = 512;
+		const int inputBufferSize = 512;
 
-		char buffer[bufferSize + 1];
+		char inputBuffer[inputBufferSize + 1];
 
-		bytesReceived = recv(*csock, buffer, bufferSize, 0);
+		bytesReceived = recv(*csock, inputBuffer, inputBufferSize, 0);
 
 		if (bytesReceived > 0) {
 
-			buffer[bytesReceived] = '\0';
+			inputBuffer[bytesReceived] = '\0';
 
-			request += buffer;
+			size_t findFrom;
 
-			if (request.rfind("\r\n\r\n") != string::npos || request.rfind(";\r\n") != string::npos) {
+			if (requestBuffer.length() >= eolMarkerLength)
+			{
+				findFrom = requestBuffer.length() - eolMarkerLength;
+			}
+			else
+			{
+				findFrom = 0;
+			}
 
-				Master::InterpreterRequete(request, *this);
+			requestBuffer += inputBuffer;
 
-				break;
+			size_t eolPosition = requestBuffer.find(eolMarker, findFrom);
+
+			if (eolPosition != string::npos) {
+
+				string line = requestBuffer.substr(0, eolPosition);
+
+				requestBuffer = requestBuffer.substr(eolPosition + eolMarkerLength);
+
+				return line;
+
 			}
 
 		}
 		else if (bytesReceived == 0) {
 
-			Master::InterpreterRequete(request, *this);
+			cerr << "erreur"; // TODO
 
 			break;
 		}
@@ -97,13 +133,18 @@ void CommunicationThread::traiter()
 				printf("%s : Error %d during receiving\n", clientInfo.c_str(), WSAGetLastError());
 			}
 
-			
+
 			break;
 		}
 
 	} while (bytesReceived > 0);
 
-	bytesReceived = shutdown(*csock, SD_SEND);
+	return "";
+}
+
+void CommunicationThread::FermerConnexion() {
+
+	unsigned int bytesReceived = shutdown(*csock, SD_SEND);
 
 	if (bytesReceived == SOCKET_ERROR) {
 
@@ -112,8 +153,8 @@ void CommunicationThread::traiter()
 	}
 
 	printf("%s : Connection closed by server\n", clientInfo.c_str());
-	
+
 
 	delete csock;
-
 }
+//----------------------------------------------------------------- PRIVEE

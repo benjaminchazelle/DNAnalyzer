@@ -29,7 +29,6 @@ Communication* Communication::instanceCommunication;
 
 Communication & Communication::ObtenirInstance()
 {
-	// TODO: changer le retour par l'instance du singleton
 	return *(Communication::instanceCommunication);
 }
 
@@ -97,6 +96,8 @@ DWORD Communication::threadRequete(void * p)
 {
 
 	CommunicationThread t((Peer*) p);
+
+	t.Traiter();
 
 	return 0;
 }
