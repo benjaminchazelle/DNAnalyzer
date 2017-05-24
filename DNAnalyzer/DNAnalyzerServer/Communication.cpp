@@ -29,12 +29,13 @@ Communication* Communication::instanceCommunication;
 
 Communication & Communication::ObtenirInstance()
 {
-	// TODO: changer le retour par l'instance du singleton
 	return *(Communication::instanceCommunication);
 }
 
 void Communication::Ecouter(unsigned int port)
 {
+	// Initialisation du serveur
+
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 0), &WSAData);
 
@@ -44,12 +45,19 @@ void Communication::Ecouter(unsigned int port)
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 
-	bind(sock, (SOCKADDR *)&sin, sizeof(sin));
+	if (bind(sock, (SOCKADDR *)&sin, sizeof(sin)) < 0)
+	{
+		throw runtime_error("Server binding error");
+	}
 
-	listen(sock, 0);
+	if (listen(sock, 0) < 0)
+	{
+		throw runtime_error("Server listening error");
+	}
 
 	cout << "DNAnalyzer Server listening on port " << port << endl;
 
+	// Récéption des requêtes des clients
 	while (1)
 	{
 		recevoirRequete();
@@ -66,12 +74,14 @@ void Communication::recevoirRequete()
 
 	int addrlen = sizeof(SOCKADDR_IN);
 
+	// On attend la connexion d'un client
 	if ((*csock = accept(sock, (SOCKADDR *)cin, &addrlen)) != INVALID_SOCKET)
 	{		
 		Peer* peer = new Peer;
 		peer->cin = cin;
 		peer->csock = csock;
 
+		// On lance un thread pour traiter la requête du client en parallèle
 		threadServeurHandle = CreateThread(NULL, 0, &Communication::threadRequete, peer, 0, NULL);
 
 		if (threadServeurHandle != NULL) {
@@ -95,8 +105,10 @@ void Communication::recevoirRequete()
 
 DWORD Communication::threadRequete(void * p)
 {
-
+	// Délégation du traitement de la requête à CommunciationThread::Traiter
 	CommunicationThread t((Peer*) p);
+
+	t.Traiter();
 
 	return 0;
 }

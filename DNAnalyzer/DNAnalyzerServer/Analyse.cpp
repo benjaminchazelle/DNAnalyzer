@@ -35,7 +35,7 @@ bool Analyse::AnalysePrecise(const unordered_set<string> & genome, const Maladie
 		}
 		catch (exception const& e) {
 			UNREFERENCE_PARAMETER(e);
-			//si le mot n'est pas reférancer il n'est pas dans une maladie (rien a faire)
+			// Si le mot n'est pas reférencé alors il n'est pas dans une maladie (rien à faire)
 		}
 	}
 	return count == maladie.definition.size();
@@ -57,7 +57,7 @@ const unordered_set<const Maladie *> Analyse::AnalyseGlobale(const unordered_set
 		}
 		catch (exception const& e) {
 			UNREFERENCE_PARAMETER(e);
-			//si le mot n'est pas reférancer il n'est pas dans une maladie (rien a faire)
+			// Si le mot n'est pas réfrencé alors il n'est pas dans une maladie (rien à faire)
 		}
 	}
 	return resutat;

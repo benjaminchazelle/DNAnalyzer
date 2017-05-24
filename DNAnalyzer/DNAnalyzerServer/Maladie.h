@@ -22,29 +22,30 @@ using namespace std;
 
 //------------------------------------------------------------------------
 // Rôle de la structure <Maladie>
-//  stock le nom et les mots d'une Maladie
+//  Stock le nom et les mots d'une Maladie
 //------------------------------------------------------------------------
 
 struct Maladie
 {
 	string nom;
-		// Description : nom de la maladie
+	// Description : Nom de la maladie
 
 	set<unsigned int> definition;
-	// Description : contien la list de l'index de chaqu'un des mots de la maladie
+	// Description : Contient la liste de l'index de chacun des mots de la maladie
 
 
 	bool operator==(const Maladie& m)const
 	{
 		return m.nom == nom && m.definition == definition;
 	}
+	// Mode d'emploi : Opérateur de comparaison d'une struct Maladie
 };
 namespace std
 {
 	template<> struct hash<Maladie>
 	{
 		size_t operator()(Maladie const& maladie) const
-		{// NON SUR (FAIR DES TESTS)
+		{
 			std::size_t res = 0;
 			hash<string> stringHash;
 			hash<unsigned int> uintHash;

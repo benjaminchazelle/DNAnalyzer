@@ -44,15 +44,15 @@ protected:
 
 public:
 	static Dictionnaire& ObtenirInstance();
-	// Mode d'emploi : renvoit l'instance singleton de Dictionnaire
+	// Mode d'emploi : Renvoie l'instance singleton de Dictionnaire
 
 	static void RafraichirInstance();
-	// Mode d'emploi : réinitialise l'instance singleton
+	// Mode d'emploi : Réinitialise l'instance singleton
 
 	void ChargerFichier(const string & fichierDico);
 	// Mode d'emploi : Cette méthode lit le contenu du fichier <fichierDico> pour charger son contenu
-	// Exception "runtime_error" : si le fichier ne peut être lu
-	// Exception "invalid_argument" : si le fichier n'est pas valide
+	// Exception "runtime_error" : Si le fichier ne peut être lu
+	// Exception "invalid_argument" : Si le fichier n'est pas valide
 	// Fichier valide : 
 	//		MA v1.0(\r\n)+
 	//		([a-Z0-9_ ]+(;<mot>*)+;?(\r\n)+)*
@@ -60,30 +60,31 @@ public:
 	//
 	//		Un <mot> différent de /[ATCG]+/ est ignoré
 
-	const Maladie * ObtenirMaladie(const string & name);
-	// Mode d'emploi : renvoit la Maladie correspondant au nom donné en paramètre
-	// Exception "range_error" : si la maladie demandée n'existe pas
+	const Maladie * ObtenirMaladie(const string & nom);
+	// Mode d'emploi : Renvoie la Maladie correspondant au nom <nom>
+	// Exception "range_error" : Si la maladie demandée n'existe pas
 
 	const unordered_set<const Maladie *> ObtenirMaladies(const unsigned int indexMot);
-	// Mode d'emploi : renvoit les Maladie contenant le mot passé en paramètre
-	//                 Si il n'y a pas de maladie renvoit un unordered_set vide
-	// Contrat d'utilisation : le mot passé en paramètre doit bien correspondre à un Mot
+	// Mode d'emploi : Renvoie les Maladie contenant le mot d'index <indexMot>.
+	//                 Si il n'y a pas de maladie, renvoie un unordered_set vide
+	// Contrat d'utilisation : Le mot passé en paramètre doit bien correspondre à un Mot
 
 	const unordered_set<string> ObtenirNomsMaladies();
-	// Mode d'emploi : renvoit la liste des noms de toutes les maladie du dictionnaire
+	// Mode d'emploi : Renvoie la liste des noms de toutes les maladie du dictionnaire
 
 	Dictionnaire & operator = (const Dictionnaire &);
-	// Mode d'emploi : opérateur d'affectation, non implémenté
+	// Mode d'emploi : Opérateur d'affectation, non implémenté
 
 	Dictionnaire(const Dictionnaire &);
-	// Mode d'emploi : constructeur de copie, non implémenté
+	// Mode d'emploi : Constructeur de copie, non implémenté
 
 protected:
 
 	Dictionnaire();
-	// Mode d'emploi : constructeur
+	// Mode d'emploi : Constructeur
 
 	virtual ~Dictionnaire();
+	// Mode d'emploi : Destructeur
 };
 
 #endif

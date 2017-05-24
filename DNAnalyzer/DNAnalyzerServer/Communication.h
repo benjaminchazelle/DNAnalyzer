@@ -29,40 +29,42 @@ class Communication
 protected:
 
 	static HANDLE threadServeurHandle;
-	// Description : thread du serveur
+	// Description : Instance thread du serveur
 
 	static SOCKET sock;
-	// Description : socket serveur d'écoute
+	// Description : Socket serveur d'écoute
 
 	static Communication* instanceCommunication;
 	// Description : Instance singleton de Communication
 
 public:
 	static Communication& ObtenirInstance();
-	// Mode d'emploi : renvoit l'instance singleton de Communication
+	// Mode d'emploi : Renvoie l'instance singleton de Communication
 
 	void Ecouter(unsigned int port);
-	// Mode d'emploi : lance un serveur sur le port <port>
+	// Mode d'emploi : Lance un serveur sur le port <port>
+	// Exception "runtime_error" : Si le serveur ne peut se lancer
 
 	Communication & operator = (const Communication &);
-	// Mode d'emploi : opérateur d'affectation, non implémenté
+	// Mode d'emploi : Opérateur d'affectation, non implémenté
 
 	Communication(const Communication &);
-	// Mode d'emploi : constructeur de copie, non implémenté
+	// Mode d'emploi : Constructeur de copie, non implémenté
 
 protected:
 
 	static void recevoirRequete();
-	// Mode d'emploi : attend une nouvelle connexion entrante puis lance un threadRequete
+	// Mode d'emploi : Attend une nouvelle connexion entrante puis lance un threadRequete
 
 	static DWORD WINAPI threadRequete(void* p);
-	// Mode d'emploi : lance le traitement d'une requête via création d'un CommunicationThread
+	// Mode d'emploi : Lance le traitement d'une requête via création d'un CommunicationThread
+	// Le thread reçoit un Peer* <p> pointant vers les informations du client
 
 	Communication();
-	// Mode d'emploi : constructeur
+	// Mode d'emploi : Constructeur
 
 	virtual ~Communication();
-	// Mode d'emploi : destructeur
+	// Mode d'emploi : Destructeur
 };
 
 #endif

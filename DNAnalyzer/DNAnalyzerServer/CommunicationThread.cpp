@@ -13,6 +13,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //-------------------------------------------------------- Include système
 #include <iostream>
 #include <string>
+#include <stdexcept>
 
 //------------------------------------------------------ Include personnel
 
@@ -23,8 +24,9 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 void CommunicationThread::Repondre(const string & reponse)
 {
+	// Envoit un message sur la socket 
 	int bytesSent = send(*csock, reponse.c_str(), reponse.length(), 0);
-	
+
 	if (bytesSent == SOCKET_ERROR) {
 
 		printf("%s : Error %d during responding\n", clientInfo.c_str(), WSAGetLastError());
@@ -39,55 +41,94 @@ void CommunicationThread::Repondre(const string & reponse)
 
 CommunicationThread::CommunicationThread(Peer * peer) : csock(peer->csock), clientInfo("")
 {
+	// Initialisation des données du client dans le CommunicationThread
 	clientInfo = string(inet_ntoa(peer->cin->sin_addr));
 	clientInfo += ":" + to_string(peer->cin->sin_port);
 
 	delete peer;
+}
+void CommunicationThread::Traiter() {
+	
+	// Délégation du traitement de la requête au Master
+	Master::InterpreterRequete(*this);
 
-	traiter();
 }
 
 CommunicationThread::~CommunicationThread()
 {
 }
 
-//----------------------------------------------------------------- PRIVEE
+string CommunicationThread::LireLigne() {
 
-void CommunicationThread::traiter()
-{
-	string request("");
+	const string eolMarker = "\r\n";
+	const size_t eolMarkerLength = eolMarker.size();
+
+	// Si le buffer est déjà rempli, on essaye d'y lire une ligne
+	if (requestBuffer.size() > 0) {
+
+		size_t eolPosition = requestBuffer.find(eolMarker);
+
+		// Si on a trouvé une ligne, on la renvoie
+		if (eolPosition != string::npos) {
+
+			string line = requestBuffer.substr(0, eolPosition);
+
+			requestBuffer = requestBuffer.substr(eolPosition + eolMarkerLength);
+
+			return line;
+
+		}
+
+	}
+
+	// Si aucune ligne n'était dans le buffer, on lit le flux d'entrée réseau
 
 	int bytesReceived;
 
 	do {
 
-		const int bufferSize = 512;
+		const int inputBufferSize = 512;
 
-		char buffer[bufferSize + 1];
+		char inputBuffer[inputBufferSize + 1];
 
-		bytesReceived = recv(*csock, buffer, bufferSize, 0);
+		bytesReceived = recv(*csock, inputBuffer, inputBufferSize, 0);
 
 		if (bytesReceived > 0) {
 
-			buffer[bytesReceived] = '\0';
+			// Si on a réussi à lire le réseau, on y cherche une ligne
+			// On met à jour le buffer
 
-			request += buffer;
+			inputBuffer[bytesReceived] = '\0';
 
-			if (request.rfind("\r\n\r\n") != string::npos || request.rfind(";\r\n") != string::npos) {
+			size_t findFrom;
 
-				Master::InterpreterRequete(request, *this);
+			if (requestBuffer.length() >= eolMarkerLength)
+			{
+				findFrom = requestBuffer.length() - eolMarkerLength;
+			}
+			else
+			{
+				findFrom = 0;
+			}
 
-				break;
+			requestBuffer += inputBuffer;
+
+			size_t eolPosition = requestBuffer.find(eolMarker, findFrom);
+
+			if (eolPosition != string::npos) {
+
+				string line = requestBuffer.substr(0, eolPosition);
+
+				requestBuffer = requestBuffer.substr(eolPosition + eolMarkerLength);
+
+				return line;
+
 			}
 
 		}
-		else if (bytesReceived == 0) {
-
-			Master::InterpreterRequete(request, *this);
-
-			break;
-		}
 		else {
+
+			// Si une erreur survient
 
 			if (10054 == WSAGetLastError()) {
 				printf("%s : Connection closed by client\n", clientInfo.c_str());
@@ -97,13 +138,20 @@ void CommunicationThread::traiter()
 				printf("%s : Error %d during receiving\n", clientInfo.c_str(), WSAGetLastError());
 			}
 
-			
+
 			break;
 		}
 
 	} while (bytesReceived > 0);
 
-	bytesReceived = shutdown(*csock, SD_SEND);
+	return "";
+}
+
+void CommunicationThread::FermerConnexion() {
+
+	// On ferme proprement la connexion
+
+	unsigned int bytesReceived = shutdown(*csock, SD_SEND);
 
 	if (bytesReceived == SOCKET_ERROR) {
 
@@ -112,8 +160,8 @@ void CommunicationThread::traiter()
 	}
 
 	printf("%s : Connection closed by server\n", clientInfo.c_str());
-	
+
 
 	delete csock;
-
 }
+//----------------------------------------------------------------- PRIVEE

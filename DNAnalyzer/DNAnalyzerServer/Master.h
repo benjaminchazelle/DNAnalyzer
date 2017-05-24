@@ -14,16 +14,16 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //--------------------------------------------------- Interfaces utilisées
 
 #include <string>
+#include <unordered_set>
+
 #include "CommunicationThread.h"
 using namespace std;
 
-enum Route {ANALYSE_PRECISE, ANALYSE_GLOBALE, LISTE_MALDIES, SERVICE_INCONNU, ERREUR_SYNTAXE};
-
 //------------------------------------------------------------------------
 // Rôle de la classe <Master>
-//  La classe Master contient different methode pour chaqu'un des service
-//  proposer par le server. Elle a pour objectif de recupérer les donnée du
-//  clientInfo et de lui repondres
+//  La classe Master contient différentes méthodes pour chacun des services
+//  proposés par le serveur. Elle a pour objectif de recupérer les données
+//  du client et de lui repondre
 //  
 //------------------------------------------------------------------------
 
@@ -32,8 +32,9 @@ class Master
 {
 public:
 
-	static void InterpreterRequete(const string & requete, CommunicationThread & thread);
+	static void InterpreterRequete(CommunicationThread & thread);
 	// Mode d'emploi : Interprete la requête pour invoquer le traitement qui lui est spécifique
+	//                 La méthode reçoit une instance de CommunicationThread <thread> pour formuler la réponse
 
 	Master & operator = (const Master &);
 	// Mode d'emploi : Opérateur d'affectation, non implémenté
@@ -43,23 +44,24 @@ public:
 
 protected:
 
-	static Route routerRequete(const string & requete);
-	// Mode d'emploi : Renvoie le traitement à invoquer en fonction de la requête
+	static void analysePrecise(const string & maladie, const string & genome, CommunicationThread & thread);
+	// Mode d'emploi : Retourne au client le résultat de l'analyse précise de la maladie <maladie> sur une génome <genome>
+	//                 La méthode reçoit une instance de CommunicationThread <thread> pour formuler la réponse
 
-	static void analysePrecise(const string & requete, CommunicationThread & thread);
-	// Mode d'emploi : Retourne au clientInfo le résultat de l'analyse précise demandée
+	static void analyseGlobale(const string & genome, CommunicationThread & thread);
+	// Mode d'emploi : Retourne au client le résultat de l'analyse globale sur une génome <genome>
+	//                 La méthode reçoit une instance de CommunicationThread <thread> pour formuler la réponse
 
-	static void analyseGlobale(const string & requete, CommunicationThread & thread);
-	// Mode d'emploi : Retourne au clientInfo le résultat de l'analyse globale demandée
+	static void obtenirListeMaladies(CommunicationThread & thread);
+	// Mode d'emploi : Retourne au client la liste des maladies connues par le serveur
+	//                 La méthode reçoit une instance de CommunicationThread <thread> pour formuler la réponse
 
-	static void obtenirListeMaladies(const string & requete, CommunicationThread & thread);
-	// Mode d'emploi : Retourne au clientInfo la liste des maladies connues par le serveur
+	static void repondreErreurRequete(const string & error, CommunicationThread & thread);
+	// Mode d'emploi : Informe le client que sa requête contient une erreur <error> 
+	//                 La méthode reçoit une instance de CommunicationThread <thread> pour formuler la réponse
 
-	static void repondreServiceInconnu(const string & requete, CommunicationThread & thread);
-	// Mode d'emploi : Informe le clientInfo qu'aucun service n'existe pour traiter sa requête
-
-	static void repondreErreurRequete(const string & requete, CommunicationThread & thread);
-	// Mode d'emploi : Informe le clientInfo que sa requête est syntaxiquement invalide 
+	static unordered_set<string> encoderGenome(const string & genome);
+	// Mode d'emploi : Retourne l'ensemble des mots d'une génome <genome>
 
 	Master();
 	// Mode d'emploi : Constructeur, non implémenté

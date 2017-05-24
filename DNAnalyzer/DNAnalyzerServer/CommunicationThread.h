@@ -14,7 +14,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 //--------------------------------------------------- Interfaces utilisées
 
 #include <winsock2.h>
-
+#include <unordered_set>
 using namespace std;
 
 
@@ -35,33 +35,43 @@ class CommunicationThread
 protected:
 
 	SOCKET * csock;
-	// Description : socket clientInfo
+	// Description : Socket du client
 
 	string clientInfo;
-	// Description : adresse ip et port de connexion du clientInfo
+	// Description : Adresse IP et port de connexion du client
+
+	string requestBuffer;
+	// Description : Buffer de lecture de la requête
 
 public:
+
+	void Traiter();
+	// Mode d'emploi : Lit le flux entrant sur la socket <csock> puis
+	//                 transfert la requête au traitement Master spécifique
+
 	void Repondre(const string & reponse);
-	// Mode d'emploi : permet d'envoyer un flux de sortie sur la socket
-	// <csock> puis de fermer la connexion
+	// Mode d'emploi : Permet d'envoyer un message <reponse> sur le flux de sortie de la socket <csock>
+
+	string LireLigne();
+	// Mode d'emploi : Lit une ligne de la requête du client depuis le buffer, 
+	//                 puis depuis la socket si le buffer ne contient pas de ligne entière
+	// Exception "runtime_error" : Si un problème est survenu avec le serveur
+
+	void FermerConnexion();
+	// Mode d'emploi : Ferme la connexion avec le client
 
 	CommunicationThread & operator = (const CommunicationThread &);
-	// Mode d'emploi : opérateur d'affectation, non implémenté
+	// Mode d'emploi : Opérateur d'affectation, non implémenté
 
 	CommunicationThread(const CommunicationThread &);
-	// Mode d'emploi : constructeur de copie, non implémenté
+	// Mode d'emploi : Constructeur de copie, non implémenté
 
 	CommunicationThread(Peer* peer);
-	// Mode d'emploi : constructeur, appel de traiter()
+	// Mode d'emploi : Constructeur, initalise les informations du client <peer> dans l'instance
 
 	virtual ~CommunicationThread();
-	// Mode d'emploi : destructeur
+	// Mode d'emploi : Destructeur
 
-protected:
-
-	void traiter();
-	// Mode d'emploi : lit le flux entrant sur la socket <csock> puis
-	// transfert la requête au traitement Master spécifique
 
 };
 

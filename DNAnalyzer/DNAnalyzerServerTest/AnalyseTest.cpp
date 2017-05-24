@@ -28,6 +28,7 @@ namespace DNAnalyzerServerTest
 		TEST_METHOD(AnalysePrecise_KnownWord)
 		{
 			// Le mot d'une définition doit bien être retrouvé
+			// malgré la présence d’autres mots
 
 			Maladie maladie;
 
@@ -45,8 +46,6 @@ namespace DNAnalyzerServerTest
 			Maladie maladie;
 
 			maladie.nom = "Nom de maladie test";
-
-			
 
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("AAAA"));
 			maladie.definition.insert(Mots::ObtenirInstance().InsererMot("CCCC"));
@@ -86,7 +85,7 @@ namespace DNAnalyzerServerTest
 
 		TEST_METHOD(AnalysePrecise_AnyUnknownWords)
 		{
-			// Une maladie ne peut être reconnue s'il manque un ou plusieurs mots
+			// Une maladie ne peut être reconnue s'il manque un ou plusieurs mots de sa définition
 
 			Maladie maladie;
 
@@ -130,11 +129,12 @@ namespace DNAnalyzerServerTest
 
 			const Maladie * TEST_A = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_A");
 			
+			// Le génome ne contient bien qu'une seule maladie (TEST_A)
 			unordered_set<const Maladie *>::iterator itResultat = resultats.begin();
-			Assert::IsFalse(itResultat == resultats.end());	// si 0 Maladie trouvé
-			Assert::IsTrue((*itResultat)->nom == TEST_A->nom);	// AAAA trouvé
+			Assert::IsFalse(itResultat == resultats.end());	// Si 0, maladie trouvée
+			Assert::IsTrue((*itResultat)->nom == TEST_A->nom);	// Mot AAAA trouvé
 			itResultat++;
-			Assert::IsTrue(itResultat == resultats.end());  // Pas d'autre maladie trouver*/
+			Assert::IsTrue(itResultat == resultats.end());  // Pas d'autre maladie trouvée
 		}
 
 		
@@ -152,11 +152,12 @@ namespace DNAnalyzerServerTest
 			const Maladie * TEST_C = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_C");
 			const Maladie * TEST_D = Dictionnaire::ObtenirInstance().ObtenirMaladie("TEST_D");
 
+			// Le génome ne contient bien qu'une seule maladie (TEST_C)
 			unordered_set<const Maladie *>::iterator itResultat = resultats.begin();
-			Assert::IsFalse(itResultat == resultats.end());	// si 0 Maladie trouvé
-			Assert::IsTrue((*itResultat)->nom == TEST_C->nom);	// TEST_C trouvé
+			Assert::IsFalse(itResultat == resultats.end());	// Si 0, maladie trouvée
+			Assert::IsTrue((*itResultat)->nom == TEST_C->nom);	// Mot TEST_C trouvé
 			itResultat++;
-			Assert::IsTrue(itResultat == resultats.end());  // Pas d'autre maladie trouver
+			Assert::IsTrue(itResultat == resultats.end());  // Pas d'autre maladie trouvée
 		}
 
 
