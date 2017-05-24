@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 					i++;
 					if (i == argc) {
 						afficherSyntaxError("Filename required after " + arg);
-						exit(0);
+						exit(10);
 					}
 					dicoFile = argv[i];
 				}
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 					i++;
 					if (i == argc) {
 						afficherSyntaxError("Port number required after " + arg);
-						exit(0);
+						exit(20);
 					}
 					try {
 						size_t st;
@@ -77,18 +77,18 @@ int main(int argc, char** argv)
 						portNumber = stoi(arg_port, &st);
 						if (st != arg_port.length()|| portNumber<1|| portNumber>65535) {
 							afficherSyntaxError("Port number " + arg + " must be a number 1 and 65536");
-							exit(0);
+							exit(21);
 						}
 					}
 					catch (const invalid_argument &e) {
 						afficherSyntaxError("Port number " + arg + " must be a number 1 and 65536");
-						exit(0);
+						exit(21);
 					}
 					 
 				}
 				else {
 					afficherSyntaxError("Unknown " + arg + " argument");
-					exit(0);
+					exit(1);
 				}
 			}
 			else { // Pour les futures paramètres obligatoires (aucun pour nous)
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 					exit(0);
 				}
 				afficherSyntaxError("Unknown " + arg + " argument");
-				exit(0);
+				exit(1);
 			}
 		}
 	}
@@ -106,20 +106,26 @@ int main(int argc, char** argv)
 	try {
 		Dictionnaire::ObtenirInstance().ChargerFichier(dicoFile);
 	}
-	catch (const exception &e) {
+	catch (runtime_error const& e) {
 		std::cout << "Error during dictionnary loading" << endl;
-		std::cout << "ERROR : " << e.what() << endl;
-		exit(0);
+		std::cout << "ERROR : impossible to open the dictionnary file" << endl;
+		exit(11);
+	}
+	catch (invalid_argument const& e) {
+		std::cout << "Error during dictionnary loading" << endl;
+		std::cout << "ERROR : dictionnary file is syntaxically incorrect" << endl;
+		exit(12);
 	}
 	std::cout << "Dictionnary loaded (" << to_string(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size()) << " diseases)" << std::endl;
 	std::cout << "DNAnalyzer Server starting on port " << to_string(portNumber) << std::endl;
 	try {
 		Communication::ObtenirInstance().Ecouter(portNumber);
 	}
-	catch (const exception &e) {
+	catch (runtime_error const& e) {
 		std::cout << "Error during server starting" << endl;
 		std::cout << "ERROR : " << e.what() << endl;
-		exit(0);
+		exit(30);
+		
 	}
 
 	return 0;
