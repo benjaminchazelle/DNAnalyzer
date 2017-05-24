@@ -26,7 +26,7 @@ public:
 // Implémentation
 protected:
 	HICON m_hIcon;
-
+	
 	// Fonctions générées de la table des messages
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
@@ -37,9 +37,14 @@ public:
 	afx_msg void OnCbnSelchangeCombo1();
 	afx_msg void OnBnClickedMfcmenubutton1();
 	afx_msg void OnEnChangeMfceditbrowse1();
+	unordered_map<int, Serveur> getServeurs();
+	static UINT ObtenirMaladiesThread(void*);
+	void unSetObtenirMaladiesThreadInstance();
+	void setWindowTitle(string title);
 protected:
 	CString pathname;
 	unordered_map<int,Serveur> serveurs;
+	HANDLE* obtenirMaladiesThreadInstance;
 public:
 	afx_msg void OnCbnSelchangeCombo2();
 };

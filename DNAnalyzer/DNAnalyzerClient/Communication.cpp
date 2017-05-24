@@ -34,14 +34,14 @@ string Communication::EnvoyerMessage(const Serveur & serveur, const string & mes
 	printf("\nInitialising Winsock...");
 	if (WSAStartup(MAKEWORD(2, 2), &WSData) != 0)
 	{
-		runtime_error("Winsock initialisation failed : " + WSAGetLastError());
+		throw runtime_error("Winsock initialisation failed : " + WSAGetLastError());
 	}
-	
+
 	printf("Initialised.\n");
-	
+
 	// Résolution de l'hostname
 
-	char *hostname = new char[serveur.host.size()+1];
+	char *hostname = new char[serveur.host.size() + 1];
 	strcpy(hostname, serveur.host.c_str());
 
 	char ip[100];
@@ -68,7 +68,7 @@ string Communication::EnvoyerMessage(const Serveur & serveur, const string & mes
 
 	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
 	{
-		runtime_error("Socket creation failed : " +  WSAGetLastError());
+		throw runtime_error("Socket creation failed : " + WSAGetLastError());
 	}
 
 	printf("Socket created.\n");
@@ -78,10 +78,10 @@ string Communication::EnvoyerMessage(const Serveur & serveur, const string & mes
 	sin.sin_addr.s_addr = inet_addr(ip);
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(serveur.port);
-	
-	if (connect(sock, (struct sockaddr *)&sin, sizeof(sin)) < 0)
+	int con = connect(sock, (struct sockaddr *)&sin, sizeof(sin));
+	if (con < 0)
 	{
-		runtime_error("Connection failed : " + WSAGetLastError());
+		throw runtime_error("Connection failed : " + WSAGetLastError());
 	}
 
 	puts("Connected");
@@ -90,7 +90,7 @@ string Communication::EnvoyerMessage(const Serveur & serveur, const string & mes
 
 	if (send(sock, message.c_str(), strlen(message.c_str()), 0) < 0)
 	{
-		runtime_error("Message sending fail : " + WSAGetLastError());
+		throw runtime_error("Message sending fail : " + WSAGetLastError());
 	}
 
 	puts("Data Send\n");
@@ -106,9 +106,11 @@ string Communication::EnvoyerMessage(const Serveur & serveur, const string & mes
 
 	do {
 
-		if ((bytesReceived = recv(sock, buffer, bufferSize, 0)) == SOCKET_ERROR)
+		bytesReceived = recv(sock, buffer, bufferSize, 0);
+
+		if (bytesReceived == SOCKET_ERROR || bytesReceived == -1)
 		{
-			puts("recv failed");
+			throw runtime_error("Response receiving fail : " + WSAGetLastError());
 		}
 
 		buffer[bytesReceived] = '\0';
