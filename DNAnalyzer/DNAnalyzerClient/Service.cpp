@@ -41,6 +41,7 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 		request += "CHECK DISEASE\r\n";
 		request += maladie + "\r\n";
 		request += lireFichier(filename);
+		request += "\r\n\r\n";
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
@@ -86,6 +87,7 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 		request = "MA v1.0\r\n";
 		request += "CHECK ALL\r\n";
 		request += lireFichier(filename);
+		request += "\r\n\r\n";
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
@@ -218,11 +220,11 @@ bool Service::analysePreciseParseur(const string & response)
 
 	// On vérifie la présence ou non de la maladie
 
-	if (line == "1\r")
+	if (line == "1")
 	{
 		results = true;
 	}
-	else if (line == "0\r")
+	else if (line == "0")
 	{
 	}
 	else
