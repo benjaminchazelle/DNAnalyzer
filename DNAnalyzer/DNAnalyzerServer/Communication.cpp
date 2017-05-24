@@ -45,9 +45,15 @@ void Communication::Ecouter(unsigned int port)
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 
-	bind(sock, (SOCKADDR *)&sin, sizeof(sin));
+	if (bind(sock, (SOCKADDR *)&sin, sizeof(sin)) < 0)
+	{
+		throw runtime_error("Server binding error");
+	}
 
-	listen(sock, 0);
+	if (listen(sock, 0) < 0)
+	{
+		throw runtime_error("Server listening error");
+	}
 
 	cout << "DNAnalyzer Server listening on port " << port << endl;
 

@@ -43,6 +43,7 @@ public:
 
 	void Ecouter(unsigned int port);
 	// Mode d'emploi : Lance un serveur sur le port <port>
+	// Exception "runtime_error" : Si le serveur ne peut se lancer
 
 	Communication & operator = (const Communication &);
 	// Mode d'emploi : Opérateur d'affectation, non implémenté
