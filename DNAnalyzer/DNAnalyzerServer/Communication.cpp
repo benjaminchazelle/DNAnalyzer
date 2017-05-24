@@ -34,6 +34,8 @@ Communication & Communication::ObtenirInstance()
 
 void Communication::Ecouter(unsigned int port)
 {
+	// Initialisation du serveur
+
 	WSADATA WSAData;
 	WSAStartup(MAKEWORD(2, 0), &WSAData);
 
@@ -49,6 +51,7 @@ void Communication::Ecouter(unsigned int port)
 
 	cout << "DNAnalyzer Server listening on port " << port << endl;
 
+	// Récéption des requêtes des clients
 	while (1)
 	{
 		recevoirRequete();
@@ -65,12 +68,14 @@ void Communication::recevoirRequete()
 
 	int addrlen = sizeof(SOCKADDR_IN);
 
+	// On attend la connexion d'un client
 	if ((*csock = accept(sock, (SOCKADDR *)cin, &addrlen)) != INVALID_SOCKET)
 	{		
 		Peer* peer = new Peer;
 		peer->cin = cin;
 		peer->csock = csock;
 
+		// On lance un thread pour traiter la requête du client en parallèle
 		threadServeurHandle = CreateThread(NULL, 0, &Communication::threadRequete, peer, 0, NULL);
 
 		if (threadServeurHandle != NULL) {
@@ -94,7 +99,7 @@ void Communication::recevoirRequete()
 
 DWORD Communication::threadRequete(void * p)
 {
-
+	// Délégation du traitement de la requête à CommunciationThread::Traiter
 	CommunicationThread t((Peer*) p);
 
 	t.Traiter();

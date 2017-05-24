@@ -112,7 +112,7 @@ namespace DNAnalyzerServerTest
 
 		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EmptyWord_One)
 		{
-			// Mots vides ignorés dans un dictionnaire à une entrée
+			// Mots vides ignorés dans un dictionnaire à une seule entrée
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
@@ -170,7 +170,7 @@ namespace DNAnalyzerServerTest
 
 		TEST_METHOD(ChargerFichier_CorrectSyntaxes_BadHeader)
 		{
-			// Le header du fichier doit être correcte, sinon quoi le fichier n'est pas chargé
+			// L'en-tête du fichier doit être correcte, sinon quoi le fichier n'est pas chargé
 
 			bool invalidArgumentException = false;
 
@@ -193,9 +193,9 @@ namespace DNAnalyzerServerTest
 
 		}
 
-		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EndlComma_One)
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_SemiColon_One)
 		{
-			// Les lignes peuvent se finir avec une virgule sans incidence
+			// Les lignes peuvent se finir avec un point-virgule sans incidence
 			// Test sur un dictionnaire à une entrée unique
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
@@ -214,9 +214,9 @@ namespace DNAnalyzerServerTest
 
 		}
 	
-		TEST_METHOD(ChargerFichier_CorrectSyntaxes_EndlComma_Multiple)
+		TEST_METHOD(ChargerFichier_CorrectSyntaxes_SemiColon_Multiple)
 		{
-			// Les lignes peuvent se finir avec une virgule sans incidence
+			// Les lignes peuvent se finir avec un point-virgule sans incidence
 			// Test sur un dictionnaire à plusieurs entrées
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
@@ -281,7 +281,7 @@ namespace DNAnalyzerServerTest
 
 		TEST_METHOD(ObtenirMaladie_KnownMaladie) {
 
-			// Maladie connue
+			// Une maladie connue doit pouvoir être retrouvée dans le dictionnaire
 
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 0);
 
@@ -304,7 +304,7 @@ namespace DNAnalyzerServerTest
 
 		TEST_METHOD(ObtenirMaladie_UnknownMaladie) {
 
-			// Maladie inconnue lève une exception "range_error"
+			// CHercher une maladie inconnue lève une exception "range_error"
 
 			bool rangeErrorException = false;
 
@@ -331,7 +331,7 @@ namespace DNAnalyzerServerTest
 
 		TEST_METHOD(ObtenirMaladie_KnownMaladies) {
 
-			// Maladies connues
+			// Des maladies connues doivent pouvoir être retrouvée dans le dictionnaire 
 
 			FileUtil::write(_dicoTestFile, "MA v1.0\r\nNAME;AA;CC;GG;TT\r\nNAME2;AA;CCCC\r\n");
 			try {
@@ -356,7 +356,7 @@ namespace DNAnalyzerServerTest
 	
 		TEST_METHOD(ObtenirMaladies_NoMaladies) {
 
-			// Aucune maladie
+			// On doit obtenir aucune maladie pour un mot inexistant
 
 			char motInexistant[] = "ATCGINEXISTANT";
 			
@@ -368,7 +368,7 @@ namespace DNAnalyzerServerTest
 
 		TEST_METHOD(ObtenirNomsMaladies_EmptyDictionnaire) {
 			
-			// Dictionnaire vide
+			// On ne doit pas pouvoir récupérer de maladies dans un dictionnaire vide
 
 			FileUtil::write(_dicoTestFile, "MA v1.0\r\n");
 

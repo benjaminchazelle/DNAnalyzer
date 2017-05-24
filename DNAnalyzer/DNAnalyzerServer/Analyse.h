@@ -33,24 +33,24 @@ class Analyse
 public:
 
 	static bool AnalysePrecise(const unordered_set<string> & genome, const Maladie & maladie);
-	// Mode d'emploi : Renvoie true si la maladie se trouve dans le génome de taille , sinon false
+	// Mode d'emploi : Renvoie true si la maladie <maladie> se trouve dans le génome <genome> , sinon false
 
 	static const unordered_set<const Maladie *> AnalyseGlobale(const unordered_set<string> & genome);
-	// Mode d'emploi : Retourne un tableau associant les maladies avec leur présence (true) ou non (false) dans le génome de taille
+	// Mode d'emploi : Retourne un tableau associant les maladies avec leur présence (true) ou non (false) dans le génome <genome>
 
 	Analyse & operator = (const Analyse &);
-	// Mode d'emploi : opérateur d'affectation, non implémenté
+	// Mode d'emploi : Opérateur d'affectation, non implémenté
 
 	Analyse(const Analyse &);
-	// Mode d'emploi : constructeur de copie, non implémenté
+	// Mode d'emploi : Constructeur de copie, non implémenté
 
 protected:
 
 	Analyse();
-	// Mode d'emploi : constructeur, non implémenté
+	// Mode d'emploi : Constructeur, non implémenté
 
 	virtual ~Analyse();
-	// Mode d'emploi : destructeur, non implémenté
+	// Mode d'emploi : Destructeur, non implémenté
 };
 
 #endif

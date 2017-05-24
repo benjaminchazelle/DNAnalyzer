@@ -56,10 +56,14 @@ bool Configuration::ChargerFichier(const string & fichierServeurs)
 	{
 		string line;
 
+		// On lit le fichier ligne par ligne
+
 		while (getline(fichier, line, '\n')) {
 
 			stringstream linestream;
 			linestream << line;
+
+			// Sur une ligne, on récupère le nom d'hôte et le port
 
 			string hostname;
 
@@ -68,6 +72,8 @@ bool Configuration::ChargerFichier(const string & fichierServeurs)
 			string port;
 
 			getline(linestream, port);
+
+			// On vérifie que le port est un nombre valide
 
 			bool validPort = !port.empty()
 				&& port.find_first_not_of("0123456789") == std::string::npos;
@@ -83,6 +89,8 @@ bool Configuration::ChargerFichier(const string & fichierServeurs)
 			if (serveur.port > 65535 || serveur.port == 0) {
 				continue;
 			}
+
+			// On ajoute la configuration à la liste
 
 			serveurs.push_back(serveur);
 

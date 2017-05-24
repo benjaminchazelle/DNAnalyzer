@@ -34,6 +34,8 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 {
 	string request, response;
 
+	// On formule la requête
+
 	try {
 		request = "MA v1.0\r\n";
 		request += "CHECK DISEASE\r\n";
@@ -45,6 +47,8 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 		throw runtime_error("Le fichier ne peut être ouvert");
 	}
 
+	// On récupère la réponse
+
 	try {
 		response = Communication::EnvoyerMessage(serveur, request);
 	}
@@ -52,6 +56,8 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 		UNREFERENCED_PARAMETER(e);
 		throw runtime_error("Une erreur est survenue avec le serveur");
 	}
+
+	// On analyse la réponse
 
 	bool results;
 
@@ -70,6 +76,8 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 {
 	string request, response;
 
+	// On formule la requête
+
 	try {
 		request = "MA v1.0\r\n";
 		request += "CHECK ALL\r\n";
@@ -80,6 +88,8 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 		throw runtime_error("Le fichier ne peut être ouvert");
 	}
 
+	// On récupère la réponse
+
 	try {
 		response = Communication::EnvoyerMessage(serveur, request);
 	}
@@ -87,6 +97,8 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 		UNREFERENCED_PARAMETER(e);
 		throw runtime_error("Une erreur est survenue avec le serveur");
 	}
+
+	// On analyse la réponse
 
 	unordered_set<string> results;
 
@@ -105,6 +117,8 @@ unordered_set<string> Service::ObtenirMaladies(const Serveur & serveur)
 {
 	string response;
 
+	// On récupère la réponse de la requête
+
 	try {
 		response = Communication::EnvoyerMessage(serveur, "MA v1.0\r\nGET DISEASES\r\n\r\n");
 	}
@@ -112,6 +126,8 @@ unordered_set<string> Service::ObtenirMaladies(const Serveur & serveur)
 		UNREFERENCED_PARAMETER(e);
 		throw runtime_error("Une erreur est survenue avec le serveur");
 	}
+
+	// On analyse la réponse
 
 	unordered_set<string> maladies;
 
@@ -128,6 +144,7 @@ unordered_set<string> Service::ObtenirMaladies(const Serveur & serveur)
 
 string Service::lireFichier(const string & filename)
 {
+	// On lit le contenu d'un fichier
 
 	ifstream fichier(filename, ios::in);
 
@@ -156,6 +173,8 @@ bool Service::analysePreciseParseur(const string & response)
 
 	responseStream << response;
 
+	// On vérifie l'en-tête
+
 	string line;
 
 	getline(responseStream, line, '\n');
@@ -164,6 +183,8 @@ bool Service::analysePreciseParseur(const string & response)
 	{
 		throw invalid_argument("Requête incorrecte");
 	}
+
+	// On vérifie le début de ligne
 
 	string prefix = "DESEASE ";
 	size_t prefixLength = prefix.length();
@@ -175,9 +196,13 @@ bool Service::analysePreciseParseur(const string & response)
 		throw invalid_argument("Requête incorrecte");
 	}
 
+	// On récupère la maladie
+
 	string maladie = line.substr(prefixLength, line.size() - prefixLength - 1);
 
 	getline(responseStream, line, '\n');
+
+	// On vérifie la présence ou non de la maladie
 
 	if (line == "1\r")
 	{
@@ -202,6 +227,8 @@ unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 
 	responseStream << response;
 
+	// On vérifie l'en-tête
+
 	string line;
 
 	getline(responseStream, line, '\n');
@@ -210,6 +237,8 @@ unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 	{
 		throw invalid_argument("Requête incorrecte");
 	}
+
+	// On lit les lignes une à une
 
 	const string prefix = "DESEASE ";
 	const size_t prefixLength = prefix.length();
@@ -220,6 +249,8 @@ unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 		{
 			continue;
 		}
+
+		// On récupère le nom de la maladie pour les ajouter à l'ensemble
 
 		string maladie = line.substr(prefixLength, line.size() - prefixLength - 1);
 
@@ -238,6 +269,8 @@ unordered_set<string> Service::obtenirMaladiesParseur(const string & response)
 
 	responseStream << response;
 
+	// On vérifie l'en-tête
+
 	string line;
 
 	getline(responseStream, line, '\n');
@@ -253,6 +286,8 @@ unordered_set<string> Service::obtenirMaladiesParseur(const string & response)
 	{
 		throw invalid_argument("Requête incorrecte");
 	}
+
+	// On lit ligne par ligne pour ajouter la maladie à l'ensemble
 
 	while (getline(responseStream, line, '\n') && line.size() > 1) {
 

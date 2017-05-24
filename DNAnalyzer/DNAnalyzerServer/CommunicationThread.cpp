@@ -24,6 +24,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 void CommunicationThread::Repondre(const string & reponse)
 {
+	// Envoit un message sur la socket 
 	int bytesSent = send(*csock, reponse.c_str(), reponse.length(), 0);
 
 	if (bytesSent == SOCKET_ERROR) {
@@ -40,6 +41,7 @@ void CommunicationThread::Repondre(const string & reponse)
 
 CommunicationThread::CommunicationThread(Peer * peer) : csock(peer->csock), clientInfo("")
 {
+	// Initialisation des données du client dans le CommunicationThread
 	clientInfo = string(inet_ntoa(peer->cin->sin_addr));
 	clientInfo += ":" + to_string(peer->cin->sin_port);
 
@@ -47,6 +49,7 @@ CommunicationThread::CommunicationThread(Peer * peer) : csock(peer->csock), clie
 }
 void CommunicationThread::Traiter() {
 	
+	// Délégation du traitement de la requête au Master
 	Master::InterpreterRequete(*this);
 
 }
@@ -60,11 +63,12 @@ string CommunicationThread::LireLigne() {
 	const string eolMarker = "\r\n";
 	const size_t eolMarkerLength = eolMarker.size();
 
-
+	// Si le buffer est déjà rempli, on essaye d'y lire une ligne
 	if (requestBuffer.size() > 0) {
 
 		size_t eolPosition = requestBuffer.find(eolMarker);
 
+		// Si on a trouvé une ligne, on la renvoie
 		if (eolPosition != string::npos) {
 
 			string line = requestBuffer.substr(0, eolPosition);
@@ -77,6 +81,8 @@ string CommunicationThread::LireLigne() {
 
 	}
 
+	// Si aucune ligne n'était dans le buffer, on lit le flux d'entrée réseau
+
 	int bytesReceived;
 
 	do {
@@ -88,6 +94,9 @@ string CommunicationThread::LireLigne() {
 		bytesReceived = recv(*csock, inputBuffer, inputBufferSize, 0);
 
 		if (bytesReceived > 0) {
+
+			// Si on a réussi à lire le réseau, on y cherche une ligne
+			// On met à jour le buffer
 
 			inputBuffer[bytesReceived] = '\0';
 
@@ -117,13 +126,9 @@ string CommunicationThread::LireLigne() {
 			}
 
 		}
-		else if (bytesReceived == 0) {
-
-			cerr << "erreur"; // TODO
-
-			break;
-		}
 		else {
+
+			// Si une erreur survient
 
 			if (10054 == WSAGetLastError()) {
 				printf("%s : Connection closed by client\n", clientInfo.c_str());
@@ -143,6 +148,8 @@ string CommunicationThread::LireLigne() {
 }
 
 void CommunicationThread::FermerConnexion() {
+
+	// On ferme proprement la connexion
 
 	unsigned int bytesReceived = shutdown(*csock, SD_SEND);
 
