@@ -176,6 +176,7 @@
     <ClCompile Include="Mots.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Log.h" />
     <ClInclude Include="Master.h" />
     <ClInclude Include="CommunicationThread.h" />
     <ClInclude Include="Dictionnaire.h" />
