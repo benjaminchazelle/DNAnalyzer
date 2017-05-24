@@ -161,8 +161,12 @@ bool Service::analysePreciseParseur(const string & response)
 	string line;
 
 	getline(responseStream, line, '\n');
+	if (line[line.length() - 1] == '\r')
+	{
+		line = line.substr(0, line.length() - 1);
+	}
 
-	if (line != "MA v1.0\r")
+	if (line != "MA v1.0")
 	{
 		throw invalid_argument("Requête incorrecte");
 	}
@@ -208,7 +212,12 @@ unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 
 	getline(responseStream, line, '\n');
 
-	if (line != "MA v1.0\r")
+	if (line[line.length() - 1] == '\r')
+	{
+		line = line.substr(0, line.length() - 1);
+	}
+
+	if (line != "MA v1.0")
 	{
 		throw invalid_argument("Requête incorrecte");
 	}

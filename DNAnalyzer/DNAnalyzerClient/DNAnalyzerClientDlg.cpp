@@ -11,6 +11,7 @@
 #include "Configuration.h"
 #include "Service.h"
 #include "Serveur.h"
+#include <mutex>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -85,6 +86,10 @@ END_MESSAGE_MAP()
 
 // gestionnaires de messages pour CDNAnalyzerClientDlg
 
+mutex mtxServeurs;
+mutex mtxMessages;
+mutex mtxThreads;
+
 BOOL CDNAnalyzerClientDlg::OnInitDialog()
 {
 	
@@ -132,7 +137,7 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 
 	vector<struct Serveur> liste = cf1.ObtenirListeServeur();
 
-
+	mtxServeurs.lock();
 	for(vector<struct Serveur>::iterator i = liste.begin(); i!=liste.end();i++)
 	{
 		Serveur serv = *i;
@@ -142,7 +147,7 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 		serveurs[position] = *i;
 
 	}
-
+	mtxServeurs.unlock();
 	pCombo->SetWindowText(L"Choisir un Serveur");
 	GetDlgItem(IDC_COMBO2)->EnableWindow(false);
 	GetDlgItem(IDC_COMBO1)->EnableWindow(false);
@@ -162,11 +167,12 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 	pTC->SetItem(iTabs, &tcItem);
 	pTC->InsertItem(iTabs, &tcItem);
 
+	mtxMessages.lock();
 	messagesOnglets[tcItem.lParam] = "Bienvenue sur DNAnalyser.\nVeuillez Sélectionner un génôme tester, un serveur d'analyse et une maladie à analyser.\nPour obtenir de l'aide, veuillez consulter le manuel utilisateur.";
 	
 	CRichEditCtrl* rich = (CRichEditCtrl*) GetDlgItem(IDC_RICHEDIT23);
 	CString cstringed = (CString)messagesOnglets[tcItem.lParam].c_str();
-
+	mtxMessages.unlock();
 	rich->SetWindowTextW((LPCTSTR)cstringed);
 
 	return TRUE;  
@@ -245,7 +251,7 @@ void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
 	CT2CA pathnameAConvertir(pathname);
 	std::string filename(pathnameAConvertir);
 
-	string serv = serveurs[index].host + ":" + to_string(serveurs[index].port);
+	string serv = serveur.host + ":" + to_string(serveur.port);
 	string title = " - " + serv;
 
 	if (maladie == "=Analyse Globale (Toutes les maladies)=")
@@ -253,14 +259,18 @@ void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
 		string content = "Envoi d'une requête d'Analyse Globale au serveur " + serv;
 		createTab(title, content);
 		CWinThread * analyseGlob = AfxBeginThread(AnalyseGlobaleThread, this);
+		mtxThreads.lock();
 		threadsOnglets[CDNAnalyzerClientDlg::nextTabId-1] = &(analyseGlob->m_hThread);
+		mtxThreads.unlock();
 	}
 	else
 	{
 		string content = "Envoi d'une requête d'Analyse Précise au serveur " + serv+" pour la maladie : "+maladie;
 		createTab(title, content);
 		CWinThread * analysePrec = AfxBeginThread(AnalysePreciseThread, this);
+		mtxThreads.lock();
 		threadsOnglets[CDNAnalyzerClientDlg::nextTabId-1] = &(analysePrec->m_hThread);
+		mtxThreads.unlock();
 	}
 
 }
@@ -294,6 +304,7 @@ unordered_multiset<Serveur, string> CDNAnalyzerClientDlg::getCacheMaladies()
 	return unordered_multiset<Serveur, string>();
 }
 */
+
 void CDNAnalyzerClientDlg::setWindowTitle(string title)
 {
 	CString cs = (CString)title.c_str();
@@ -394,29 +405,40 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * pParam)
 	{
 		unordered_set<string> resultats = Service::AnalyseGlobale(serveur, filename);
 		string newMessage = pThis->messagesOnglets[item.lParam]+"\nRésultats de l'analyse globale - Maladies détectées positivement :\n";
-		for(unordered_set<string>::iterator i = resultats.begin(); i!=resultats.end() ; i++)
+		if (resultats.size() != 0)
 		{
-			newMessage += "- " + *i + "\n";
+			for (unordered_set<string>::iterator i = resultats.begin(); i != resultats.end(); i++)
+			{
+				newMessage += "- " + *i + "\n";
+			}
 		}
+		else
+		{
+			newMessage += "Aucune maladie";
+		}
+		mtxMessages.lock();
 		pThis->messagesOnglets[item.lParam] = newMessage;
+		
 		pTC->SetCurSel(index);
 		//code redondant (3 lignes suivantes)
 		CRichEditCtrl* rich = (CRichEditCtrl*)pThis->GetDlgItem(IDC_RICHEDIT23);
 
 		CString cstringed = (CString)pThis->messagesOnglets[item.lParam].c_str();
-
+		mtxMessages.unlock();
 		rich->SetWindowTextW((LPCTSTR)cstringed);
 	}
 	catch (exception const & e)
 	{
 		string newMessage = pThis->messagesOnglets[item.lParam] + "\nEchec de la communication avec le serveur.";
+		mtxMessages.lock();
 		pThis->messagesOnglets[item.lParam] = newMessage;
+		
 		pTC->SetCurSel(index);
 		//code redondant (3 lignes suivantes)
 		CRichEditCtrl* rich = (CRichEditCtrl*)pThis->GetDlgItem(IDC_RICHEDIT23);
 
 		CString cstringed = (CString)pThis->messagesOnglets[item.lParam].c_str();
-
+		mtxMessages.unlock();
 		rich->SetWindowTextW((LPCTSTR)cstringed);
 	}
 
@@ -469,25 +491,29 @@ UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * pParam)
 		{
 			newMessage += "test négatif\n";
 		}
+		mtxMessages.lock();
 		pThis->messagesOnglets[item.lParam] = newMessage;
+		
 		pTC->SetCurSel(index);
 		//code redondant (3 lignes suivantes)
 		CRichEditCtrl* rich = (CRichEditCtrl*)pThis->GetDlgItem(IDC_RICHEDIT23);
 
 		CString cstringed = (CString)pThis->messagesOnglets[item.lParam].c_str();
-
+		mtxMessages.unlock();
 		rich->SetWindowTextW((LPCTSTR)cstringed);
 	}
 	catch (exception const & e)
 	{
 		string newMessage = pThis->messagesOnglets[item.lParam] + "\nEchec de la communication avec le serveur.";
+		mtxMessages.lock();
 		pThis->messagesOnglets[item.lParam] = newMessage;
+		
 		pTC->SetCurSel(index);
 		//code redondant (3 lignes suivantes)
 		CRichEditCtrl* rich = (CRichEditCtrl*)pThis->GetDlgItem(IDC_RICHEDIT23);
 
 		CString cstringed = (CString)pThis->messagesOnglets[item.lParam].c_str();
-
+		mtxMessages.unlock();
 		rich->SetWindowTextW((LPCTSTR)cstringed);
 	}
 
@@ -508,7 +534,9 @@ void CDNAnalyzerClientDlg::createTab(string title,string content)
 	pTC->InsertItem(iTabs, &tcItem);
 	pTC->SetCurSel(iTabs);
 	GetDlgItem(IDC_BUTTON1)->EnableWindow(true);
+	mtxMessages.lock();
 	messagesOnglets[tcItem.lParam] = content;
+	mtxMessages.unlock();
 }
 
 void CDNAnalyzerClientDlg::unSetObtenirMaladiesThreadInstance()
@@ -560,9 +588,13 @@ void CDNAnalyzerClientDlg::OnBnClickedButton1()
 	item.mask = TCIF_TEXT | TCIF_PARAM;
 
 	BOOL test = pTC->GetItem(index, &item);
+	mtxThreads.lock();
 	HANDLE * aSuppr = threadsOnglets[item.lParam];
 	TerminateThread(*aSuppr, 1);
+	mtxThreads.unlock();
+	mtxMessages.lock();
 	messagesOnglets[item.lParam]="";
+	mtxMessages.unlock();
 	BOOL suppr = pTC->DeleteItem(index);
 	int newIndex = (index - 1) < 0 ? index + 1 : index - 1;
 	pTC->SetCurSel(newIndex);
