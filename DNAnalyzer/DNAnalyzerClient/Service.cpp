@@ -39,6 +39,7 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 		request += "CHECK DISEASE\r\n";
 		request += maladie + "\r\n";
 		request += lireFichier(filename);
+		request += "\r\n\r\n";
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
@@ -74,6 +75,7 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 		request = "MA v1.0\r\n";
 		request += "CHECK ALL\r\n";
 		request += lireFichier(filename);
+		request += "\r\n\r\n";
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
@@ -179,11 +181,11 @@ bool Service::analysePreciseParseur(const string & response)
 
 	getline(responseStream, line, '\n');
 
-	if (line == "1\r")
+	if (line == "1")
 	{
 		results = true;
 	}
-	else if (line == "0\r")
+	else if (line == "0")
 	{
 	}
 	else
@@ -221,7 +223,7 @@ unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 			continue;
 		}
 
-		string maladie = line.substr(prefixLength, line.size() - prefixLength - 1);
+		string maladie = line.substr(prefixLength, line.size() - prefixLength +(line.at(line.length()-1)=='\r'?-1:0));
 
 		results.insert(maladie);
 
