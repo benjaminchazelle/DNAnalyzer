@@ -57,7 +57,7 @@ namespace DNAnalyzerServerTest
 				Dictionnaire::ObtenirInstance().ChargerFichier(_dicoTestFile);
 				Assert::Fail();
 			}
-			catch (std::exception const& e) {
+			catch (runtime_error const& e) {
 				UNREFERENCE_PARAMETER(e);
 
 				runtimeErrorException = true;

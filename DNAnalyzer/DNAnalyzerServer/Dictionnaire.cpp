@@ -55,6 +55,11 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 
 	ifstream inDico(fichierDico);
 
+	if (!inDico)
+	{
+		throw runtime_error("Impossible d'ouvrir le fichier");
+	}
+
 	//1er ligne
 	l++;
 	if (!getline(inDico, ligne)||(ligne != "MA v1.0"&&ligne != "MA v1.0\r")) {//Si on n'arrive pas a lire la 1er ligne
