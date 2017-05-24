@@ -18,7 +18,7 @@ e-mail               :	benjamin.chazelle@insa-lyon.fr
 
 using namespace std;
 
-//comparateur de clef pour l'unordered_map<char*, unsigned int ...> mots
+// Comparateur de clés pour l'unordered_map<char*, unsigned int ...>
 struct cmp_charptr {
 	bool operator()(char *first, char  *second) const
 	{
@@ -36,6 +36,7 @@ struct hash_charptr {
 	}
 };
 typedef unordered_map<char*, unsigned int, hash_charptr, cmp_charptr> unordered_map_chars_uint;
+
 //------------------------------------------------------------------------
 // Rôle de la classe <Mots>
 //  La classe Mots permet de manipuler (insérer, rechercher) un ensemble 
@@ -51,7 +52,6 @@ protected:
 	// Description : Instance singleton de Mots
 
 	unordered_map_chars_uint mots;
-	//unordered_map<char*, unsigned int> mots;
 	// Description : Dictionnaire d'un mot vers son index
 
 	unordered_map<unsigned int, char*> mots_revers;
@@ -63,42 +63,42 @@ protected:
 public:
 
 	static Mots& ObtenirInstance();
-	// Mode d'emploi : renvoit l'instance singleton de Mots
+	// Mode d'emploi : Renvoie l'instance singleton de Mots
 
 	static void RafraichirInstance();
-	// Mode d'emploi : réinitialise l'instance singleton
+	// Mode d'emploi : Réinitialise l'instance singleton
 
-	unsigned int ObtenirIndex(const char []);
-	// Mode d'emploi : renvoit l'index d'un mot s'il existe
-	// Exception "invalid_argument" : si un index null est envoyé
-	// Exception "" : si le mot est inconnu
+	unsigned int ObtenirIndex(const char mot[]);
+	// Mode d'emploi : Renvoie l'index d'un mot <mot> s'il existe
+	// Exception "invalid_argument" : Si un index null est envoyé
+	// Exception "range_error" : Si le mot est inconnu
 
-	unsigned int InsererMot(const char []);
-	// Mode d'emploi : insère un mot dans l'ensemble et renvoit son index
-	// Exception "invalid_argument" : si un index null est envoyé
-	// Exception "overflow_error" : si le mot est déjà connu
+	unsigned int InsererMot(const char mot[]);
+	// Mode d'emploi : Insère un mot <mot> dans l'ensemble et renvoie son index
+	// Exception "invalid_argument" : Si un index null est envoyé
+	// Exception "overflow_error" : Si le mot est déjà connu
 
-	char const * RecupererMot(const unsigned int);
-	// Mode d'emploi : récupère un mot par son index
-	// Exception "range_error" : si l'index est inconnu
+	char const * RecupererMot(const unsigned int indexMot);
+	// Mode d'emploi : Récupère un mot par son index <indexMot>
+	// Exception "range_error" : Si l'index est inconnu
 
 	unsigned int ObtenirNombreMots();
-	// Mode d'emploi : renvoit le nombre de mots dans l'ensemble
+	// Mode d'emploi : Renvoie le nombre de mots dans l'ensemble
 
 
 	Mots & operator = (const Mots &);
-	// Mode d'emploi : opérateur d'affectation, non implémenté
+	// Mode d'emploi : Opérateur d'affectation, non implémenté
 
 	Mots(const Mots &);
-	// Mode d'emploi : constructeur de copie, non implémenté
+	// Mode d'emploi : Constructeur de copie, non implémenté
 
 protected:
 
 	Mots();
-	// Mode d'emploi : constructeur
+	// Mode d'emploi : Constructeur
 
 	virtual ~Mots();
-	// Mode d'emploi : destructeur
+	// Mode d'emploi : Destructeur
 };
 
 #endif // !MOTS_H

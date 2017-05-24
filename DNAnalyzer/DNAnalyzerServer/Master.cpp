@@ -1,5 +1,5 @@
 /*************************************************************************
-Master - Classe qui gére la communication entre un clientInfo et le service demander
+Master - Classe qui gére la communication entre un client et le service demander
 -------------------
 début                :	06/05/17
 copyright            :	(C) 2017 par VOGEL
@@ -28,6 +28,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 void Master::InterpreterRequete(CommunicationThread & thread)
 {
+	// En-tête de requête
 	if (thread.LireLigne() != "MA v1.0") {
 		repondreErreurRequete("Invalid syntax", thread);
 		thread.FermerConnexion();
@@ -36,6 +37,7 @@ void Master::InterpreterRequete(CommunicationThread & thread)
 
 	string serviceName = thread.LireLigne();
 
+	// Routage du service demandé
 	if (serviceName == "CHECK DISEASE")
 	{
 		string maladie = thread.LireLigne();
@@ -74,6 +76,8 @@ void Master::InterpreterRequete(CommunicationThread & thread)
 
 void Master::analysePrecise(const string & nomMaladie, const string & genome, CommunicationThread & thread)
 {
+	// Analyse précise
+
 	string response = "MA v1.0\r\n";
 
 	try {
@@ -89,7 +93,7 @@ void Master::analysePrecise(const string & nomMaladie, const string & genome, Co
 
 		thread.Repondre(response);
 	}
-	catch (range_error const& e) {
+	catch (range_error const& e) { // Si la maldie est inconnue
 		UNREFERENCE_PARAMETER(e);
 
 		repondreErreurRequete("Unknown disease", thread);
@@ -100,6 +104,8 @@ void Master::analysePrecise(const string & nomMaladie, const string & genome, Co
 
 void Master::analyseGlobale(const string & genome, CommunicationThread & thread)
 {
+	// Analyse globale
+
 	string response = "MA v1.0\r\n";
 
 	for (const auto& resultatMaladie : Analyse::AnalyseGlobale(encoderGenome(genome))) {
@@ -116,6 +122,8 @@ void Master::analyseGlobale(const string & genome, CommunicationThread & thread)
 
 void Master::obtenirListeMaladies(CommunicationThread & thread)
 {
+	// Obtenir la liste des maladies
+
 	string response = "MA v1.0\r\n";
 
 	response += "DESEASES\r\n";
@@ -131,6 +139,8 @@ void Master::obtenirListeMaladies(CommunicationThread & thread)
 
 void Master::repondreErreurRequete(const string & error, CommunicationThread & thread)
 {
+	// Répondre une erreur
+
 	string response = "MA v1.0\r\n";
 	response += "ERROR " + error;
 	response += "\r\n\r\n";
@@ -140,8 +150,12 @@ void Master::repondreErreurRequete(const string & error, CommunicationThread & t
 
 unordered_set<string> Master::encoderGenome(const string & genome)
 {
+	// Conversion d'un génome de string à unordered_set<string>
+
 	unordered_set<string> set;
 	unsigned int pos = -1;
+
+	// On lit les mots un à un, séparé par ";"
 	do {
 		unsigned int startPos = pos + 1;
 		for (pos = startPos; pos < genome.length() && genome[pos] != ';'; pos++);
@@ -149,7 +163,7 @@ unordered_set<string> Master::encoderGenome(const string & genome)
 			set.insert(genome.substr(startPos, pos - startPos));
 		}
 
-	} while (pos < genome.length());
+	} while (pos < genome.length()); 
 
 	return set;
 }

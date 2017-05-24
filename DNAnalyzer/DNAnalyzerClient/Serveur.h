@@ -22,12 +22,15 @@ using namespace std;
 struct Serveur {
 
 	string host;
+	// Description : Nom d'hôte du serveur
 
 	unsigned int port;
+	// Description : Port du serveur
 
 	Serveur() : host(""), port(0) {
 
 	}
+	// Description : Constructeur
 
 };
 
@@ -44,6 +47,7 @@ namespace std
 			return std::hash<std::string>()(full);
 		}
 	};
+	// Description : Hash d'une struct Serveur
 }
 
 #endif

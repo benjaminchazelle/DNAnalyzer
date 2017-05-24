@@ -100,7 +100,7 @@ namespace DNAnalyzerServerTest
 
 		TEST_METHOD(InsererMot_GoodIndex)
 		{
-			// Inserer un mot inconnu doit renvoyer le bon index
+			// Inserer un mot inconnu doit renvoyer le bon index de ce nouveau mot
 
 			const unsigned int nombreMots = 3;
 
@@ -128,7 +128,7 @@ namespace DNAnalyzerServerTest
 		//RecupererMot
 		TEST_METHOD(RecupererMot_KnownWord)
 		{
-			// Un mot préalablement inseré, récupéré  par son index doit être le bon
+			// Un mot préalablement inseré, récupéré par son index doit être le bon
 
 			const unsigned int nombreMots = 3;
 
@@ -189,7 +189,7 @@ namespace DNAnalyzerServerTest
 		//ObtenirNombreMots
 		TEST_METHOD(ObtenirNombreMots_Initial)
 		{
-			// Le nombre de mots connu d'une instance de Mots fraiche doit être égal à 0
+			// Le nombre de mots connus d'une instance de Mots fraiche doit être égal à 0
 
 			Assert::AreEqual(Mots::ObtenirInstance().ObtenirNombreMots(), (unsigned int)0);
 		}
@@ -197,7 +197,7 @@ namespace DNAnalyzerServerTest
 		TEST_METHOD(ObtenirNombreMots_AddUnkownWord)
 		{
 
-			// Le nombre de mots connu doit s'incrémenter si l'on ajoute un mot inconnu
+			// Le nombre de mots connus doit s'incrémenter si l'on ajoute un mot inconnu
 
 			Assert::AreEqual(Mots::ObtenirInstance().ObtenirNombreMots(), (unsigned int)0);
 

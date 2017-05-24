@@ -31,22 +31,22 @@ class Communication
 public:
 
 	static string EnvoyerMessage(const struct Serveur & serveur, const string & message);
-	// Mode d'emploi : envoie une requête <message> au serveur <serveur> et renvoie sa réponse
-	// Exception "runtime_error" : si une erreur de communication survient
+	// Mode d'emploi : Envoie une requête <message> au serveur <serveur> et renvoie sa réponse
+	// Exception "runtime_error" : Si une erreur de communication survient
 
 	Communication & operator = (const Communication &);
-	// Mode d'emploi : opérateur d'affectation, non implémenté
+	// Mode d'emploi : Opérateur d'affectation, non implémenté
 	
 	Communication (const Communication &);
-	// Mode d'emploi : constructeur de copie, non implémenté
+	// Mode d'emploi : Constructeur de copie, non implémenté
 
 protected:
 
 	Communication();
-	// Mode d'emploi : constructeur, non implémenté
+	// Mode d'emploi : Constructeur, non implémenté
 
 	~Communication();
-	// Mode d'emploi : destructeur, non implémenté
+	// Mode d'emploi : Destructeur, non implémenté
 
 };
 

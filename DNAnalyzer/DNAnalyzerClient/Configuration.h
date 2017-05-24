@@ -33,37 +33,39 @@ class Configuration
 protected:
 	
 	static Configuration* instanceConfiguration;
+	// Description : Instance singleton de Configuration
 
 	vector<struct Serveur> serveurs;
+	// Description : Liste de configurations serveur
 
 public:
 
 	static Configuration& ObtenirInstance();
-	// Mode d'emploi : renvoit l'instance singleton de Configuration
+	// Mode d'emploi : Renvoie l'instance singleton de Configuration
 
 	static void RafraichirInstance();
-	// Mode d'emploi : réinitialise l'instance singleton
+	// Mode d'emploi : Réinitialise l'instance singleton
 
 	vector<struct Serveur> ObtenirListeServeur() const;
 	// Mode d'emploi : Cette méthode renvoie un ensemble de configurations de connexions serveurs.
 	
 	bool ChargerFichier(const string &  fichierServeurs);
 	// Mode d'emploi : Cette méthode lit le contenu du fichier <fichierServeurs> pour le stocker dans <serveurs>
-	// Renvoit true si le fichier a pu être chargé, false sinon
+	// Renvoie true si le fichier a pu être chargé, false sinon
 
 	Configuration & operator = (const Configuration &);
-	// Mode d'emploi : opérateur d'affectation, non implémenté
+	// Mode d'emploi : Opérateur d'affectation, non implémenté
 
 	Configuration(const Configuration &);
-	// Mode d'emploi : constructeur de copie, non implémenté
+	// Mode d'emploi : Constructeur de copie, non implémenté
 
 protected:
 	
 	Configuration();
-	// Mode d'emploi : constructeur
+	// Mode d'emploi : Constructeur
 
 	~Configuration();
-	// Mode d'emploi : destructeur
+	// Mode d'emploi : Destructeur
 
 };
 
