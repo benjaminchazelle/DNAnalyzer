@@ -42,6 +42,8 @@ function doTest(testTitle) {
 	var request = fs.readFileSync(testTitle + "/" + REQUEST_FILENAME).toString();
 	var expectedResponse = fs.readFileSync(testTitle + "/" + RESPONSE_FILENAME).toString();
 
+	var expectedResponseUnordered = fs.existsSync(testTitle + "/" + "unordered." + RESPONSE_FILENAME);
+	
 	var response = "";
 
 	var client = new net.Socket();
@@ -55,7 +57,75 @@ function doTest(testTitle) {
 
 	client.on('close', function() {
 		
-		if(response == expectedResponse) {
+		var match = response == expectedResponse;
+		
+		if(! match && expectedResponseUnordered) {
+			
+			// Vérifier si les lignes attendues (et seuelment elles) sont toutes là, qu'importe l'ordre
+			
+			var unordered = JSON.parse(fs.readFileSync(testTitle + "/" + "unordered." + RESPONSE_FILENAME).toString());
+			
+			var expectedResponseSplit = expectedResponse.split(unordered.separator);
+			
+			if(unordered.end == "$end") {
+				unordered.end = expectedResponseSplit.length;
+			}
+			
+			var expectedFragments = {};
+			
+			for(var i in expectedResponseSplit) {
+				
+				if(i < unordered.start) {
+					continue;
+				}
+				if(i > unordered.end) {
+					break;
+				}
+				
+				const split = expectedResponseSplit[i];
+				
+				if(split in expectedFragments) {
+					expectedFragments[split]++;
+				} else {
+					expectedFragments[split] = 1;
+				}
+			}
+
+			var elapsedResponseSplit = response.split(unordered.separator);
+			
+			var elapsedFragments = {};
+			
+			for(var i in elapsedResponseSplit) {
+				
+				if(i < unordered.start) {
+					continue;
+				}
+				if(i > unordered.end) {
+					break;
+				}
+				
+				const split = elapsedResponseSplit[i];
+				
+				if(split in elapsedFragments) {
+					elapsedFragments[split]++;
+				} else {
+					elapsedFragments[split] = 1;
+				}
+			}				
+			
+			for(var i in expectedFragments) {
+				
+				if(  (i in elapsedFragments && elapsedFragments[i] == expectedFragments[i]) ) {
+					delete elapsedFragments[i];
+				}
+				
+			}
+			
+			match = Object.keys(elapsedFragments).length == 0;			
+			
+		}
+		
+		if(match) {
 			
 			console.log("OK Test " + testTitle)
 			
