@@ -16,6 +16,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 #include "Dictionnaire.h"
 #include "Mots.h"
+#include "Log.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -42,6 +43,7 @@ void Dictionnaire::RafraichirInstance()
 
 void Dictionnaire::ChargerFichier(const string & fichierDico)
 {
+	LOG(T_DEBUG) << "[Dictionnaire] call ChargerFichier ( " << fichierDico << " ) ";
 	for (auto maladieIt = maladies.begin(); maladieIt != maladies.end(); maladieIt++) {
 		delete maladieIt->second;
 	}
@@ -57,14 +59,18 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 
 	if (!inDico)
 	{
+		LOG(T_ERROR) << "[Dictionnaire] file not readable";
 		throw runtime_error("Impossible d'ouvrir le fichier");
 	}
+	LOG(T_DEBUG) << "[Dictionnaire] file readable";
 
 	// 1ere ligne
 	l++;
 	if (!getline(inDico, ligne)||(ligne != "MA v1.0"&&ligne != "MA v1.0\r")) {//Si on n'arrive pas a lire la 1er ligne
+		LOG(T_ERROR) << "[Dictionnaire] not dico file";
 		throw invalid_argument("Type de fichier invalide");
 	}
+	LOG(T_DEBUG) << "[Dictionnaire] dico file";
 
 	// Boucle sur toutes les autres lignes (les maladies)
 	for (l++; getline(inDico, ligne);l++) {
@@ -79,6 +85,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 			// Récuperation du nom de la maladie
 			unsigned int pos = ligne.find(';');
 			if (pos == string::npos || pos == ligne.length()-1) {
+				LOG(T_ERROR) << "[Dictionnaire] Nom de maladie sans definition : ligne(" << ligne << "), at(" << l << ")";
 				throw invalid_argument("Nom de maladie sans definition : " + ligne + " (L " + to_string(l) + ")");
 			}
 			Maladie * onreadMaladie = new Maladie();
@@ -98,6 +105,7 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 					for (unsigned int i = 0; i < length; i++) {
 						mot[i] = ligne.at(i + lastpos + 1);
 						if (mot[i] != 'A'    &&    mot[i] != 'T'    &&    mot[i] != 'C'    &&    mot[i] != 'G') {
+							LOG(T_ERROR) << "[Dictionnaire] Mot d'une maladie invalide: maladie("<< onreadMaladie->nom << "), mot(" << mot[i] << "), ligne("<< l <<")";
 							throw invalid_argument("Maladie avec un mot invalide : " + onreadMaladie->nom + " contien un mot avec '" + mot[i] + "' (L " + to_string(l) + ")");
 						}
 					}
@@ -122,15 +130,21 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 			
 			// Nom de maladie sans définition ?
 			if (onreadMaladie->definition.size() == 0) {
+				LOG(T_ERROR) << "[Dictionnaire] Nom de maladie sans definition : ligne(" << ligne << "), at(" << l << ")";
 				throw invalid_argument("Nom de maladie sans definition : " + ligne + " (L " + to_string(l) + ")");
 			}
 			
 			// Multi définition d'une maladie
 			unordered_map<string,const Maladie*>::iterator it = maladies.find(onreadMaladie->nom);
 			if (it != maladies.end()) {// Si la maladie est déjà réferencée
+
 				if (!(*(it->second) == *onreadMaladie)) {
+					LOG(T_ERROR) << "[Dictionnaire] Multiple definition contradictoire du mot " << onreadMaladie->nom + " dans le fichier " << fichierDico << " L." << l;
 					delete onreadMaladie;
 					throw invalid_argument("Different definition d'une meme maladie : " + it->first + " (L " + to_string(l) + ")");
+				}
+				else {
+					LOG(T_WARN) << "[Dictionnaire] Multiple definition identique du mot " << onreadMaladie->nom + " dans le fichier " << fichierDico <<" L." << l;
 				}
 				delete onreadMaladie;
 			}
@@ -142,11 +156,14 @@ void Dictionnaire::ChargerFichier(const string & fichierDico)
 			}
 		}
 	}
+	LOG(T_DEBUG) << "[Dictionnaire] end ChargerFichier";
 }
 
 const Maladie * Dictionnaire::ObtenirMaladie(const string & name) {
+	LOG(T_DEBUG) << "[Dictionnaire] call ObtenirMaladie ( " << name << " ) ";
 	unordered_map<string,const Maladie*>::iterator it = maladies.find(name);
 	if (it == maladies.end()) {
+		LOG(T_WARN) << "[Dictionnaire] Maladie non defini : " << name;
 		throw range_error("maladie " + name + " non defini");
 	}
 	return it->second;
@@ -157,6 +174,7 @@ const unordered_set<const Maladie *> Dictionnaire::ObtenirMaladies(const unsigne
 }
 
 const unordered_set<string> Dictionnaire::ObtenirNomsMaladies() {
+	LOG(T_DEBUG) << "[Dictionnaire] ObtenirNomsMaladies()";
 	unordered_set<string> * res = new unordered_set<string>();
 	for (unordered_map<string,const Maladie *>::iterator it = maladies.begin(); it != maladies.end(); it++)
 		res->insert(it->first);

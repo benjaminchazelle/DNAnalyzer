@@ -24,23 +24,25 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 void CommunicationThread::Repondre(const string & reponse)
 {
+	LOG(T_DEBUG) << "[CommunicationThread] call Repondre";
 	// Envoit un message sur la socket 
 	int bytesSent = send(*csock, reponse.c_str(), reponse.length(), 0);
 
 	if (bytesSent == SOCKET_ERROR) {
 
 		if (10054 == WSAGetLastError()) {
-			printf("%s : Connection closed by client\n", clientInfo.c_str());
+			LOG(T_WARN) << "[CommunicationThread] " << clientInfo.c_str() << " : Connection closed by client";
 		}
 		else
 		{
-			printf("%s : Error %d during responding\n", clientInfo.c_str(), WSAGetLastError());
+			LOG(T_WARN) << "[CommunicationThread] " << clientInfo.c_str() << " : Error " << WSAGetLastError() << " during responding";
 		}
 
 		return;
 	}
 
-	printf("%s : Response sent (%d bytes)\n", clientInfo.c_str(), bytesSent);
+	LOG(T_INFO) << "[CommunicationThread] " << clientInfo.c_str() << " : Response sent (" << bytesSent << " bytes)";
+	LOG(T_DEBUG) << "[CommunicationThread] end Repondre";
 }
 
 
@@ -155,6 +157,7 @@ string CommunicationThread::LireLigne() {
 void CommunicationThread::FermerConnexion() {
 
 	// On ferme proprement la connexion
+	LOG(T_DEBUG) << "[CommunicationThread] call FermerConnexion of "<< clientInfo.c_str();
 
 	unsigned int bytesReceived = shutdown(*csock, SD_SEND);
 
@@ -164,9 +167,10 @@ void CommunicationThread::FermerConnexion() {
 		WSACleanup();
 	}
 
-	printf("%s : Connection closed by server\n", clientInfo.c_str());
+	LOG(T_DEBUG) << "[CommunicationThread] " << clientInfo.c_str() << " : Connection closed by server";
 
 
 	delete csock;
+	LOG(T_DEBUG) << "[CommunicationThread] end FermerConnexion";
 }
 //----------------------------------------------------------------- PRIVEE

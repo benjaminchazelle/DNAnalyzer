@@ -17,6 +17,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 #include "Analyse.h"
 #include "Mots.h"
 #include "Dictionnaire.h"
+#include "Log.h"
 
 #define UNREFERENCE_PARAMETER(P) (P)
 
@@ -25,10 +26,11 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 
 bool Analyse::AnalysePrecise(const unordered_set<string> & genome, const Maladie & maladie) {
+	LOG(T_DEBUG) << "[Analyse] call AnalysePrecise(genome de taile " << genome.size() << " , maladie(" << maladie.nom << ") )" ;
 	unsigned int count = 0;
 	for (unordered_set<string>::iterator motGenom = genome.begin(); motGenom != genome.end(); motGenom++) {
 		try {
-			unsigned int indexMotGenom = Mots::ObtenirInstance().ObtenirIndex((*motGenom).c_str());
+			unsigned int indexMotGenom = Mots::ObtenirInstance().ObtenirIndex(motGenom->c_str());
 			if (maladie.definition.find(indexMotGenom) != maladie.definition.end()) {
 				count++;
 			}
@@ -38,10 +40,13 @@ bool Analyse::AnalysePrecise(const unordered_set<string> & genome, const Maladie
 			// Si le mot n'est pas reférencé alors il n'est pas dans une maladie (rien à faire)
 		}
 	}
+	LOG(T_DEBUG) << "[Analyse] find  "<<count<<"/"<< maladie.definition.size()<<" mots";
+	LOG(T_DEBUG) << "[Analyse] end AnalysePrecise : return " << (count == maladie.definition.size() ? "true":"false");
 	return count == maladie.definition.size();
 }
 
 const unordered_set<const Maladie *> Analyse::AnalyseGlobale(const unordered_set<string> & genome) {
+	LOG(T_DEBUG) << "[Analyse] call AnalysePrecise(genome de taile " << genome.size() << " )";
 	unordered_map<const Maladie *, unsigned int> nbMotMaladieFind;
 	unordered_set<const Maladie *> resutat;
 	for (unordered_set<string>::iterator motGenom = genome.begin(); motGenom != genome.end(); motGenom++) {
@@ -51,6 +56,7 @@ const unordered_set<const Maladie *> Analyse::AnalyseGlobale(const unordered_set
 			for (unordered_set<const Maladie *>::iterator uneMaladieDuMotIt = maladiesDuMot.begin(); uneMaladieDuMotIt != maladiesDuMot.end(); uneMaladieDuMotIt++) {
 				const Maladie * uneMaladieDuMot = *uneMaladieDuMotIt;
 				if (uneMaladieDuMot->definition.size() == ++nbMotMaladieFind[uneMaladieDuMot]) {
+					LOG(T_DEBUG) << "[Analyse] find maladie : " << uneMaladieDuMot->nom << " maladie";
 					resutat.insert(uneMaladieDuMot);
 				}
 			}
@@ -60,6 +66,7 @@ const unordered_set<const Maladie *> Analyse::AnalyseGlobale(const unordered_set
 			// Si le mot n'est pas réfrencé alors il n'est pas dans une maladie (rien à faire)
 		}
 	}
+	LOG(T_DEBUG) << "[Analyse] end AnalysePrecise : return " << resutat.size() << " maladies";
 	return resutat;
 }
 

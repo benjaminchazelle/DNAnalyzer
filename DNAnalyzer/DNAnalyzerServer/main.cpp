@@ -19,6 +19,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 #include "Communication.h"
 #include "Dictionnaire.h"
+#include "Log.h"
 
 #define UNREFERENCE_PARAMETER(P) (P)
 
@@ -28,6 +29,8 @@ using namespace std;
 
 const int DEFAULT_PORT = 8282;
 const string DEFAULT_DICTIONNARY_FILE = "./dictionnaire.dico";
+
+structlog LOGCFG;
 
 void afficherUsage() {
 	cout << "Manual :" << endl
@@ -47,7 +50,11 @@ void afficherAide() {
 		<< "                                          Default port is " << to_string(DEFAULT_PORT) << endl
 		<< endl
 		<< "  -dictionnary <file>   -d <file>         Set the dictonnary file to load" << endl
-		<< "                        -dico <file>      Default dictionnary file is " << DEFAULT_DICTIONNARY_FILE << endl;
+		<< "                        -dico <file>      Default dictionnary file is " << DEFAULT_DICTIONNARY_FILE << endl
+		<< endl
+		<< "  -log <logLevel>                         Set the level of a log. logLevel must" << endl
+		<< "                                          be DEBUG, INFO, WARNING or ERROR" << endl
+		<< "                                              Default log level is INFO" << endl;
 }
 
 int main(int argc, char** argv)
@@ -77,7 +84,7 @@ int main(int argc, char** argv)
 						size_t st;
 						string arg_port(argv[i]);
 						portNumber = stoi(arg_port, &st);
-						if (st != arg_port.length()|| portNumber<1|| portNumber>65535) {
+						if (st != arg_port.length() || portNumber<1 || portNumber>65535) {
 							afficherSyntaxError("Port number " + arg + " must be a number 1 and 65536");
 							exit(21);
 						}
@@ -88,8 +95,36 @@ int main(int argc, char** argv)
 						afficherSyntaxError("Port number " + arg + " must be a number 1 and 65536");
 						exit(21);
 					}
-					 
+
+				}else if(arg == "-log") {
+					i++;
+					if (i == argc) {
+						afficherSyntaxError("log level required after " + arg);
+						exit(40);
+					}
+					else {
+						string logLevelArg = argv[i];
+						if (logLevelArg == "DEBUG") {
+							LOGCFG.level = T_DEBUG;
+
+						}
+						else if (logLevelArg == "INFO") {
+							LOGCFG.level = T_INFO;
+						}
+						else if (logLevelArg == "WARNING") {
+							LOGCFG.level = T_WARN;
+						}
+						else if (logLevelArg == "ERROR") {
+							LOGCFG.level = T_ERROR;
+						}
+						else {
+							afficherSyntaxError(logLevelArg + "is not a valide log level (DEBUG, INFO, WARNING, ERROR)");
+							exit(41);
+
+						}
+					}
 				}
+				
 				else {
 					afficherSyntaxError("Unknown " + arg + " argument");
 					exit(1);
@@ -106,32 +141,32 @@ int main(int argc, char** argv)
 		}
 	}
 
-	std::cout << "Dictionnary loading :  " << dicoFile << std::endl;
+	LOG(T_INFO) << "[MAIN] Dictionnary loading :  " << dicoFile;
 	try {
 		Dictionnaire::ObtenirInstance().ChargerFichier(dicoFile);
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCE_PARAMETER(e);
 
-		std::cout << "Error during dictionnary loading" << endl;
-		std::cout << "ERROR : impossible to open the dictionnary file" << endl;
+		LOG(T_ERROR) << "[MAIN] Error during dictionnary loading";
+		LOG(T_ERROR) << "[MAIN] Impossible to open the dictionnary file" ;
 		exit(11);
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCE_PARAMETER(e);
 
-		std::cout << "Error during dictionnary loading" << endl;
-		std::cout << "ERROR : dictionnary file is syntaxically incorrect" << endl;
+		LOG(T_ERROR) << "[MAIN] Error during dictionnary loading";
+		LOG(T_ERROR) << "[MAIN] ERROR : dictionnary file is syntaxically incorrect";
 		exit(12);
 	}
-	std::cout << "Dictionnary loaded (" << to_string(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size()) << " diseases)" << std::endl;
-	std::cout << "DNAnalyzer Server starting on port " << to_string(portNumber) << std::endl;
+	LOG(T_INFO) << "[MAIN] Dictionnary loaded (" << to_string(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size()) << " diseases)";
+	LOG(T_INFO) << "[MAIN] DNAnalyzer Server starting on port " << to_string(portNumber);
 	try {
 		Communication::ObtenirInstance().Ecouter(portNumber);
 	}
 	catch (runtime_error const& e) {
-		std::cout << "Error during server starting" << endl;
-		std::cout << "ERROR : " << e.what() << endl;
+		LOG(T_ERROR) << "[MAIN] Error during server starting";
+		LOG(T_ERROR) << "[MAIN] ERROR : " << e.what();
 		exit(30);
 		
 	}

@@ -9,19 +9,21 @@
 #define LOG_H
 
 #include <iostream>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
 enum typelog {
-	DEBUG,
-	INFO,
-	WARN,
-	ERROR
+	T_DEBUG,
+	T_INFO,
+	T_WARN,
+	T_ERROR
 };
 
 struct structlog {
-	bool headers = false;
-	typelog level = INFO;
+	bool headers = true;
+	typelog level = T_INFO;
 };
 
 extern structlog LOGCFG;
@@ -32,33 +34,35 @@ public:
 	LOG(typelog type) {
 		msglevel = type;
 		if (LOGCFG.headers) {
-			operator << ("[" + getLabel(type) + "]");
+			operator<<("[") << getLabel(type) << "] ";
 		}
 	}
 	~LOG() {
 		if (opened) {
-			cout << endl;
+			final_msg << endl;
+			printf(final_msg.str().c_str());
 		}
 		opened = false;
 	}
 	template<class T>
 	LOG &operator<<(const T &msg) {
 		if (msglevel >= LOGCFG.level) {
-			cout << msg;
+			final_msg << msg;
 			opened = true;
 		}
 		return *this;
 	}
 private:
 	bool opened = false;
-	typelog msglevel = DEBUG;
+	typelog msglevel = T_DEBUG;
+	ostringstream final_msg ;
 	inline string getLabel(typelog type) {
 		string label;
 		switch (type) {
-		case DEBUG: label = "DEBUG"; break;
-		case INFO:  label = "INFO "; break;
-		case WARN:  label = "WARN "; break;
-		case ERROR: label = "ERROR"; break;
+		case T_DEBUG: label = "DEBUG"; break;
+		case T_INFO:  label = "INFO "; break;
+		case T_WARN:  label = "WARN "; break;
+		case T_ERROR: label = "ERROR"; break;
 		}
 		return label;
 	}
