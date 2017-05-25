@@ -120,13 +120,13 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 
 
 	//Chargement des serveurs connu par l'application Client
-	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
+	CComboBox * comboServeurs = (CComboBox *)GetDlgItem(IDC_COMBO2);
 
-	Configuration & cf1 = Configuration::ObtenirInstance() ;
+	Configuration & configuration = Configuration::ObtenirInstance() ;
 	string fichierConfig = "./serveurs.config";
-	bool test = cf1.ChargerFichier(fichierConfig);
+	bool chargement = configuration.ChargerFichier(fichierConfig);
 
-	if (!test)
+	if (!chargement)
 	{
 		MessageBox(_T("DNAnalyser ne trouve pas le fichier contenant les serveurs.\nArrêt de l'application."), _T("Error"),
 			MB_ICONERROR | MB_OK);
@@ -134,20 +134,20 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 	}
 
 
-	vector<struct Serveur> liste = cf1.ObtenirListeServeur();
+	vector<struct Serveur> listeServeurs = configuration.ObtenirListeServeur();
 
 	mtxServeurs.lock();
-	for(vector<struct Serveur>::iterator i = liste.begin(); i!=liste.end();i++)
+	for(vector<struct Serveur>::iterator i = listeServeurs.begin(); i!= listeServeurs.end();i++)
 	{
 		Serveur serv = *i;
 		string str = serv.host + ":" + to_string(serv.port);
 		CString aAfficher = (CString) str.c_str();
-		int position = pCombo->AddString((LPCTSTR) aAfficher);
+		int position = comboServeurs->AddString((LPCTSTR) aAfficher);
 		serveurs[position] = *i;
 
 	}
 	mtxServeurs.unlock();
-	pCombo->SetWindowText(L"Choisir un Serveur");
+	comboServeurs->SetWindowText(L"Choisir un Serveur");
 	GetDlgItem(IDC_COMBO2)->EnableWindow(false);
 	GetDlgItem(IDC_COMBO1)->EnableWindow(false);
 	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(false);
@@ -156,24 +156,24 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 
 	//Création de l'onglet Bienvenue
 
-	CTabCtrl * pTC = (CTabCtrl *)GetDlgItem(IDC_TAB1);
+	CTabCtrl * ongletControlleur = (CTabCtrl *)GetDlgItem(IDC_TAB1);
 
 	//insertion d'un onglet
 
-	TCITEM tcItem = { 0 };
-	tcItem.mask = TCIF_TEXT | TCIF_PARAM;
-	tcItem.lParam = CDNAnalyzerClientDlg::nextTabId++;
-	int iTabs = pTC->GetItemCount();
+	TCITEM onglet = { 0 };
+	onglet.mask = TCIF_TEXT | TCIF_PARAM;
+	onglet.lParam = CDNAnalyzerClientDlg::nextTabId++;
+	int nbOnglets = ongletControlleur->GetItemCount();
 
-	tcItem.pszText = L"Bienvenue";
-	pTC->SetItem(iTabs, &tcItem);
-	pTC->InsertItem(iTabs, &tcItem);
+	onglet.pszText = L"Bienvenue";
+	ongletControlleur->SetItem(nbOnglets, &onglet);
+	ongletControlleur->InsertItem(nbOnglets, &onglet);
 
 	mtxMessages.lock();
 
 	//mise à jour et affichage du contenu de l'onglet
-	messagesOnglets[tcItem.lParam] = "Bienvenue sur DNAnalyser.\nVeuillez Sélectionner un génôme tester, un serveur d'analyse et une maladie à analyser.\nPour obtenir de l'aide, veuillez consulter le manuel utilisateur.";
-	setMessageDisplay(this, tcItem.lParam);
+	messagesOnglets[onglet.lParam] = "Bienvenue sur DNAnalyser.\nVeuillez Sélectionner un génôme tester, un serveur d'analyse et une maladie à analyser.\nPour obtenir de l'aide, veuillez consulter le manuel utilisateur.";
+	setMessageDisplay(this, onglet.lParam);
 
 	mtxMessages.unlock();
 
@@ -241,39 +241,41 @@ void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
 {
 
 	//Récupération des paramètres nécessaires à l'analyse
-	CComboBox * pCombo1 = (CComboBox *)GetDlgItem(IDC_COMBO2);
-	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO1);
-	int index = pCombo1->GetCurSel();
-	Serveur serveur = serveurs[index];
-	CString choix;
+	CComboBox * comboServeurs = (CComboBox *)GetDlgItem(IDC_COMBO2);
+	CComboBox * comboMaladies = (CComboBox *)GetDlgItem(IDC_COMBO1);
+	int indexServeurCourant = comboServeurs->GetCurSel();
+	Serveur serveur = serveurs[indexServeurCourant];
+	CString choixMaladie;
 
-	pCombo->GetLBText(pCombo->GetCurSel(), choix);
-	CT2CA pszConvertedAnsiString(choix);
+	comboMaladies->GetLBText(comboMaladies->GetCurSel(), choixMaladie);
+	CT2CA pszConvertedAnsiString(choixMaladie);
 	std::string maladie(pszConvertedAnsiString);
 
+	/*
 	CT2CA pathnameAConvertir(pathname);
 	std::string filename(pathnameAConvertir);
+	*/
 
 	string serv = serveur.host + ":" + to_string(serveur.port);
-	string title = " - " + serv;
+	string titreOnglet = " - " + serv;
 
 	//Choix du type d'analyse à réaliser et lancement d'un nouveau thread dédié à cette unique analyse
 	if (maladie == "=Analyse Globale (Toutes les maladies)=")
 	{
-		string content = "Envoi d'une requête d'Analyse Globale au serveur " + serv;
-		createTab(title, content);
-		CWinThread * analyseGlob = AfxBeginThread(AnalyseGlobaleThread, this);
+		string contenuOnglet = "Envoi d'une requête d'Analyse Globale au serveur " + serv;
+		createTab(titreOnglet, contenuOnglet);
+		CWinThread * analyseGlobThread = AfxBeginThread(AnalyseGlobaleThread, this);
 		mtxThreads.lock();
-		threadsOnglets[CDNAnalyzerClientDlg::nextTabId-1] = &(analyseGlob->m_hThread);
+		threadsOnglets[CDNAnalyzerClientDlg::nextTabId-1] = &(analyseGlobThread->m_hThread);
 		mtxThreads.unlock();
 	}
 	else
 	{
-		string content = "Envoi d'une requête d'Analyse Précise au serveur " + serv+" pour la maladie : "+maladie;
-		createTab(title, content);
-		CWinThread * analysePrec = AfxBeginThread(AnalysePreciseThread, this);
+		string contenuOnglet = "Envoi d'une requête d'Analyse Précise au serveur " + serv+" pour la maladie : "+maladie;
+		createTab(titreOnglet, contenuOnglet);
+		CWinThread * analysePrecThread = AfxBeginThread(AnalysePreciseThread, this);
 		mtxThreads.lock();
-		threadsOnglets[CDNAnalyzerClientDlg::nextTabId-1] = &(analysePrec->m_hThread);
+		threadsOnglets[CDNAnalyzerClientDlg::nextTabId-1] = &(analysePrecThread->m_hThread);
 		mtxThreads.unlock();
 	}
 
@@ -320,11 +322,11 @@ void CDNAnalyzerClientDlg::setWindowTitle(string title)
 }
 
 //Méthode d'affichage du contenu de l'onglet actif
-void CDNAnalyzerClientDlg::setMessageDisplay(CDNAnalyzerClientDlg * fen, int param)
+void CDNAnalyzerClientDlg::setMessageDisplay(CDNAnalyzerClientDlg * fen, int idOnglet)
 {
 	CRichEditCtrl* rich = (CRichEditCtrl*)fen->GetDlgItem(IDC_RICHEDIT23);
 
-	CString cstringed = (CString)fen->messagesOnglets[param].c_str();
+	CString cstringed = (CString)fen->messagesOnglets[idOnglet].c_str();
 
 	rich->SetWindowTextW((LPCTSTR)cstringed);
 }
@@ -334,13 +336,13 @@ void CDNAnalyzerClientDlg::OnCbnSelchangeCombo2()
 {
 	//Récupération du serveur sélectionné
 	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(false);
-	CComboBox * pCombo1 = (CComboBox *)GetDlgItem(IDC_COMBO2);
-	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO1);
-	int index = pCombo1->GetCurSel();
-	Serveur serveur = serveurs[index];
-	pCombo->ResetContent();
-	pCombo->AddString(L"=Analyse Globale (Toutes les maladies)=");
-	pCombo->SetCurSel(0);
+	CComboBox * comboServeurs = (CComboBox *)GetDlgItem(IDC_COMBO2);
+	CComboBox * comboMaladies = (CComboBox *)GetDlgItem(IDC_COMBO1);
+	int indexServeurCourant = comboServeurs->GetCurSel();
+	Serveur serveur = serveurs[indexServeurCourant];
+	comboMaladies->ResetContent();
+	comboMaladies->AddString(L"=Analyse Globale (Toutes les maladies)=");
+	comboMaladies->SetCurSel(0);
 	GetDlgItem(IDC_COMBO1)->EnableWindow(true);
 
 	// Lancement d'une requête de récupération des maladies que le serveur sélectionné peut analyser
@@ -349,23 +351,23 @@ void CDNAnalyzerClientDlg::OnCbnSelchangeCombo2()
 		TerminateThread(*obtenirMaladiesThreadInstance, 1);
 	}
 
-	CWinThread * maladiesServeur = AfxBeginThread(ObtenirMaladiesThread, this);
-	CWnd * label = (CWnd*) GetDlgItem(IDS_ABOUTBOX);
-	label->SetWindowText(L"Statut chargement maladies :\nChargement des maladies en cours...");
-	obtenirMaladiesThreadInstance = &(maladiesServeur->m_hThread);
+	CWinThread * maladiesServeurThread = AfxBeginThread(ObtenirMaladiesThread, this);
+	CWnd * labelStatutChargementMaladies = (CWnd*) GetDlgItem(IDS_ABOUTBOX);
+	labelStatutChargementMaladies->SetWindowText(L"Statut chargement maladies :\nChargement des maladies en cours...");
+	obtenirMaladiesThreadInstance = &(maladiesServeurThread->m_hThread);
 }
 
 //Thread chargé de récupérer les maladies présentes sur un serveur et de mettre à jour le panel de choix de maladies à analyser
-UINT CDNAnalyzerClientDlg::ObtenirMaladiesThread(void *pParam)
+UINT CDNAnalyzerClientDlg::ObtenirMaladiesThread(void * window)
 {
 
-	CDNAnalyzerClientDlg* pThis = (CDNAnalyzerClientDlg*)pParam;
+	CDNAnalyzerClientDlg* fenetre = (CDNAnalyzerClientDlg*)window;
 
 	//Récupération du serveur actuellement sélectionné
-	CComboBox * pCombo1 = (CComboBox *)pThis->GetDlgItem(IDC_COMBO2);
-	CComboBox * pCombo = (CComboBox *)pThis->GetDlgItem(IDC_COMBO1);
-	int index = pCombo1->GetCurSel();
-	Serveur serveur = pThis->getServeurs()[index];
+	CComboBox * comboServeurs = (CComboBox *)fenetre->GetDlgItem(IDC_COMBO2);
+	CComboBox * comboMaladies = (CComboBox *)fenetre->GetDlgItem(IDC_COMBO1);
+	int indexServeurCourant = comboServeurs->GetCurSel();
+	Serveur serveur = fenetre->getServeurs()[indexServeurCourant];
 
 
 	try
@@ -377,137 +379,137 @@ UINT CDNAnalyzerClientDlg::ObtenirMaladiesThread(void *pParam)
 		for (unordered_set<string>::iterator i = maladies.begin(); i != maladies.end(); i++)
 		{
 			CString cs = (CString)(*i).c_str();
-			pCombo->AddString((LPCTSTR)cs);
+			comboMaladies->AddString((LPCTSTR)cs);
 		}
-		CWnd * label = (CWnd*)pThis->GetDlgItem(IDS_ABOUTBOX);
-		label->SetWindowText(L"Statut chargement maladies :\nChargement des maladies effectué avec succès.");
+		CWnd * labelStatutChargementMaladies = (CWnd*)fenetre->GetDlgItem(IDS_ABOUTBOX);
+		labelStatutChargementMaladies->SetWindowText(L"Statut chargement maladies :\nChargement des maladies effectué avec succès.");
 
 	}
 	catch (runtime_error const & e)
 	{
-		CWnd * label = (CWnd*)pThis->GetDlgItem(IDS_ABOUTBOX);
-		label->SetWindowText(L"Statut chargement maladies :\nEchange avec le serveur impossible, échec du chargement des maladies.");
+		CWnd * labelStatutChargementMaladies = (CWnd*)fenetre->GetDlgItem(IDS_ABOUTBOX);
+		labelStatutChargementMaladies->SetWindowText(L"Statut chargement maladies :\nEchange avec le serveur impossible, échec du chargement des maladies.");
 	}
 	catch (logic_error const & e)
 	{
-		CWnd * label = (CWnd*)pThis->GetDlgItem(IDS_ABOUTBOX);
-		label->SetWindowText(L"Statut chargement maladies :\nRéponse du serveur incorrecte, échec du chargement des maladies.");
+		CWnd * labelStatutChargementMaladies = (CWnd*)fenetre->GetDlgItem(IDS_ABOUTBOX);
+		labelStatutChargementMaladies->SetWindowText(L"Statut chargement maladies :\nRéponse du serveur incorrecte, échec du chargement des maladies.");
 	}
 	catch (domain_error const & e)
 	{
-		CWnd * label = (CWnd*)pThis->GetDlgItem(IDS_ABOUTBOX);
-		label->SetWindowText(L"Statut chargement maladies :\nRequête envoyée au serveur incorrecte, échec du chargement des maladies.");
+		CWnd * labelStatutChargementMaladies = (CWnd*)fenetre->GetDlgItem(IDS_ABOUTBOX);
+		labelStatutChargementMaladies->SetWindowText(L"Statut chargement maladies :\nRequête envoyée au serveur incorrecte, échec du chargement des maladies.");
 	}
 
-	pThis->unSetObtenirMaladiesThreadInstance();
+	fenetre->unSetObtenirMaladiesThreadInstance();
 
 	return 0;
 }
 
 //Thread charger de réaliser une analyse globale
-UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * pParam)
+UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * window)
 {
 	//Récupération des paramètres d'analyse
-	CDNAnalyzerClientDlg* pThis = (CDNAnalyzerClientDlg*)pParam;
-	CComboBox * pCombo1 = (CComboBox *)pThis->GetDlgItem(IDC_COMBO2);
-	CComboBox * pCombo = (CComboBox *)pThis->GetDlgItem(IDC_COMBO1);
-	int ind = pCombo1->GetCurSel();
-	Serveur serveur = pThis->serveurs[ind];
-	CString choix;
+	CDNAnalyzerClientDlg* fenetre = (CDNAnalyzerClientDlg*)window;
+	CComboBox * comboServeurs = (CComboBox *)fenetre->GetDlgItem(IDC_COMBO2);
+	//CComboBox * comboMaladies = (CComboBox *)pThis->GetDlgItem(IDC_COMBO1);
+	int indexServeurCourant = comboServeurs->GetCurSel();
+	Serveur serveur = fenetre->serveurs[indexServeurCourant];
+	//CString choix;
 
-	CT2CA pathnameAConvertir(pThis->pathname);
-	std::string filename(pathnameAConvertir);
+	CT2CA pathnameAConvertir(fenetre->pathname);
+	std::string fichierGenome(pathnameAConvertir);
 
 	//Création d'un nouvel onglet
-	CTabCtrl * pTC = (CTabCtrl *)pThis->GetDlgItem(IDC_TAB1);
-	int index = pTC->GetCurSel();
+	CTabCtrl * ongletControlleur = (CTabCtrl *)fenetre->GetDlgItem(IDC_TAB1);
+	int indexOnglet = ongletControlleur->GetCurSel();
 	TCHAR buf[256] = { 0 };
-	TCITEM item;
-	item.pszText = buf;
-	item.cchTextMax = 256;
-	item.lParam = 0;
-	item.mask = TCIF_TEXT | TCIF_PARAM;
+	TCITEM onglet;
+	onglet.pszText = buf;
+	onglet.cchTextMax = 256;
+	onglet.lParam = 0;
+	onglet.mask = TCIF_TEXT | TCIF_PARAM;
 
-	BOOL test = pTC->GetItem(index, &item);
+	BOOL test = ongletControlleur->GetItem(indexOnglet, &onglet);
 
-	pThis->setMessageDisplay(pThis, item.lParam);
+	fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 	try
 	{
 		//Lancement d'une requête d'analyse globale
-		unordered_set<string> resultats = Service::AnalyseGlobale(serveur, filename);
+		unordered_set<string> resultats = Service::AnalyseGlobale(serveur, fichierGenome);
 
 		//Récupération et affichage des résultats de l'anayse
-		string newMessage = pThis->messagesOnglets[item.lParam]+"\nRésultats de l'analyse globale - Maladies détectées positivement :\n";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam]+"\nRésultats de l'analyse globale - Maladies détectées positivement :\n";
 		if (resultats.size() != 0)
 		{
 			for (unordered_set<string>::iterator i = resultats.begin(); i != resultats.end(); i++)
 			{
-				newMessage += "- " + *i + "\n";
+				nouveauMessage += "- " + *i + "\n";
 			}
 		}
 		else
 		{
-			newMessage += "Aucune maladie";
+			nouveauMessage += "Aucune maladie";
 		}
 		mtxMessages.lock();
-		pThis->messagesOnglets[item.lParam] = newMessage;
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 		
-		pTC->SetCurSel(index);
+		ongletControlleur->SetCurSel(indexOnglet);
 
-		pThis->setMessageDisplay(pThis, item.lParam);
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 		mtxMessages.unlock();
 
 	}
 	catch (invalid_argument const & e)
 	{
-		string newMessage = pThis->messagesOnglets[item.lParam] + "\nProblème d'ouverture du fichier contenant le génome.";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nProblème d'ouverture du fichier contenant le génome.";
 		mtxMessages.lock();
-		pThis->messagesOnglets[item.lParam] = newMessage;
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 
-		pTC->SetCurSel(index);
+		ongletControlleur->SetCurSel(indexOnglet);
 
-		pThis->setMessageDisplay(pThis, item.lParam);
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 		mtxMessages.unlock();
 
 	}
 	catch (logic_error const & e)
 	{
-		string newMessage = pThis->messagesOnglets[item.lParam] + "\nRéponse incorrecte provenant du serveur.";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRéponse incorrecte provenant du serveur.";
 		mtxMessages.lock();
-		pThis->messagesOnglets[item.lParam] = newMessage;
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 
-		pTC->SetCurSel(index);
+		ongletControlleur->SetCurSel(indexOnglet);
 
-		pThis->setMessageDisplay(pThis, item.lParam);
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 		mtxMessages.unlock();
 
 	}
 	catch (domain_error const & e)
 	{
-		string newMessage = pThis->messagesOnglets[item.lParam] + "\nRequête incorrecte envoyée au serveur.";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRequête incorrecte envoyée au serveur.";
 		mtxMessages.lock();
-		pThis->messagesOnglets[item.lParam] = newMessage;
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 
-		pTC->SetCurSel(index);
+		ongletControlleur->SetCurSel(indexOnglet);
 
-		pThis->setMessageDisplay(pThis, item.lParam);
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 		mtxMessages.unlock();
 
 	}
 	catch (runtime_error const & e)
 	{
-		string newMessage = pThis->messagesOnglets[item.lParam] + "\nEchec de la communication avec le serveur.";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nEchec de la communication avec le serveur.";
 		mtxMessages.lock();
-		pThis->messagesOnglets[item.lParam] = newMessage;
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 		
-		pTC->SetCurSel(index);
+		ongletControlleur->SetCurSel(indexOnglet);
 
-		pThis->setMessageDisplay(pThis, item.lParam);
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 		mtxMessages.unlock();
 
@@ -517,110 +519,110 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * pParam)
 }
 
 //Thread charger de réaliser une analyse précise
-UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * pParam)
+UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * window)
 {
 	//Récupération des paramètres d'analyse
-	CDNAnalyzerClientDlg* pThis = (CDNAnalyzerClientDlg*)pParam;
-	CComboBox * pCombo1 = (CComboBox *)pThis->GetDlgItem(IDC_COMBO2);
-	CComboBox * pCombo = (CComboBox *)pThis->GetDlgItem(IDC_COMBO1);
-	int ind = pCombo1->GetCurSel();
-	Serveur serveur = pThis->serveurs[ind];
+	CDNAnalyzerClientDlg* fenetre = (CDNAnalyzerClientDlg*)window;
+	CComboBox * comboServeurs = (CComboBox *)fenetre->GetDlgItem(IDC_COMBO2);
+	CComboBox * comboMaladies = (CComboBox *)fenetre->GetDlgItem(IDC_COMBO1);
+	int indexServeurCourant = comboServeurs->GetCurSel();
+	Serveur serveur = fenetre->serveurs[indexServeurCourant];
 	CString choix;
 
-	pCombo->GetLBText(pCombo->GetCurSel(), choix);
+	comboMaladies->GetLBText(comboMaladies->GetCurSel(), choix);
 	CT2CA pszConvertedAnsiString(choix);
 	std::string maladie(pszConvertedAnsiString);
 
-	CT2CA pathnameAConvertir(pThis->pathname);
-	std::string filename(pathnameAConvertir);
+	CT2CA pathnameAConvertir(fenetre->pathname);
+	std::string fichierGenome(pathnameAConvertir);
 
 	//Création d'un nouvel onglet
-	CTabCtrl * pTC = (CTabCtrl *)pThis->GetDlgItem(IDC_TAB1);
-	int index = pTC->GetCurSel();
+	CTabCtrl * ongletControlleur = (CTabCtrl *)fenetre->GetDlgItem(IDC_TAB1);
+	int indexOnglet = ongletControlleur->GetCurSel();
 	TCHAR buf[256] = { 0 };
-	TCITEM item;
-	item.pszText = buf;
-	item.cchTextMax = 256;
-	item.lParam = 0;
-	item.mask = TCIF_TEXT | TCIF_PARAM;
+	TCITEM onglet;
+	onglet.pszText = buf;
+	onglet.cchTextMax = 256;
+	onglet.lParam = 0;
+	onglet.mask = TCIF_TEXT | TCIF_PARAM;
 
-	BOOL test = pTC->GetItem(index, &item);
+	BOOL test = ongletControlleur->GetItem(indexOnglet, &onglet);
 
-	pThis->setMessageDisplay(pThis, item.lParam);
+	fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 	try
 	{
 		//Lancement d'une requête d'analyse précise
-		bool resultat = Service::AnalysePrecise(serveur, filename, maladie);
+		bool resultat = Service::AnalysePrecise(serveur, fichierGenome, maladie);
 
 		//Récupération des résultats
-		string newMessage = pThis->messagesOnglets[item.lParam] + "\nRésultat de l'analyse précise - "+maladie+" : ";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRésultat de l'analyse précise - "+maladie+" : ";
 		if (resultat)
 		{
-			newMessage += "test positif\n";
+			nouveauMessage += "test positif\n";
 		}
 		else
 		{
-			newMessage += "test négatif\n";
+			nouveauMessage += "test négatif\n";
 		}
 		mtxMessages.lock();
-		pThis->messagesOnglets[item.lParam] = newMessage;
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 		
-		pTC->SetCurSel(index);
+		ongletControlleur->SetCurSel(indexOnglet);
 
-		pThis->setMessageDisplay(pThis, item.lParam);
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 		mtxMessages.unlock();
 
 	}
 	catch (invalid_argument const & e)
 	{
-		string newMessage = pThis->messagesOnglets[item.lParam] + "\nProblème d'ouverture du fichier contenant le génome.";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nProblème d'ouverture du fichier contenant le génome.";
 		mtxMessages.lock();
-		pThis->messagesOnglets[item.lParam] = newMessage;
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 
-		pTC->SetCurSel(index);
+		ongletControlleur->SetCurSel(indexOnglet);
 
-		pThis->setMessageDisplay(pThis, item.lParam);
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 		mtxMessages.unlock();
 
 	}
 	catch (logic_error const & e)
 	{
-		string newMessage = pThis->messagesOnglets[item.lParam] + "\nRéponse incorrecte provenant du serveur.";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRéponse incorrecte provenant du serveur.";
 		mtxMessages.lock();
-		pThis->messagesOnglets[item.lParam] = newMessage;
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 
-		pTC->SetCurSel(index);
+		ongletControlleur->SetCurSel(indexOnglet);
 
-		pThis->setMessageDisplay(pThis, item.lParam);
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 		mtxMessages.unlock();
 
 	}
 	catch (domain_error const & e)
 	{
-		string newMessage = pThis->messagesOnglets[item.lParam] + "\nRequête incorrecte envoyée au serveur.";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRequête incorrecte envoyée au serveur.";
 		mtxMessages.lock();
-		pThis->messagesOnglets[item.lParam] = newMessage;
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 
-		pTC->SetCurSel(index);
+		ongletControlleur->SetCurSel(indexOnglet);
 
-		pThis->setMessageDisplay(pThis, item.lParam);
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 		mtxMessages.unlock();
 
 	}
 	catch (runtime_error const & e)
 	{
-		string newMessage = pThis->messagesOnglets[item.lParam] + "\nEchec de la communication avec le serveur.";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nEchec de la communication avec le serveur.";
 		mtxMessages.lock();
-		pThis->messagesOnglets[item.lParam] = newMessage;
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 		
-		pTC->SetCurSel(index);
+		ongletControlleur->SetCurSel(indexOnglet);
 
-		pThis->setMessageDisplay(pThis, item.lParam);
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
 
 		mtxMessages.unlock();
 
@@ -632,19 +634,19 @@ UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * pParam)
 //Méthode de création d'un nouvel onglet
 void CDNAnalyzerClientDlg::createTab(string title,string content)
 {
-	CTabCtrl * pTC = (CTabCtrl *)GetDlgItem(IDC_TAB1);
-	TCITEM tcItem = { 0 };
-	tcItem.mask = TCIF_TEXT | TCIF_PARAM;
-	int iTabs = pTC->GetItemCount();
+	CTabCtrl * ongletControlleur = (CTabCtrl *)GetDlgItem(IDC_TAB1);
+	TCITEM onglet = { 0 };
+	onglet.mask = TCIF_TEXT | TCIF_PARAM;
+	int indiceNouvelOnglet = ongletControlleur->GetItemCount();
 	string str = to_string(CDNAnalyzerClientDlg::nextTabId)+ title;
-	CString titre = (CString)str.c_str();
-	tcItem.pszText = (LPTSTR)(LPCTSTR) titre;
-	tcItem.lParam = CDNAnalyzerClientDlg::nextTabId++;
-	pTC->InsertItem(iTabs, &tcItem);
-	pTC->SetCurSel(iTabs);
+	CString titreOnglet = (CString)str.c_str();
+	onglet.pszText = (LPTSTR)(LPCTSTR)titreOnglet;
+	onglet.lParam = CDNAnalyzerClientDlg::nextTabId++;
+	ongletControlleur->InsertItem(indiceNouvelOnglet, &onglet);
+	ongletControlleur->SetCurSel(indiceNouvelOnglet);
 	GetDlgItem(IDC_BUTTON1)->EnableWindow(true);
 	mtxMessages.lock();
-	messagesOnglets[tcItem.lParam] = content;
+	messagesOnglets[onglet.lParam] = content;
 	mtxMessages.unlock();
 }
 
@@ -657,9 +659,9 @@ void CDNAnalyzerClientDlg::unSetObtenirMaladiesThreadInstance()
 //Evènement de sélection d'un onglet ouvert
 void CDNAnalyzerClientDlg::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	CTabCtrl * pTC = (CTabCtrl *)GetDlgItem(IDC_TAB1);
-	int index = pTC->GetCurSel();
-	if (index == 0)
+	CTabCtrl * ongletControlleur = (CTabCtrl *)GetDlgItem(IDC_TAB1);
+	int indexOnglet = ongletControlleur->GetCurSel();
+	if (indexOnglet == 0)
 	{
 		GetDlgItem(IDC_BUTTON1)->EnableWindow(false);
 	}
@@ -668,45 +670,45 @@ void CDNAnalyzerClientDlg::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 		GetDlgItem(IDC_BUTTON1)->EnableWindow(true);
 	}
 	TCHAR buf[256] = { 0 };
-	TCITEM item;
-	item.pszText = buf;
-	item.cchTextMax = 256;
-	item.lParam = 0;
-	item.mask = TCIF_TEXT | TCIF_PARAM;
+	TCITEM onglet;
+	onglet.pszText = buf;
+	onglet.cchTextMax = 256;
+	onglet.lParam = 0;
+	onglet.mask = TCIF_TEXT | TCIF_PARAM;
 
-	BOOL test = pTC->GetItem(index,&item);
+	BOOL test = ongletControlleur->GetItem(indexOnglet,&onglet);
 
-	setMessageDisplay(this, item.lParam);
+	setMessageDisplay(this, onglet.lParam);
 }
 
 //Evènement de suppression de l'onglet sélectionné
 void CDNAnalyzerClientDlg::OnBnClickedButton1()
 {
-	CTabCtrl * pTC = (CTabCtrl *)GetDlgItem(IDC_TAB1);
-	int index = pTC->GetCurSel();
+	CTabCtrl * ongletControlleur = (CTabCtrl *)GetDlgItem(IDC_TAB1);
+	int indexOnglet = ongletControlleur->GetCurSel();
 	TCHAR buf[256] = { 0 };
-	TCITEM item;
-	item.pszText = buf;
-	item.cchTextMax = 256;
-	item.lParam = 0;
-	item.mask = TCIF_TEXT | TCIF_PARAM;
+	TCITEM onglet;
+	onglet.pszText = buf;
+	onglet.cchTextMax = 256;
+	onglet.lParam = 0;
+	onglet.mask = TCIF_TEXT | TCIF_PARAM;
 
-	BOOL test = pTC->GetItem(index, &item);
+	BOOL test = ongletControlleur->GetItem(indexOnglet, &onglet);
 	mtxThreads.lock();
-	HANDLE * aSuppr = threadsOnglets[item.lParam];
-	TerminateThread(*aSuppr, 1);
+	HANDLE * ongletASupprimer = threadsOnglets[onglet.lParam];
+	TerminateThread(*ongletASupprimer, 1);
 	mtxThreads.unlock();
 	mtxMessages.lock();
-	messagesOnglets[item.lParam]="";
+	messagesOnglets[onglet.lParam]="";
 	mtxMessages.unlock();
-	BOOL suppr = pTC->DeleteItem(index);
-	int newIndex = (index - 1) < 0 ? index + 1 : index - 1;
-	pTC->SetCurSel(newIndex);
+	BOOL suppr = ongletControlleur->DeleteItem(indexOnglet);
+	int newIndex = (indexOnglet - 1) < 0 ? indexOnglet + 1 : indexOnglet - 1;
+	ongletControlleur->SetCurSel(newIndex);
 	if (newIndex == 0)
 	{
 		GetDlgItem(IDC_BUTTON1)->EnableWindow(false);
 	}
-	test = pTC->GetItem(newIndex, &item);
+	test = ongletControlleur->GetItem(newIndex, &onglet);
 	
-	setMessageDisplay(this, item.lParam);
+	setMessageDisplay(this, onglet.lParam);
 }
