@@ -18,6 +18,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 #include "Communication.h"
 #include "CommunicationThread.h"
+#include "Log.h"
 
 //----------------------------------------------------------------- PUBLIC
 
@@ -34,6 +35,7 @@ Communication & Communication::ObtenirInstance()
 
 void Communication::Ecouter(unsigned int port)
 {
+	LOG(T_DEBUG) << "[Communication] call Ecoute("<<port<<")";
 	// Initialisation du serveur
 
 	WSADATA WSAData;
@@ -47,27 +49,31 @@ void Communication::Ecouter(unsigned int port)
 
 	if (bind(sock, (SOCKADDR *)&sin, sizeof(sin)) < 0)
 	{
+		LOG(T_ERROR) << "[Communication] Server binding error";
 		throw runtime_error("Server binding error");
 	}
 
 	if (listen(sock, 0) < 0)
 	{
+		LOG(T_ERROR) << "[Communication] Server listening error";
 		throw runtime_error("Server listening error");
 	}
 
-	cout << "DNAnalyzer Server listening on port " << port << endl;
+	LOG(T_INFO) << "[Communication] DNAnalyzer Server listening on port " << port;
 
 	// Récéption des requêtes des clients
 	while (1)
 	{
 		recevoirRequete();
 	}
+	LOG(T_DEBUG) << "[Communication] end Ecoute (exit of while 1 !!!)";
 }
 
 //----------------------------------------------------------------- PRIVEE
 
 void Communication::recevoirRequete()
 {
+	LOG(T_DEBUG) << "[Communication] call recevoirRequete";
 	SOCKET* csock = new SOCKET();
 
 	SOCKADDR_IN* cin = new SOCKADDR_IN();
@@ -76,7 +82,8 @@ void Communication::recevoirRequete()
 
 	// On attend la connexion d'un client
 	if ((*csock = accept(sock, (SOCKADDR *)cin, &addrlen)) != INVALID_SOCKET)
-	{		
+	{
+		LOG(T_DEBUG) << "[Communication] socket valide";
 		Peer* peer = new Peer;
 		peer->cin = cin;
 		peer->csock = csock;
@@ -86,21 +93,22 @@ void Communication::recevoirRequete()
 
 		if (threadServeurHandle != NULL) {
 
-			printf("%s:%d : Client accepted\n", inet_ntoa(cin->sin_addr), cin->sin_port);
+			LOG(T_INFO) << "[Communication] " <<inet_ntoa(cin->sin_addr)<<":"<< cin->sin_port <<" : Client accepted";
 
 		}
 		else {
 
-			printf("%s:%d : Client refused (thread issue %d)\n", inet_ntoa(cin->sin_addr), cin->sin_port, GetLastError());
+			LOG(T_INFO) << "[Communication] " << inet_ntoa(cin->sin_addr) << ":" << cin->sin_port << " :  : Client refused (thread issue "<<  GetLastError()<<")";
 
 			delete csock;
 		}
 	}
 	else {
 
-		printf("Client refused (connection issue)\n");
+		LOG(T_INFO) << "[Communication] Client refused (connection issue)";
 		delete csock;
 	}
+	LOG(T_DEBUG) << "[Communication] end recevoirRequete";
 }
 
 DWORD Communication::threadRequete(void * p)
