@@ -29,10 +29,15 @@ void CommunicationThread::Repondre(const string & reponse)
 
 	if (bytesSent == SOCKET_ERROR) {
 
-		printf("%s : Error %d during responding\n", clientInfo.c_str(), WSAGetLastError());
+		if (10054 == WSAGetLastError()) {
+			printf("%s : Connection closed by client\n", clientInfo.c_str());
+		}
+		else
+		{
+			printf("%s : Error %d during responding\n", clientInfo.c_str(), WSAGetLastError());
+		}
 
-		closesocket(*csock);
-		WSACleanup();
+		return;
 	}
 
 	printf("%s : Response sent (%d bytes)\n", clientInfo.c_str(), bytesSent);

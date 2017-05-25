@@ -20,6 +20,8 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 #include "Communication.h"
 #include "Dictionnaire.h"
 
+#define UNREFERENCE_PARAMETER(P) (P)
+
 //------------------------------------------------------------------- MAIN
 
 using namespace std;
@@ -81,6 +83,8 @@ int main(int argc, char** argv)
 						}
 					}
 					catch (const invalid_argument &e) {
+						UNREFERENCE_PARAMETER(e);
+
 						afficherSyntaxError("Port number " + arg + " must be a number 1 and 65536");
 						exit(21);
 					}
@@ -107,11 +111,15 @@ int main(int argc, char** argv)
 		Dictionnaire::ObtenirInstance().ChargerFichier(dicoFile);
 	}
 	catch (runtime_error const& e) {
+		UNREFERENCE_PARAMETER(e);
+
 		std::cout << "Error during dictionnary loading" << endl;
 		std::cout << "ERROR : impossible to open the dictionnary file" << endl;
 		exit(11);
 	}
 	catch (invalid_argument const& e) {
+		UNREFERENCE_PARAMETER(e);
+
 		std::cout << "Error during dictionnary loading" << endl;
 		std::cout << "ERROR : dictionnary file is syntaxically incorrect" << endl;
 		exit(12);
