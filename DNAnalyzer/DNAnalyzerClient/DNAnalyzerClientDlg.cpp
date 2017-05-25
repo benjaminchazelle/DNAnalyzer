@@ -123,7 +123,7 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
 
 	Configuration & cf1 = Configuration::ObtenirInstance() ;
-	string fichierConfig = "C:\\Users\\thomas\\Desktop\\testGL.txt";
+	string fichierConfig = "./serveurs.config";
 	bool test = cf1.ChargerFichier(fichierConfig);
 
 	if (!test)
