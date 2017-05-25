@@ -48,8 +48,8 @@ public:
 	void createTab(string title, string content);
 	void unSetObtenirMaladiesThreadInstance();
 	void setWindowTitle(string title);
+	void setMessageDisplay(CDNAnalyzerClientDlg* fen,int param);
 
-	//TCITEM * getCurrentTab();
 protected:
 	CString pathname;
 	unordered_map<int,Serveur> serveurs;
