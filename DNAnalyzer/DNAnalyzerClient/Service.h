@@ -85,6 +85,9 @@ protected:
 	// Mode d'emploi : Vérifie la présence d'une erreur
 	// Exception "runtime_error" : Si une erreur est détéctée
 
+	static void trimCarriageReturn(string & line);
+	// Mode d'emploi : Retourne une chaîne de caractère sans "\r" final
+
 	Service();
 	// Mode d'emploi : Constructeur, non implémenté
 

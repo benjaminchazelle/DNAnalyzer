@@ -68,6 +68,10 @@ namespace DNAnalyzerClientTest
 			}
 		}
 
+		static void trimCarriageReturn(string & str)
+		{
+			Service::trimCarriageReturn(str);
+		}
 
 	};
 
@@ -510,7 +514,7 @@ namespace DNAnalyzerClientTest
 		{
 			// Une exception "runtime_error" contenant l'erreur est levée si l'erreur existe
 
-			const string line = "ERROR DescriptionError\r";
+			const string line = "ERROR DescriptionError";
 
 			bool runtimeExceptionError = false;
 
@@ -544,6 +548,24 @@ namespace DNAnalyzerClientTest
 				Assert::Fail();
 			}
 
+		}
+
+		TEST_METHOD(trimCarriageReturn_Without)
+		{
+			string str = "Hello world !";
+
+			ServiceTestInterface::trimCarriageReturn(str);
+
+			Assert::IsTrue(str == "Hello world !");
+		}
+
+		TEST_METHOD(trimCarriageReturn_With)
+		{
+			string str = "Hello world !\r";
+
+			ServiceTestInterface::trimCarriageReturn(str);
+
+			Assert::IsTrue(str == "Hello world !");
 		}
 	};
 }
