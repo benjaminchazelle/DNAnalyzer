@@ -251,11 +251,6 @@ void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
 	CT2CA pszConvertedAnsiString(choixMaladie);
 	std::string maladie(pszConvertedAnsiString);
 
-	/*
-	CT2CA pathnameAConvertir(pathname);
-	std::string filename(pathnameAConvertir);
-	*/
-
 	string serv = serveur.host + ":" + to_string(serveur.port);
 	string titreOnglet = " - " + serv;
 
@@ -412,10 +407,8 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * window)
 	//Récupération des paramètres d'analyse
 	CDNAnalyzerClientDlg* fenetre = (CDNAnalyzerClientDlg*)window;
 	CComboBox * comboServeurs = (CComboBox *)fenetre->GetDlgItem(IDC_COMBO2);
-	//CComboBox * comboMaladies = (CComboBox *)pThis->GetDlgItem(IDC_COMBO1);
 	int indexServeurCourant = comboServeurs->GetCurSel();
 	Serveur serveur = fenetre->serveurs[indexServeurCourant];
-	//CString choix;
 
 	CT2CA pathnameAConvertir(fenetre->pathname);
 	std::string fichierGenome(pathnameAConvertir);
