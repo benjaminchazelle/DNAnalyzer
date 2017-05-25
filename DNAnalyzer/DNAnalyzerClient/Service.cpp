@@ -235,20 +235,35 @@ unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 
 	// On lit les lignes une à une
 
-	const string prefix = "DESEASE ";
-	const size_t prefixLength = prefix.length();
+	const string goodPrefix = "DISEASE ";
+	const string retroPrefix = "DESEASE ";
 
 	while (getline(responseStream, line, '\n') && line.size() > 1) {
 
-		if (line.size() < prefixLength + 2)
+		char lastChar = line.at(line.size() - 1);
+
+		if (lastChar == ' ')
 		{
-			continue;
+			throw invalid_argument("Requête incorrecte");
 		}
 
 		// On récupère le nom de la maladie pour les ajouter à l'ensemble
 
-		string maladie = line.substr(prefixLength, line.size() - prefixLength - 1);
+		string maladie;
 
+		if (line.find(goodPrefix) == 0)
+		{
+			maladie = line.substr(goodPrefix.length(), line.size() - goodPrefix.length() - 1);
+		}
+		else if (line.find(retroPrefix) == 0)
+		{
+			maladie = line.substr(retroPrefix.length(), line.size() - retroPrefix.length() - 1);
+		}
+		else
+		{
+			throw invalid_argument("Requête incorrecte");
+		}
+		
 		results.insert(maladie);
 
 	}
@@ -277,7 +292,7 @@ unordered_set<string> Service::obtenirMaladiesParseur(const string & response)
 
 	getline(responseStream, line, '\n');
 
-	if (line != "DESEASES\r")
+	if (line != "DESEASES\r" && line != "DISEASES\r")
 	{
 		throw invalid_argument("Requête incorrecte");
 	}
