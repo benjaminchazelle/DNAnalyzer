@@ -35,17 +35,23 @@ public:
 	//                 Retourne un dictionnaire dont la seule entrée est le nom de la maladie associée à sa présence (true) ou non (false) 
 	//                 Si la maladie n'est pas connu du serveur, le dictionnaire retourné ne contient aucune entrée
 	// Exception "invalid_argument" : Si le fichier <filename> ne peut être ouvert
-	// Exception "runtime_error" : Si un problème survient avec le serveur
+	// Exception "runtime_error" : Si un problème réseau survient avec le serveur
+	// Exception "logic_error" : Si la réponse serveur est incorrecte
+	// Exception "domain_error" : Si la requête était incorrecte
 
 	static unordered_set<string> AnalyseGlobale(const struct Serveur & serveur, const string & filename);
 	// Mode d'emploi : Requête le serveur <serveur>, pour savoir s'il connait une maladie dans le fichier genome <filename>
 	//                 Retourne un dictionnaire dont les entrées sont le nom des maladies associées à leur présence (true) ou non (false) 
 	// Exception "invalid_argument" : Si le fichier <filename> ne peut être ouvert
-	// Exception "runtime_error" : Si un problème survient avec le serveur
+	// Exception "runtime_error" : Si un problème réseau survient avec le serveur
+	// Exception "logic_error" : Si la réponse serveur est incorrecte
+	// Exception "domain_error" : Si la requête était incorrecte
 
 	static unordered_set<string> ObtenirMaladies(const struct Serveur & serveur);
 	// Mode d'emploi : Requête le serveur <serveur>, pour obtenir l'ensemble des noms de maladies que celui-ci connait
-	// Exception "runtime_error" : Si un problème survient avec le serveur
+	// Exception "runtime_error" : Si un problème réseau survient avec le serveur
+	// Exception "logic_error" : Si la réponse serveur est incorrecte
+	// Exception "domain_error" : Si la requête était incorrecte
 
 	Service & operator = (const Service &);
 	// Mode d'emploi : Opérateur d'affectation, non implémenté

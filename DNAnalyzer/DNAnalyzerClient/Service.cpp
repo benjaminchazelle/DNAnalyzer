@@ -44,7 +44,7 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw runtime_error("Le fichier ne peut être ouvert");
+		throw invalid_argument("Le fichier ne peut être ouvert");
 	}
 
 	// On récupère la réponse
@@ -66,7 +66,11 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw invalid_argument("La réponse du serveur n'est pas correcte");
+		throw logic_error("La réponse du serveur n'est pas correcte");
+	}
+	catch (runtime_error const& e) {
+		UNREFERENCED_PARAMETER(e);
+		throw domain_error(e.what());
 	}
 
 	return results;
@@ -85,7 +89,7 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw runtime_error("Le fichier ne peut être ouvert");
+		throw invalid_argument("Le fichier ne peut être ouvert");
 	}
 
 	// On récupère la réponse
@@ -107,7 +111,11 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw invalid_argument("La réponse du serveur n'est pas correcte");
+		throw logic_error("La réponse du serveur n'est pas correcte");
+	}
+	catch (domain_error const& e) {
+		UNREFERENCED_PARAMETER(e);
+		throw domain_error(e.what());
 	}
 
 	return results;
@@ -136,7 +144,11 @@ unordered_set<string> Service::ObtenirMaladies(const Serveur & serveur)
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw invalid_argument("La réponse du serveur n'est pas correcte");
+		throw logic_error("La réponse du serveur n'est pas correcte");
+	}
+	catch (domain_error const& e) {
+		UNREFERENCED_PARAMETER(e);
+		throw domain_error(e.what());
 	}
 
 	return maladies;
