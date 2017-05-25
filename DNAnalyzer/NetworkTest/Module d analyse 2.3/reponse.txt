@@ -1,0 +1,12 @@
+MA v1.0 
+DISEASE Sinistrose
+DISEASE Encopresie
+DISEASE Episode hypomaniaque
+DISEASE Manie
+DISEASE Trouble de l'adaptation
+DISEASE cafeine
+DISEASE Paraphilie
+DISEASE cocaine
+DISEASE Trouble obsessionnel compulsif
+DISEASE Echopraxie
+

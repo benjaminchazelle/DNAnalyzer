@@ -79,14 +79,26 @@ void Master::analysePrecise(const string & nomMaladie, const string & genome, Co
 	// Analyse précise
 
 	string response = "MA v1.0\r\n";
+	
+	unordered_set<string> genomeSet;
+
+	try {
+		genomeSet = encoderGenome(genome);
+	}
+	catch (invalid_argument const& e) {
+		UNREFERENCE_PARAMETER(e);
+
+		repondreErreurRequete("Invalid genome", thread);
+		return;
+	}
 
 	try {
 
 		const Maladie* maladie = Dictionnaire::ObtenirInstance().ObtenirMaladie(nomMaladie);
 
-		bool result = Analyse::AnalysePrecise(encoderGenome(genome), *maladie);
+		bool result = Analyse::AnalysePrecise(genomeSet, *maladie);
 
-		response += "DESEASE " + nomMaladie;
+		response += "DISEASE " + nomMaladie;
 		response += "\r\n";
 		response += result ? "1" : "0";
 		response += "\r\n\r\n";
@@ -108,9 +120,21 @@ void Master::analyseGlobale(const string & genome, CommunicationThread & thread)
 
 	string response = "MA v1.0\r\n";
 
+	unordered_set<string> genomeSet;
+
+	try {
+		genomeSet = encoderGenome(genome);
+	}
+	catch (invalid_argument const& e) {
+		UNREFERENCE_PARAMETER(e);
+
+		repondreErreurRequete("Invalid genome", thread);
+		return;
+	}
+
 	for (const auto& resultatMaladie : Analyse::AnalyseGlobale(encoderGenome(genome))) {
 
-		response += "DESEASE ";
+		response += "DISEASE ";
 		response += resultatMaladie->nom + "\r\n";
 
 	}
@@ -126,7 +150,7 @@ void Master::obtenirListeMaladies(CommunicationThread & thread)
 
 	string response = "MA v1.0\r\n";
 
-	response += "DESEASES\r\n";
+	response += "DISEASES\r\n";
 
 	for (const auto& maladie : Dictionnaire::ObtenirInstance().ObtenirNomsMaladies()) {
 		response += maladie + "\r\n";
@@ -152,6 +176,10 @@ unordered_set<string> Master::encoderGenome(const string & genome)
 {
 	// Conversion d'un génome de string à unordered_set<string>
 
+	if (genome.find_first_not_of("ATCG;") != std::string::npos) {
+		throw invalid_argument("Invalid genome");
+	}
+
 	unordered_set<string> set;
 	unsigned int pos = -1;
 
@@ -163,7 +191,7 @@ unordered_set<string> Master::encoderGenome(const string & genome)
 			set.insert(genome.substr(startPos, pos - startPos));
 		}
 
-	} while (pos < genome.length()); 
+	} while (pos < genome.length());
 
 	return set;
 }

@@ -62,6 +62,7 @@ protected:
 
 	static unordered_set<string> encoderGenome(const string & genome);
 	// Mode d'emploi : Retourne l'ensemble des mots d'une génome <genome>
+	// Exception "invalid_argument" : Si le génome <genome> est invalide (autre caractère que [ATCG;])
 
 	Master();
 	// Mode d'emploi : Constructeur, non implémenté

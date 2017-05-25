@@ -1,0 +1,91 @@
+MA v1.0
+DISEASES
+Agoraphobie
+Syndrome de Joubert
+Encopresie
+Anorexie mentale
+Trouble catatonique
+Autophagie
+Pedophilie
+Trouble de la personnalite dependante
+Depression perinatale
+Anorexie
+Syndrome d'Angelman
+Anxiete de separation
+cannabis
+Maladie d'Alzheimer
+Trouble autistique
+Pyromanie
+Autisme atypique
+Automutilation
+Trouble du spectre de l'alcoolisation foetale
+Syndrome general d'adaptation
+Depression clinique
+Trouble bipolaire
+Depression saisonniere
+Dyscalculie
+Syndrome de Williams
+Dyslexie
+Syndrome d'alcoolisation foetale
+Dysmorphophobie
+Syndrome de Down
+Syndrome de Ganser
+Trouble d'apprentissage
+Echolalie
+Echopraxie
+Syndrome de Munchhausen par procuration
+Ejaculation precoce
+Episode hypomaniaque
+Exhibitionnisme
+Parasomnie
+Maladie de Gilles de la Tourette
+Manie
+Trouble de l'adaptation
+Megalomanie
+Syndrome de Peter Pan
+Melancolie
+Paraphilie
+Perfectionnisme
+Trouble de la personnalite
+Pica
+Peur panique
+Trichotillomanie
+Phobie sociale
+Psychose infantile
+Schizophrenie
+Trouble anxieux
+Schizophrenie catatonique
+Sinistrose
+Somnambulisme
+Syndrome d'Asperger
+Syndrome d'Ekbom
+Trouble psychotique bref
+Syndrome de Fregoli
+Syndrome de Munchhausen
+Terreur nocturne
+Tic
+Trouble amnesique
+Trouble cognitif
+Trouble de la personnalite anankastique
+Trouble de la personnalite antisociale
+Trouble de la personnalite borderline
+Trouble de la personnalite evitante
+Trouble de la personnalite histrionique
+Trouble de la personnalite narcissique
+Trouble de la personnalite paranoiaque
+Trouble de la personnalite schizotypique
+Trouble de stress post-traumatique
+Trouble des habitudes et des impulsions
+Trouble du deficit de l'attention
+Trouble emotionnel
+Trouble erectile masculin
+Trouble obsessionnel compulsif
+Trouble psychotique partage
+Trouble schizo-affectif
+alcool
+amphetamines
+cafeine
+cocaine
+cognitif
+hallucinogenes
+
