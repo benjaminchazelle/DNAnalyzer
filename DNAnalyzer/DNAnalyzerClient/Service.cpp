@@ -44,7 +44,7 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw runtime_error("Le fichier ne peut être ouvert");
+		throw invalid_argument("Le fichier ne peut être ouvert");
 	}
 
 	// On récupère la réponse
@@ -66,7 +66,11 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw invalid_argument("La réponse du serveur n'est pas correcte");
+		throw logic_error("La réponse du serveur n'est pas correcte");
+	}
+	catch (runtime_error const& e) {
+		UNREFERENCED_PARAMETER(e);
+		throw domain_error(e.what());
 	}
 
 	return results;
@@ -85,7 +89,7 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw runtime_error("Le fichier ne peut être ouvert");
+		throw invalid_argument("Le fichier ne peut être ouvert");
 	}
 
 	// On récupère la réponse
@@ -107,7 +111,11 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw invalid_argument("La réponse du serveur n'est pas correcte");
+		throw logic_error("La réponse du serveur n'est pas correcte");
+	}
+	catch (domain_error const& e) {
+		UNREFERENCED_PARAMETER(e);
+		throw domain_error(e.what());
 	}
 
 	return results;
@@ -136,7 +144,11 @@ unordered_set<string> Service::ObtenirMaladies(const Serveur & serveur)
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw invalid_argument("La réponse du serveur n'est pas correcte");
+		throw logic_error("La réponse du serveur n'est pas correcte");
+	}
+	catch (domain_error const& e) {
+		UNREFERENCED_PARAMETER(e);
+		throw domain_error(e.what());
 	}
 
 	return maladies;
@@ -181,24 +193,26 @@ bool Service::analysePreciseParseur(const string & response)
 
 	if (line != "MA v1.0\r")
 	{
-		throw invalid_argument("Requête incorrecte");
+		throw invalid_argument("Réponse invalide");
 	}
 
 	// On vérifie le début de ligne
 
-	string prefix = "DESEASE ";
-	size_t prefixLength = prefix.length();
-
 	getline(responseStream, line, '\n');
 
-	if (line.size() < prefixLength + 2)
-	{
-		throw invalid_argument("Requête incorrecte");
+	try {
+		verifierLigneErreur(line);
+	}
+	catch(runtime_error const &e) {
+		throw runtime_error(e.what());
 	}
 
-	// On récupère la maladie
+	char lastChar = line.at(line.size() - 1);
 
-	string maladie = line.substr(prefixLength, line.size() - prefixLength - 1);
+	if ((line.find("DISEASE ") != 0 && line.find("DESEASE ") != 0) || lastChar == ' ')
+	{
+		throw invalid_argument("Réponse invalide");
+	}
 
 	getline(responseStream, line, '\n');
 
@@ -213,7 +227,7 @@ bool Service::analysePreciseParseur(const string & response)
 	}
 	else
 	{
-		throw invalid_argument("Requête incorrecte");
+		throw invalid_argument("Réponse invalide");
 	}
 
 	return results;
@@ -235,25 +249,52 @@ unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 
 	if (line != "MA v1.0\r")
 	{
-		throw invalid_argument("Requête incorrecte");
+		throw invalid_argument("Réponse invalide");
 	}
 
 	// On lit les lignes une à une
 
-	const string prefix = "DESEASE ";
-	const size_t prefixLength = prefix.length();
+	const string goodPrefix = "DISEASE ";
+	const string retroPrefix = "DESEASE ";
+
+	bool secondLine = true;
 
 	while (getline(responseStream, line, '\n') && line.size() > 1) {
 
-		if (line.size() < prefixLength + 2)
+		if (secondLine) {
+			try {
+				verifierLigneErreur(line);
+			}
+			catch (runtime_error const &e) {
+				throw runtime_error(e.what());
+			}
+			secondLine = false;
+		}
+
+		char lastChar = line.at(line.size() - 1);
+
+		if (lastChar == ' ')
 		{
-			continue;
+			throw invalid_argument("Réponse invalide");
 		}
 
 		// On récupère le nom de la maladie pour les ajouter à l'ensemble
 
-		string maladie = line.substr(prefixLength, line.size() - prefixLength - 1);
+		string maladie;
 
+		if (line.find(goodPrefix) == 0)
+		{
+			maladie = line.substr(goodPrefix.length(), line.size() - goodPrefix.length() - 1);
+		}
+		else if (line.find(retroPrefix) == 0)
+		{
+			maladie = line.substr(retroPrefix.length(), line.size() - retroPrefix.length() - 1);
+		}
+		else
+		{
+			throw invalid_argument("Réponse invalide");
+		}
+		
 		results.insert(maladie);
 
 	}
@@ -277,14 +318,21 @@ unordered_set<string> Service::obtenirMaladiesParseur(const string & response)
 
 	if (line != "MA v1.0\r")
 	{
-		throw invalid_argument("Requête incorrecte");
+		throw invalid_argument("Réponse invalide");
 	}
 
 	getline(responseStream, line, '\n');
 
-	if (line != "DESEASES\r")
+	try {
+		verifierLigneErreur(line);
+	}
+	catch (runtime_error const &e) {
+		throw runtime_error(e.what());
+	}
+
+	if (line != "DESEASES\r" && line != "DISEASES\r")
 	{
-		throw invalid_argument("Requête incorrecte");
+		throw invalid_argument("Réponse invalide");
 	}
 
 	// On lit ligne par ligne pour ajouter la maladie à l'ensemble
@@ -295,5 +343,17 @@ unordered_set<string> Service::obtenirMaladiesParseur(const string & response)
 	}
 
 	return maladies;
+}
+
+void Service::verifierLigneErreur(const string & line)
+{
+	const string errorPrefix = "ERROR ";
+
+	if (line.find(errorPrefix) == 0) {
+
+		string errorDescription = line.substr(errorPrefix.length(), line.length() - errorPrefix.length() - 1);
+
+		throw runtime_error(errorDescription);
+	}
 }
 
