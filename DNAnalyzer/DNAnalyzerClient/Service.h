@@ -63,14 +63,21 @@ protected:
 	static bool analysePreciseParseur(const string & response);
 	// Mode d'emploi : Parse la réponse <response> d'une requête d'analyse précise
 	// Exception "invalid_argument" : Si la réponse <response> contient une erreur de syntaxe
+	// Exception "runtime_error" : Si la requête contenait une erreur
 
 	static unordered_set<string> analyseGlobaleParseur(const string & response);
 	// Mode d'emploi : Parse la réponse <response> d'une requête d'analyse globale
 	// Exception "invalid_argument" : Si la réponse <response> contient une erreur de syntaxe
+	// Exception "runtime_error" : Si la requête contenait une erreur
 
 	static unordered_set<string> obtenirMaladiesParseur(const string & response);
 	// Mode d'emploi : Parse la réponse <response> d'une requête de listage des maladies
 	// Exception "invalid_argument" : Si la réponse <response> contient une erreur de syntaxe
+	// Exception "runtime_error" : Si la requête contenait une erreur
+
+	static void verifierLigneErreur(const string & line);
+	// Mode d'emploi : Vérifie la présence d'une erreur
+	// Exception "runtime_error" : Si une erreur est détéctée
 
 	Service();
 	// Mode d'emploi : Constructeur, non implémenté
