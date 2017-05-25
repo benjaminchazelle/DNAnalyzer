@@ -16,9 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
-    <Text Include="..\..\..\..\..\..\Desktop\testGL.txt">
-      <Filter>Fichiers sources</Filter>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DNAnalyzerClient.h">

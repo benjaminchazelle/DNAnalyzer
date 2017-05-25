@@ -198,7 +198,6 @@
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="..\..\..\..\..\..\Desktop\testGL.txt" />
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
