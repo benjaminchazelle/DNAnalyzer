@@ -95,8 +95,6 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 	
 	CDialogEx::OnInitDialog();
 
-	// Ajouter l'élément de menu "À propos de..." au menu Système.
-
 	// IDM_ABOUTBOX doit se trouver dans la plage des commandes système.
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
@@ -120,8 +118,8 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Définir une grande icône
 	SetIcon(m_hIcon, FALSE);		// Définir une petite icône
 
-	// TODO: ajoutez ici une initialisation supplémentaire
 
+	//Chargement des serveurs connu par l'application Client
 	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO2);
 
 	Configuration & cf1 = Configuration::ObtenirInstance() ;
@@ -130,7 +128,8 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 
 	if (!test)
 	{
-		cout << "Erreur de chargement des serveur, arrêt de l'application.";
+		MessageBox(_T("DNAnalyser ne trouve pas le fichier contenant les serveurs.\nArrêt de l'application."), _T("Error"),
+			MB_ICONERROR | MB_OK);
 		exit(0);
 	}
 
@@ -155,9 +154,12 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 	GetDlgItem(IDC_BUTTON1)->EnableWindow(false);
 	SetWindowText(L"DNAnalyser");
 
-	//Onglet Bienvenue
+	//Création de l'onglet Bienvenue
+
 	CTabCtrl * pTC = (CTabCtrl *)GetDlgItem(IDC_TAB1);
+
 	//insertion d'un onglet
+
 	TCITEM tcItem = { 0 };
 	tcItem.mask = TCIF_TEXT | TCIF_PARAM;
 	tcItem.lParam = CDNAnalyzerClientDlg::nextTabId++;
@@ -168,12 +170,12 @@ BOOL CDNAnalyzerClientDlg::OnInitDialog()
 	pTC->InsertItem(iTabs, &tcItem);
 
 	mtxMessages.lock();
+
+	//mise à jour et affichage du contenu de l'onglet
 	messagesOnglets[tcItem.lParam] = "Bienvenue sur DNAnalyser.\nVeuillez Sélectionner un génôme tester, un serveur d'analyse et une maladie à analyser.\nPour obtenir de l'aide, veuillez consulter le manuel utilisateur.";
-	
-	CRichEditCtrl* rich = (CRichEditCtrl*) GetDlgItem(IDC_RICHEDIT23);
-	CString cstringed = (CString)messagesOnglets[tcItem.lParam].c_str();
+	setMessageDisplay(this, tcItem.lParam);
+
 	mtxMessages.unlock();
-	rich->SetWindowTextW((LPCTSTR)cstringed);
 
 	return TRUE;  
 }
@@ -228,16 +230,17 @@ HCURSOR CDNAnalyzerClientDlg::OnQueryDragIcon()
 }
 
 
-
+//Evènement de permission de lancer une analyse
 void CDNAnalyzerClientDlg::OnCbnSelchangeCombo1()
 {
 	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(true);
 }
 
-
+//Evènement de lancement d'Analyse
 void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
 {
 
+	//Récupération des paramètres nécessaires à l'analyse
 	CComboBox * pCombo1 = (CComboBox *)GetDlgItem(IDC_COMBO2);
 	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO1);
 	int index = pCombo1->GetCurSel();
@@ -254,6 +257,7 @@ void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
 	string serv = serveur.host + ":" + to_string(serveur.port);
 	string title = " - " + serv;
 
+	//Choix du type d'analyse à réaliser et lancement d'un nouveau thread dédié à cette unique analyse
 	if (maladie == "=Analyse Globale (Toutes les maladies)=")
 	{
 		string content = "Envoi d'une requête d'Analyse Globale au serveur " + serv;
@@ -275,7 +279,7 @@ void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
 
 }
 
-
+//Evènement résultant d'un choix d'un fichier de génome à analyser
 void CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1()
 {
 	UpdateData(true);
@@ -283,16 +287,19 @@ void CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1()
 	GetDlgItem(IDC_COMBO2)->EnableWindow(true);
 }
 
+//Méthode de récupération des serveurs stockés
 unordered_map<int, Serveur> CDNAnalyzerClientDlg::getServeurs()
 {
 	return serveurs;
 }
 
+//Méthode de récupération des messages d'onglets stockés
 unordered_map<unsigned int, string> CDNAnalyzerClientDlg::getMessagesOnglets()
 {
 	return messagesOnglets;
 }
 
+//Méthode de récupération des threads lancés
 unordered_map<unsigned int, HANDLE*> CDNAnalyzerClientDlg::getThreadsOnglets()
 {
 	return threadsOnglets;
@@ -305,17 +312,27 @@ unordered_multiset<Serveur, string> CDNAnalyzerClientDlg::getCacheMaladies()
 }
 */
 
+//Méthode de mise à jour du titre de la fenêtre
 void CDNAnalyzerClientDlg::setWindowTitle(string title)
 {
 	CString cs = (CString)title.c_str();
 	SetWindowTextW((LPCTSTR)cs);
 }
 
+//Méthode d'affichage du contenu de l'onglet actif
+void CDNAnalyzerClientDlg::setMessageDisplay(CDNAnalyzerClientDlg * fen, int param)
+{
+	CRichEditCtrl* rich = (CRichEditCtrl*)fen->GetDlgItem(IDC_RICHEDIT23);
 
+	CString cstringed = (CString)fen->messagesOnglets[param].c_str();
 
+	rich->SetWindowTextW((LPCTSTR)cstringed);
+}
 
+//Evènement de sélection d'un serveur à qui adresser une analyse
 void CDNAnalyzerClientDlg::OnCbnSelchangeCombo2()
 {
+	//Récupération du serveur sélectionné
 	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(false);
 	CComboBox * pCombo1 = (CComboBox *)GetDlgItem(IDC_COMBO2);
 	CComboBox * pCombo = (CComboBox *)GetDlgItem(IDC_COMBO1);
@@ -325,6 +342,8 @@ void CDNAnalyzerClientDlg::OnCbnSelchangeCombo2()
 	pCombo->AddString(L"=Analyse Globale (Toutes les maladies)=");
 	pCombo->SetCurSel(0);
 	GetDlgItem(IDC_COMBO1)->EnableWindow(true);
+
+	// Lancement d'une requête de récupération des maladies que le serveur sélectionné peut analyser
 	if (obtenirMaladiesThreadInstance != nullptr)
 	{
 		TerminateThread(*obtenirMaladiesThreadInstance, 1);
@@ -335,12 +354,14 @@ void CDNAnalyzerClientDlg::OnCbnSelchangeCombo2()
 	label->SetWindowText(L"Statut chargement maladies :\nChargement des maladies en cours...");
 	obtenirMaladiesThreadInstance = &(maladiesServeur->m_hThread);
 }
-	
+
+//Thread chargé de récupérer les maladies présentes sur un serveur et de mettre à jour le panel de choix de maladies à analyser
 UINT CDNAnalyzerClientDlg::ObtenirMaladiesThread(void *pParam)
 {
 
 	CDNAnalyzerClientDlg* pThis = (CDNAnalyzerClientDlg*)pParam;
 
+	//Récupération du serveur actuellement sélectionné
 	CComboBox * pCombo1 = (CComboBox *)pThis->GetDlgItem(IDC_COMBO2);
 	CComboBox * pCombo = (CComboBox *)pThis->GetDlgItem(IDC_COMBO1);
 	int index = pCombo1->GetCurSel();
@@ -349,7 +370,10 @@ UINT CDNAnalyzerClientDlg::ObtenirMaladiesThread(void *pParam)
 
 	try
 	{
+		//Lancement de la requête de récupération des maladies
 		unordered_set<string> maladies = Service::ObtenirMaladies(serveur);
+
+		//Mise à jour des maladies sujettes à une analyse par le serveur sélectionné
 		for (unordered_set<string>::iterator i = maladies.begin(); i != maladies.end(); i++)
 		{
 			CString cs = (CString)(*i).c_str();
@@ -371,8 +395,10 @@ UINT CDNAnalyzerClientDlg::ObtenirMaladiesThread(void *pParam)
 	return 0;
 }
 
+//Thread charger de réaliser une analyse globale
 UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * pParam)
 {
+	//Récupération des paramètres d'analyse
 	CDNAnalyzerClientDlg* pThis = (CDNAnalyzerClientDlg*)pParam;
 	CComboBox * pCombo1 = (CComboBox *)pThis->GetDlgItem(IDC_COMBO2);
 	CComboBox * pCombo = (CComboBox *)pThis->GetDlgItem(IDC_COMBO1);
@@ -383,6 +409,7 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * pParam)
 	CT2CA pathnameAConvertir(pThis->pathname);
 	std::string filename(pathnameAConvertir);
 
+	//Création d'un nouvel onglet
 	CTabCtrl * pTC = (CTabCtrl *)pThis->GetDlgItem(IDC_TAB1);
 	int index = pTC->GetCurSel();
 	TCHAR buf[256] = { 0 };
@@ -394,16 +421,14 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * pParam)
 
 	BOOL test = pTC->GetItem(index, &item);
 
-	//code redondant (3 lignes suivantes)
-	CRichEditCtrl* rich = (CRichEditCtrl*)pThis->GetDlgItem(IDC_RICHEDIT23);
-
-	CString cstringed = (CString)pThis->messagesOnglets[item.lParam].c_str();
-
-	rich->SetWindowTextW((LPCTSTR)cstringed);
+	pThis->setMessageDisplay(pThis, item.lParam);
 
 	try
 	{
+		//Lancement d'une requête d'analyse globale
 		unordered_set<string> resultats = Service::AnalyseGlobale(serveur, filename);
+
+		//Récupération et affichage des résultats de l'anayse
 		string newMessage = pThis->messagesOnglets[item.lParam]+"\nRésultats de l'analyse globale - Maladies détectées positivement :\n";
 		if (resultats.size() != 0)
 		{
@@ -420,12 +445,11 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * pParam)
 		pThis->messagesOnglets[item.lParam] = newMessage;
 		
 		pTC->SetCurSel(index);
-		//code redondant (3 lignes suivantes)
-		CRichEditCtrl* rich = (CRichEditCtrl*)pThis->GetDlgItem(IDC_RICHEDIT23);
 
-		CString cstringed = (CString)pThis->messagesOnglets[item.lParam].c_str();
+		pThis->setMessageDisplay(pThis, item.lParam);
+
 		mtxMessages.unlock();
-		rich->SetWindowTextW((LPCTSTR)cstringed);
+
 	}
 	catch (exception const & e)
 	{
@@ -434,19 +458,20 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * pParam)
 		pThis->messagesOnglets[item.lParam] = newMessage;
 		
 		pTC->SetCurSel(index);
-		//code redondant (3 lignes suivantes)
-		CRichEditCtrl* rich = (CRichEditCtrl*)pThis->GetDlgItem(IDC_RICHEDIT23);
 
-		CString cstringed = (CString)pThis->messagesOnglets[item.lParam].c_str();
+		pThis->setMessageDisplay(pThis, item.lParam);
+
 		mtxMessages.unlock();
-		rich->SetWindowTextW((LPCTSTR)cstringed);
+
 	}
 
 	return 0;
 }
 
+//Thread charger de réaliser une analyse précise
 UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * pParam)
 {
+	//Récupération des paramètres d'analyse
 	CDNAnalyzerClientDlg* pThis = (CDNAnalyzerClientDlg*)pParam;
 	CComboBox * pCombo1 = (CComboBox *)pThis->GetDlgItem(IDC_COMBO2);
 	CComboBox * pCombo = (CComboBox *)pThis->GetDlgItem(IDC_COMBO1);
@@ -461,6 +486,7 @@ UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * pParam)
 	CT2CA pathnameAConvertir(pThis->pathname);
 	std::string filename(pathnameAConvertir);
 
+	//Création d'un nouvel onglet
 	CTabCtrl * pTC = (CTabCtrl *)pThis->GetDlgItem(IDC_TAB1);
 	int index = pTC->GetCurSel();
 	TCHAR buf[256] = { 0 };
@@ -472,16 +498,14 @@ UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * pParam)
 
 	BOOL test = pTC->GetItem(index, &item);
 
-	//code redondant (3 lignes suivantes)
-	CRichEditCtrl* rich = (CRichEditCtrl*)pThis->GetDlgItem(IDC_RICHEDIT23);
-
-	CString cstringed = (CString)pThis->messagesOnglets[item.lParam].c_str();
-
-	rich->SetWindowTextW((LPCTSTR)cstringed);
+	pThis->setMessageDisplay(pThis, item.lParam);
 
 	try
 	{
+		//Lancement d'une requête d'analyse précise
 		bool resultat = Service::AnalysePrecise(serveur, filename, maladie);
+
+		//Récupération des résultats
 		string newMessage = pThis->messagesOnglets[item.lParam] + "\nRésultat de l'analyse précise - "+maladie+" : ";
 		if (resultat)
 		{
@@ -495,12 +519,11 @@ UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * pParam)
 		pThis->messagesOnglets[item.lParam] = newMessage;
 		
 		pTC->SetCurSel(index);
-		//code redondant (3 lignes suivantes)
-		CRichEditCtrl* rich = (CRichEditCtrl*)pThis->GetDlgItem(IDC_RICHEDIT23);
 
-		CString cstringed = (CString)pThis->messagesOnglets[item.lParam].c_str();
+		pThis->setMessageDisplay(pThis, item.lParam);
+
 		mtxMessages.unlock();
-		rich->SetWindowTextW((LPCTSTR)cstringed);
+
 	}
 	catch (exception const & e)
 	{
@@ -509,17 +532,17 @@ UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * pParam)
 		pThis->messagesOnglets[item.lParam] = newMessage;
 		
 		pTC->SetCurSel(index);
-		//code redondant (3 lignes suivantes)
-		CRichEditCtrl* rich = (CRichEditCtrl*)pThis->GetDlgItem(IDC_RICHEDIT23);
 
-		CString cstringed = (CString)pThis->messagesOnglets[item.lParam].c_str();
+		pThis->setMessageDisplay(pThis, item.lParam);
+
 		mtxMessages.unlock();
-		rich->SetWindowTextW((LPCTSTR)cstringed);
+
 	}
 
 	return 0;
 }
 
+//Méthode de création d'un nouvel onglet
 void CDNAnalyzerClientDlg::createTab(string title,string content)
 {
 	CTabCtrl * pTC = (CTabCtrl *)GetDlgItem(IDC_TAB1);
@@ -530,7 +553,6 @@ void CDNAnalyzerClientDlg::createTab(string title,string content)
 	CString titre = (CString)str.c_str();
 	tcItem.pszText = (LPTSTR)(LPCTSTR) titre;
 	tcItem.lParam = CDNAnalyzerClientDlg::nextTabId++;
-	//pTC->SetItem(iTabs, &tcItem);
 	pTC->InsertItem(iTabs, &tcItem);
 	pTC->SetCurSel(iTabs);
 	GetDlgItem(IDC_BUTTON1)->EnableWindow(true);
@@ -539,12 +561,13 @@ void CDNAnalyzerClientDlg::createTab(string title,string content)
 	mtxMessages.unlock();
 }
 
+//Méthode de récupération du thread actif d'obtention des maladies du serveur actuellement sélectionné
 void CDNAnalyzerClientDlg::unSetObtenirMaladiesThreadInstance()
 {
 	obtenirMaladiesThreadInstance = nullptr;
 }
 
-
+//Evènement de sélection d'un onglet ouvert
 void CDNAnalyzerClientDlg::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	CTabCtrl * pTC = (CTabCtrl *)GetDlgItem(IDC_TAB1);
@@ -566,16 +589,10 @@ void CDNAnalyzerClientDlg::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 
 	BOOL test = pTC->GetItem(index,&item);
 
-	//code redondant (3 lignes suivantes)
-	CRichEditCtrl* rich = (CRichEditCtrl*)GetDlgItem(IDC_RICHEDIT23);
-	
-	CString cstringed = (CString)messagesOnglets[item.lParam].c_str();
-
-	rich->SetWindowTextW((LPCTSTR)cstringed);
-
+	setMessageDisplay(this, item.lParam);
 }
 
-
+//Evènement de suppression de l'onglet sélectionné
 void CDNAnalyzerClientDlg::OnBnClickedButton1()
 {
 	CTabCtrl * pTC = (CTabCtrl *)GetDlgItem(IDC_TAB1);
@@ -603,10 +620,6 @@ void CDNAnalyzerClientDlg::OnBnClickedButton1()
 		GetDlgItem(IDC_BUTTON1)->EnableWindow(false);
 	}
 	test = pTC->GetItem(newIndex, &item);
-	//code redondant (3 lignes suivantes)
-	CRichEditCtrl* rich = (CRichEditCtrl*)GetDlgItem(IDC_RICHEDIT23);
-
-	CString cstringed = (CString)messagesOnglets[item.lParam].c_str();
-
-	rich->SetWindowTextW((LPCTSTR)cstringed);
+	
+	setMessageDisplay(this, item.lParam);
 }
