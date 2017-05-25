@@ -82,7 +82,7 @@ void Master::InterpreterRequete(CommunicationThread & thread)
 	}
 	else
 	{
-		LOG(T_WARN) << "[Master] c:" << &thread << " Demande de service inconu (" << serviceName <<")";
+		LOG(T_WARN) << "[Master] c:" << &thread << " Demande de service inconu";
 		repondreErreurRequete("Unknown service", thread);
 	}
 

@@ -31,17 +31,17 @@ void CommunicationThread::Repondre(const string & reponse)
 	if (bytesSent == SOCKET_ERROR) {
 
 		if (10054 == WSAGetLastError()) {
-			LOG(T_WARN) << "[CommunicationThread] c:" << this << " " << clientInfo.c_str() << " : Connection closed by client";
+			LOG(T_WARN) << "[CommunicationThread] c:" << this << " : Connection closed by client";
 		}
 		else
 		{
-			LOG(T_WARN) << "[CommunicationThread] c:" << this << " " << clientInfo.c_str() << " : Error " << WSAGetLastError() << " during responding";
+			LOG(T_WARN) << "[CommunicationThread] c:" << this << " : Error " << WSAGetLastError() << " during responding";
 		}
 
 		return;
 	}
 
-	LOG(T_INFO) << "[CommunicationThread] c:" << this << " " << clientInfo.c_str() << " : Response sent (" << bytesSent << " bytes)";
+	LOG(T_INFO) << "[CommunicationThread] c:" << this << " : Response sent (" << bytesSent << " bytes)";
 	LOG(T_DEBUG) << "[CommunicationThread] c:" << this << " end Repondre";
 }
 
@@ -51,6 +51,8 @@ CommunicationThread::CommunicationThread(Peer * peer) : csock(peer->csock), clie
 	// Initialisation des données du client dans le CommunicationThread
 	clientInfo = string(inet_ntoa(peer->cin->sin_addr));
 	clientInfo += ":" + to_string(peer->cin->sin_port);
+
+	LOG(T_INFO) << "[CommunicationThread] New client " << clientInfo << " id : " << this;
 
 	delete peer;
 }
@@ -138,11 +140,11 @@ string CommunicationThread::LireLigne() {
 			// Si une erreur survient
 
 			if (10054 == WSAGetLastError()) {
-				LOG(T_WARN) << "[CommunicationThread] c:" << this << " "<< clientInfo.c_str() <<" Connection closed by client ";
+				LOG(T_WARN) << "[CommunicationThread] c:" << this << " Connection closed by client ";
 			}
 			else
 			{
-				LOG(T_WARN) << "[CommunicationThread] c:" << this << " " << clientInfo.c_str() << " Error " << WSAGetLastError() << " during receiving\n ";
+				LOG(T_WARN) << "[CommunicationThread] c:" << this << " Error " << WSAGetLastError() << " during receiving\n ";
 			}
 
 
@@ -157,7 +159,7 @@ string CommunicationThread::LireLigne() {
 void CommunicationThread::FermerConnexion() {
 
 	// On ferme proprement la connexion
-	LOG(T_DEBUG) << "[CommunicationThread] c:" << this << " call FermerConnexion of "<< clientInfo.c_str();
+	LOG(T_DEBUG) << "[CommunicationThread] c:" << this << " call FermerConnexion";
 
 	unsigned int bytesReceived = shutdown(*csock, SD_SEND);
 
@@ -167,7 +169,7 @@ void CommunicationThread::FermerConnexion() {
 		WSACleanup();
 	}
 
-	LOG(T_DEBUG) << "[CommunicationThread] c:" << this << " " << clientInfo.c_str() << " : Connection closed by server";
+	LOG(T_DEBUG) << "[CommunicationThread] c:" << this << " : Connection closed by server";
 
 
 	delete csock;
