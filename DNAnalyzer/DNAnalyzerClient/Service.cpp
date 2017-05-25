@@ -186,19 +186,14 @@ bool Service::analysePreciseParseur(const string & response)
 
 	// On vérifie le début de ligne
 
-	string prefix = "DESEASE ";
-	size_t prefixLength = prefix.length();
-
 	getline(responseStream, line, '\n');
 
-	if (line.size() < prefixLength + 2)
+	char lastChar = line.at(line.size() - 1);
+
+	if ((line.find("DISEASE ") != 0 && line.find("DESEASE ") != 0) || lastChar == ' ')
 	{
 		throw invalid_argument("Requête incorrecte");
 	}
-
-	// On récupère la maladie
-
-	string maladie = line.substr(prefixLength, line.size() - prefixLength - 1);
 
 	getline(responseStream, line, '\n');
 
