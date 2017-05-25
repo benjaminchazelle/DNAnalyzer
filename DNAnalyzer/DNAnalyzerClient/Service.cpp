@@ -1,16 +1,16 @@
 /*************************************************************************
 Service - Classe d'interface des services de traitement distants
 -------------------
-dÃ©but                :	10/05/17
+début                :	10/05/17
 copyright            :	(C) 2017 par CHAZELLE
 e-mail               :	benjamin.chazelle@insa-lyon.fr
 *************************************************************************/
 
-//      RÃ©alisation de la classe <Service> (fichier Service.cpp)        //
+//      Réalisation de la classe <Service> (fichier Service.cpp)        //
 
 //---------------------------------------------------------------- INCLUDE
 
-//-------------------------------------------------------- Include systÃ¨me
+//-------------------------------------------------------- Include système
 
 #include "stdafx.h"
 #include <string>
@@ -34,7 +34,7 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 {
 	string request, response;
 
-	// On formule la requÃªte
+	// On formule la requête
 
 	try {
 		request = "MA v1.0\r\n";
@@ -45,10 +45,10 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw invalid_argument("Le fichier ne peut Ãªtre ouvert");
+		throw invalid_argument("Le fichier ne peut être ouvert");
 	}
 
-	// On rÃ©cupÃ¨re la rÃ©ponse
+	// On récupère la réponse
 
 	try {
 		response = Communication::EnvoyerMessage(serveur, request);
@@ -58,7 +58,7 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 		throw runtime_error("Une erreur est survenue avec le serveur");
 	}
 
-	// On analyse la rÃ©ponse
+	// On analyse la réponse
 
 	bool results;
 
@@ -67,7 +67,7 @@ bool Service::AnalysePrecise(const Serveur & serveur, const string & filename, c
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw logic_error("La rÃ©ponse du serveur n'est pas correcte");
+		throw logic_error("La réponse du serveur n'est pas correcte");
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
@@ -81,7 +81,7 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 {
 	string request, response;
 
-	// On formule la requÃªte
+	// On formule la requête
 
 	try {
 		request = "MA v1.0\r\n";
@@ -91,10 +91,10 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 	}
 	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw invalid_argument("Le fichier ne peut Ãªtre ouvert");
+		throw invalid_argument("Le fichier ne peut être ouvert");
 	}
 
-	// On rÃ©cupÃ¨re la rÃ©ponse
+	// On récupère la réponse
 
 	try {
 		response = Communication::EnvoyerMessage(serveur, request);
@@ -104,7 +104,7 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 		throw runtime_error("Une erreur est survenue avec le serveur");
 	}
 
-	// On analyse la rÃ©ponse
+	// On analyse la réponse
 
 	unordered_set<string> results;
 
@@ -113,7 +113,7 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw logic_error("La rÃ©ponse du serveur n'est pas correcte");
+		throw logic_error("La réponse du serveur n'est pas correcte");
 	}
 	catch (domain_error const& e) {
 		UNREFERENCED_PARAMETER(e);
@@ -127,7 +127,7 @@ unordered_set<string> Service::ObtenirMaladies(const Serveur & serveur)
 {
 	string response;
 
-	// On rÃ©cupÃ¨re la rÃ©ponse de la requÃªte
+	// On récupère la réponse de la requête
 
 	try {
 		response = Communication::EnvoyerMessage(serveur, "MA v1.0\r\nGET DISEASES\r\n\r\n");
@@ -137,7 +137,7 @@ unordered_set<string> Service::ObtenirMaladies(const Serveur & serveur)
 		throw runtime_error("Une erreur est survenue avec le serveur");
 	}
 
-	// On analyse la rÃ©ponse
+	// On analyse la réponse
 
 	unordered_set<string> maladies;
 
@@ -146,7 +146,7 @@ unordered_set<string> Service::ObtenirMaladies(const Serveur & serveur)
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCED_PARAMETER(e);
-		throw logic_error("La rÃ©ponse du serveur n'est pas correcte");
+		throw logic_error("La réponse du serveur n'est pas correcte");
 	}
 	catch (domain_error const& e) {
 		UNREFERENCED_PARAMETER(e);
@@ -172,7 +172,7 @@ string Service::lireFichier(const string & filename)
 	}
 	else {
 
-		throw runtime_error("Le fichier ne peut Ãªtre ouvert");
+		throw runtime_error("Le fichier ne peut être ouvert");
 	}
 
 	return "";
@@ -187,24 +187,22 @@ bool Service::analysePreciseParseur(const string & response)
 
 	responseStream << response;
 
-	// On vÃ©rifie l'en-tÃªte
+	// On vérifie l'en-tête
 
 	string line;
 
 	getline(responseStream, line, '\n');
-	if (line[line.length() - 1] == '\r')
-	{
-		line = line.substr(0, line.length() - 1);
-	}
+	trimCarriageReturn(line);
 
 	if (line != "MA v1.0")
 	{
-		throw invalid_argument("RÃ©ponse invalide");
+		throw invalid_argument("Réponse invalide");
 	}
 
-	// On vÃ©rifie le dÃ©but de ligne
+	// On vérifie le début de ligne
 
 	getline(responseStream, line, '\n');
+	trimCarriageReturn(line);
 
 	try {
 		verifierLigneErreur(line);
@@ -217,22 +215,23 @@ bool Service::analysePreciseParseur(const string & response)
 
 	if ((line.find("DISEASE ") != 0 && line.find("DESEASE ") != 0) || lastChar == ' ')
 	{
-		throw invalid_argument("RÃ©ponse invalide");
+		throw invalid_argument("Réponse invalide");
 	}
 
 	getline(responseStream, line, '\n');
 
 
-	if (line == "1")
+	if (line == "1\r")
 	{
 		results = true;
 	}
-	else if (line == "0")
+	else if (line == "0\r")
 	{
+		// On ne fait rien ici
 	}
 	else
 	{
-		throw invalid_argument("RÃ©ponse invalide");
+		throw invalid_argument("Réponse invalide");
 	}
 
 	return results;
@@ -246,23 +245,20 @@ unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 
 	responseStream << response;
 
-	// On vÃ©rifie l'en-tÃªte
+	// On vérifie l'en-tête
 
 	string line;
 
 	getline(responseStream, line, '\n');
+	trimCarriageReturn(line);
 
-	if (line[line.length() - 1] == '\r')
-	{
-		line = line.substr(0, line.length() - 1);
-	}
 
 	if (line != "MA v1.0")
 	{
-		throw invalid_argument("RÃ©ponse invalide");
+		throw invalid_argument("Réponse invalide");
 	}
 
-	// On lit les lignes une Ã  une
+	// On lit les lignes une à une
 
 	const string goodPrefix = "DISEASE ";
 	const string retroPrefix = "DESEASE ";
@@ -270,6 +266,7 @@ unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 	bool secondLine = true;
 
 	while (getline(responseStream, line, '\n') && line.size() > 1) {
+		trimCarriageReturn(line);
 
 		if (secondLine) {
 			try {
@@ -285,25 +282,25 @@ unordered_set<string> Service::analyseGlobaleParseur(const string & response)
 
 		if (lastChar == ' ')
 		{
-			throw invalid_argument("RÃ©ponse invalide");
+			throw invalid_argument("Réponse invalide");
 		}
 
 
-		string maladie = line.substr(prefixLength, line.size() - prefixLength +(line.at(line.length()-1)=='\r'?-1:0));
+//		string maladie = line.substr(prefixLength, line.size() - prefixLength +(line.at(line.length()-1)=='\r'?-1:0));
 
 		string maladie;
 
 		if (line.find(goodPrefix) == 0)
 		{
-			maladie = line.substr(goodPrefix.length(), line.size() - goodPrefix.length() - 1);
+			maladie = line.substr(goodPrefix.length(), line.size() - goodPrefix.length());
 		}
 		else if (line.find(retroPrefix) == 0)
 		{
-			maladie = line.substr(retroPrefix.length(), line.size() - retroPrefix.length() - 1);
+			maladie = line.substr(retroPrefix.length(), line.size() - retroPrefix.length());
 		}
 		else
 		{
-			throw invalid_argument("RÃ©ponse invalide");
+			throw invalid_argument("Réponse invalide");
 		}
 		
 		results.insert(maladie);
@@ -321,18 +318,20 @@ unordered_set<string> Service::obtenirMaladiesParseur(const string & response)
 
 	responseStream << response;
 
-	// On vÃ©rifie l'en-tÃªte
+	// On vérifie l'en-tête
 
 	string line;
 
 	getline(responseStream, line, '\n');
+	trimCarriageReturn(line);
 
-	if (line != "MA v1.0\r")
+	if (line != "MA v1.0")
 	{
-		throw invalid_argument("RÃ©ponse invalide");
+		throw invalid_argument("Réponse invalide");
 	}
 
 	getline(responseStream, line, '\n');
+	trimCarriageReturn(line);
 
 	try {
 		verifierLigneErreur(line);
@@ -341,16 +340,17 @@ unordered_set<string> Service::obtenirMaladiesParseur(const string & response)
 		throw runtime_error(e.what());
 	}
 
-	if (line != "DESEASES\r" && line != "DISEASES\r")
+	if (line != "DESEASES" && line != "DISEASES")
 	{
-		throw invalid_argument("RÃ©ponse invalide");
+		throw invalid_argument("Réponse invalide");
 	}
 
-	// On lit ligne par ligne pour ajouter la maladie Ã  l'ensemble
+	// On lit ligne par ligne pour ajouter la maladie à l'ensemble
 
 	while (getline(responseStream, line, '\n') && line.size() > 1) {
+		trimCarriageReturn(line);
 
-		maladies.insert(line.substr(0, line.size() - 1));
+		maladies.insert(line.substr(0, line.size()));
 	}
 
 	return maladies;
@@ -362,9 +362,16 @@ void Service::verifierLigneErreur(const string & line)
 
 	if (line.find(errorPrefix) == 0) {
 
-		string errorDescription = line.substr(errorPrefix.length(), line.length() - errorPrefix.length() - 1);
+		string errorDescription = line.substr(errorPrefix.length(), line.length() - errorPrefix.length());
 
 		throw runtime_error(errorDescription);
+	}
+}
+
+void Service::trimCarriageReturn(string & line)
+{
+	if (line.at(line.length() - 1) == '\r') {
+		line = line.substr(0, line.length() - 1);
 	}
 }
 
