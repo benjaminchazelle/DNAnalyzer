@@ -163,7 +163,7 @@ const Maladie * Dictionnaire::ObtenirMaladie(const string & name) {
 	LOG(T_DEBUG) << "[Dictionnaire] call ObtenirMaladie ( " << name << " ) ";
 	unordered_map<string,const Maladie*>::iterator it = maladies.find(name);
 	if (it == maladies.end()) {
-		LOG(T_WARN) << "[Dictionnaire] Maladie non defini : " << name;
+		LOG(T_WARN) << "[Dictionnaire] Maladie non définie : " << name;
 		throw range_error("maladie " + name + " non defini");
 	}
 	return it->second;

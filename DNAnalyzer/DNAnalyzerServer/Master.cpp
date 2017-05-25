@@ -67,7 +67,7 @@ void Master::InterpreterRequete(CommunicationThread & thread)
 	else if (serviceName == "GET DISEASES" || serviceName == "GET DESEASES")
 	{
 		LOG(T_INFO) << "[Master] c:" << &thread << " demande le service GET DISEASES";
-		LOG(T_DEBUG) << "[Master] c:" << &thread << " recuperation de la dernier ligne (ligne vide)";
+		LOG(T_DEBUG) << "[Master] c:" << &thread << " recuperation de la dérnière ligne (ligne vide)";
 		string crlf = thread.LireLigne();
 
 		if (crlf == "") {
@@ -75,8 +75,8 @@ void Master::InterpreterRequete(CommunicationThread & thread)
 			obtenirListeMaladies(thread);
 		}
 		else {
-			LOG(T_WARN) << "[Master] c:" << &thread << " requette avec syntax invalide  (service GET DISEASES)";
-			LOG(T_DEBUG) << "[Master] c:" << &thread << " ligne suplementaire non permis : \""<<crlf<<"\"";
+			LOG(T_WARN) << "[Master] c:" << &thread << " requête de syntaxe invalide  (service GET DISEASES)";
+			LOG(T_DEBUG) << "[Master] c:" << &thread << " ligne suplementaire non permise : \""<<crlf<<"\"";
 			repondreErreurRequete("Invalid syntax", thread);
 		}
 	}
@@ -110,7 +110,7 @@ void Master::analysePrecise(const string & nomMaladie, const string & genome, Co
 	}
 	catch (invalid_argument const& e) {
 		UNREFERENCE_PARAMETER(e);
-		LOG(T_WARN) << "[Master] c:" << &thread << " genome incorect";
+		LOG(T_WARN) << "[Master] c:" << &thread << " genome incorrect";
 
 		repondreErreurRequete("Invalid genome", thread);
 		return;
@@ -135,7 +135,7 @@ void Master::analysePrecise(const string & nomMaladie, const string & genome, Co
 	catch (range_error const& e) { // Si la maladie est inconnue
 		UNREFERENCE_PARAMETER(e);
 
-		LOG(T_WARN) << "[Master] c:" << &thread << " demande une maladie non répertorié";
+		LOG(T_WARN) << "[Master] c:" << &thread << " demande une maladie non répértoriée";
 		repondreErreurRequete("Unknown disease", thread);
 
 	}
@@ -159,7 +159,7 @@ void Master::analyseGlobale(const string & genome, CommunicationThread & thread)
 	catch (invalid_argument const& e) {
 		UNREFERENCE_PARAMETER(e);
 
-		LOG(T_WARN) << "[Master] c:" << &thread << " genome incorect";
+		LOG(T_WARN) << "[Master] c:" << &thread << " genome incorrect";
 		repondreErreurRequete("Invalid genome", thread);
 		return;
 	}
