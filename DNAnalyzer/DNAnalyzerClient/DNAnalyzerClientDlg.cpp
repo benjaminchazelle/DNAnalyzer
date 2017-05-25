@@ -383,12 +383,21 @@ UINT CDNAnalyzerClientDlg::ObtenirMaladiesThread(void *pParam)
 		label->SetWindowText(L"Statut chargement maladies :\nChargement des maladies effectué avec succès.");
 
 	}
-	catch (exception const & e)
+	catch (runtime_error const & e)
 	{
 		CWnd * label = (CWnd*)pThis->GetDlgItem(IDS_ABOUTBOX);
 		label->SetWindowText(L"Statut chargement maladies :\nEchange avec le serveur impossible, échec du chargement des maladies.");
 	}
-
+	catch (logic_error const & e)
+	{
+		CWnd * label = (CWnd*)pThis->GetDlgItem(IDS_ABOUTBOX);
+		label->SetWindowText(L"Statut chargement maladies :\nRéponse du serveur incorrecte, échec du chargement des maladies.");
+	}
+	catch (domain_error const & e)
+	{
+		CWnd * label = (CWnd*)pThis->GetDlgItem(IDS_ABOUTBOX);
+		label->SetWindowText(L"Statut chargement maladies :\nRequête envoyée au serveur incorrecte, échec du chargement des maladies.");
+	}
 
 	pThis->unSetObtenirMaladiesThreadInstance();
 
@@ -451,7 +460,46 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * pParam)
 		mtxMessages.unlock();
 
 	}
-	catch (exception const & e)
+	catch (invalid_argument const & e)
+	{
+		string newMessage = pThis->messagesOnglets[item.lParam] + "\nProblème d'ouverture du fichier contenant le génome.";
+		mtxMessages.lock();
+		pThis->messagesOnglets[item.lParam] = newMessage;
+
+		pTC->SetCurSel(index);
+
+		pThis->setMessageDisplay(pThis, item.lParam);
+
+		mtxMessages.unlock();
+
+	}
+	catch (logic_error const & e)
+	{
+		string newMessage = pThis->messagesOnglets[item.lParam] + "\nRéponse incorrecte provenant du serveur.";
+		mtxMessages.lock();
+		pThis->messagesOnglets[item.lParam] = newMessage;
+
+		pTC->SetCurSel(index);
+
+		pThis->setMessageDisplay(pThis, item.lParam);
+
+		mtxMessages.unlock();
+
+	}
+	catch (domain_error const & e)
+	{
+		string newMessage = pThis->messagesOnglets[item.lParam] + "\nRequête incorrecte envoyée au serveur.";
+		mtxMessages.lock();
+		pThis->messagesOnglets[item.lParam] = newMessage;
+
+		pTC->SetCurSel(index);
+
+		pThis->setMessageDisplay(pThis, item.lParam);
+
+		mtxMessages.unlock();
+
+	}
+	catch (runtime_error const & e)
 	{
 		string newMessage = pThis->messagesOnglets[item.lParam] + "\nEchec de la communication avec le serveur.";
 		mtxMessages.lock();
@@ -525,7 +573,46 @@ UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * pParam)
 		mtxMessages.unlock();
 
 	}
-	catch (exception const & e)
+	catch (invalid_argument const & e)
+	{
+		string newMessage = pThis->messagesOnglets[item.lParam] + "\nProblème d'ouverture du fichier contenant le génome.";
+		mtxMessages.lock();
+		pThis->messagesOnglets[item.lParam] = newMessage;
+
+		pTC->SetCurSel(index);
+
+		pThis->setMessageDisplay(pThis, item.lParam);
+
+		mtxMessages.unlock();
+
+	}
+	catch (logic_error const & e)
+	{
+		string newMessage = pThis->messagesOnglets[item.lParam] + "\nRéponse incorrecte provenant du serveur.";
+		mtxMessages.lock();
+		pThis->messagesOnglets[item.lParam] = newMessage;
+
+		pTC->SetCurSel(index);
+
+		pThis->setMessageDisplay(pThis, item.lParam);
+
+		mtxMessages.unlock();
+
+	}
+	catch (domain_error const & e)
+	{
+		string newMessage = pThis->messagesOnglets[item.lParam] + "\nRequête incorrecte envoyée au serveur.";
+		mtxMessages.lock();
+		pThis->messagesOnglets[item.lParam] = newMessage;
+
+		pTC->SetCurSel(index);
+
+		pThis->setMessageDisplay(pThis, item.lParam);
+
+		mtxMessages.unlock();
+
+	}
+	catch (runtime_error const & e)
 	{
 		string newMessage = pThis->messagesOnglets[item.lParam] + "\nEchec de la communication avec le serveur.";
 		mtxMessages.lock();
