@@ -255,7 +255,7 @@ void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
 	string titreOnglet = " - " + serv;
 
 	//Choix du type d'analyse à réaliser et lancement d'un nouveau thread dédié à cette unique analyse
-	if (maladie == "=Analyse Globale (Toutes les maladies)=")
+	if (maladie == "< Analyse globale (Toutes les maladies) >")
 	{
 		string contenuOnglet = "Envoi d'une requête d'Analyse Globale au serveur " + serv;
 		createTab(titreOnglet, contenuOnglet);
@@ -336,7 +336,7 @@ void CDNAnalyzerClientDlg::OnCbnSelchangeCombo2()
 	int indexServeurCourant = comboServeurs->GetCurSel();
 	Serveur serveur = serveurs[indexServeurCourant];
 	comboMaladies->ResetContent();
-	comboMaladies->AddString(L"=Analyse Globale (Toutes les maladies)=");
+	comboMaladies->AddString(L"< Analyse globale (Toutes les maladies) >");
 	comboMaladies->SetCurSel(0);
 	GetDlgItem(IDC_COMBO1)->EnableWindow(true);
 
@@ -382,18 +382,23 @@ UINT CDNAnalyzerClientDlg::ObtenirMaladiesThread(void * window)
 	}
 	catch (runtime_error const & e)
 	{
+		UNREFERENCED_PARAMETER(e);
 		CWnd * labelStatutChargementMaladies = (CWnd*)fenetre->GetDlgItem(IDS_ABOUTBOX);
 		labelStatutChargementMaladies->SetWindowText(L"Statut chargement maladies :\nEchange avec le serveur impossible, échec du chargement des maladies.");
-	}
-	catch (logic_error const & e)
-	{
-		CWnd * labelStatutChargementMaladies = (CWnd*)fenetre->GetDlgItem(IDS_ABOUTBOX);
-		labelStatutChargementMaladies->SetWindowText(L"Statut chargement maladies :\nRéponse du serveur incorrecte, échec du chargement des maladies.");
 	}
 	catch (domain_error const & e)
 	{
 		CWnd * labelStatutChargementMaladies = (CWnd*)fenetre->GetDlgItem(IDS_ABOUTBOX);
-		labelStatutChargementMaladies->SetWindowText(L"Statut chargement maladies :\nRequête envoyée au serveur incorrecte, échec du chargement des maladies.");
+
+		string message = "Statut chargement maladies :\nRequête envoyée au serveur incorrecte (" + string(e.what()) + "), échec du chargement des maladies.";
+
+		labelStatutChargementMaladies->SetWindowText((LPCTSTR)(CString)message.c_str());
+	}
+	catch (logic_error const & e)
+	{
+		UNREFERENCED_PARAMETER(e);
+		CWnd * labelStatutChargementMaladies = (CWnd*)fenetre->GetDlgItem(IDS_ABOUTBOX);
+		labelStatutChargementMaladies->SetWindowText(L"Statut chargement maladies :\nRéponse du serveur incorrecte, échec du chargement des maladies.");
 	}
 
 	fenetre->unSetObtenirMaladiesThreadInstance();
@@ -457,20 +462,9 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * window)
 	}
 	catch (invalid_argument const & e)
 	{
+		UNREFERENCED_PARAMETER(e);
+
 		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nProblème d'ouverture du fichier contenant le génome.";
-		mtxMessages.lock();
-		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
-
-		ongletControlleur->SetCurSel(indexOnglet);
-
-		fenetre->setMessageDisplay(fenetre, onglet.lParam);
-
-		mtxMessages.unlock();
-
-	}
-	catch (logic_error const & e)
-	{
-		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRéponse incorrecte provenant du serveur.";
 		mtxMessages.lock();
 		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 
@@ -483,7 +477,21 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * window)
 	}
 	catch (domain_error const & e)
 	{
-		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRequête incorrecte envoyée au serveur.";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRequête incorrecte (" + string(e.what()) + ") envoyée au serveur.";
+		mtxMessages.lock();
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
+
+		ongletControlleur->SetCurSel(indexOnglet);
+
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
+
+		mtxMessages.unlock();
+	}
+	catch (logic_error const & e)
+	{
+		UNREFERENCED_PARAMETER(e);
+
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRéponse incorrecte provenant du serveur.";
 		mtxMessages.lock();
 		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 
@@ -496,6 +504,8 @@ UINT CDNAnalyzerClientDlg::AnalyseGlobaleThread(void * window)
 	}
 	catch (runtime_error const & e)
 	{
+		UNREFERENCED_PARAMETER(e);
+
 		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nEchec de la communication avec le serveur.";
 		mtxMessages.lock();
 		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
@@ -570,20 +580,9 @@ UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * window)
 	}
 	catch (invalid_argument const & e)
 	{
+		UNREFERENCED_PARAMETER(e);
+
 		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nProblème d'ouverture du fichier contenant le génome.";
-		mtxMessages.lock();
-		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
-
-		ongletControlleur->SetCurSel(indexOnglet);
-
-		fenetre->setMessageDisplay(fenetre, onglet.lParam);
-
-		mtxMessages.unlock();
-
-	}
-	catch (logic_error const & e)
-	{
-		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRéponse incorrecte provenant du serveur.";
 		mtxMessages.lock();
 		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 
@@ -596,7 +595,22 @@ UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * window)
 	}
 	catch (domain_error const & e)
 	{
-		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRequête incorrecte envoyée au serveur.";
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRequête incorrecte (" + string(e.what()) + ") envoyée au serveur.";
+		mtxMessages.lock();
+		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
+
+		ongletControlleur->SetCurSel(indexOnglet);
+
+		fenetre->setMessageDisplay(fenetre, onglet.lParam);
+
+		mtxMessages.unlock();
+
+	}
+	catch (logic_error const & e)
+	{
+		UNREFERENCED_PARAMETER(e);
+
+		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nRéponse incorrecte provenant du serveur.";
 		mtxMessages.lock();
 		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;
 
@@ -609,6 +623,8 @@ UINT CDNAnalyzerClientDlg::AnalysePreciseThread(void * window)
 	}
 	catch (runtime_error const & e)
 	{
+		UNREFERENCED_PARAMETER(e);
+
 		string nouveauMessage = fenetre->messagesOnglets[onglet.lParam] + "\nEchec de la communication avec le serveur.";
 		mtxMessages.lock();
 		fenetre->messagesOnglets[onglet.lParam] = nouveauMessage;

@@ -115,7 +115,7 @@ string Communication::EnvoyerMessage(const Serveur & serveur, const string & mes
 
 		buffer[bytesReceived] = '\0';
 
-		size_t len = response.length();
+		size_t len = response.size();
 
 		response += buffer;
 
@@ -123,7 +123,7 @@ string Communication::EnvoyerMessage(const Serveur & serveur, const string & mes
 
 		if (pos != string::npos) {
 
-			response = response.substr(0, len + pos);
+			response = response.substr(0, len + pos + 4);
 
 			break;
 		}

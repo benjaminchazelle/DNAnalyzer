@@ -19,53 +19,27 @@ namespace DNAnalyzerClientTest
 	public:
 		static string lireFichier(string filename)
 		{
-			try {
-				return Service::lireFichier(filename);
-			}
-			catch (...) {
-				throw;
-			}
-
+			return Service::lireFichier(filename);
 		}
 
 		static bool analysePreciseParseur(const string & response)
 		{
-			try {
-				return Service::analysePreciseParseur(response);
-			}
-			catch (...) {
-				throw;
-			}
+			return Service::analysePreciseParseur(response);
 		}
 
 		static unordered_set<string> analyseGlobaleParseur(const string & response)
 		{
-			try {
-				return Service::analyseGlobaleParseur(response);
-			}
-			catch (...) {
-				throw;
-			}
+			return Service::analyseGlobaleParseur(response);
 		}
 
 		static unordered_set<string> obtenirMaladiesParseur(const string & response)
 		{
-			try {
-				return Service::obtenirMaladiesParseur(response);
-			}
-			catch (...) {
-				throw;
-			}
+			return Service::obtenirMaladiesParseur(response);
 		}
 
 		static void verifierLigneErreur(const string & line)
 		{
-			try {
-				return Service::verifierLigneErreur(line);
-			}
-			catch (...) {
-				throw;
-			}
+			return Service::verifierLigneErreur(line);
 		}
 
 		static void trimCarriageReturn(string & str)
@@ -106,8 +80,7 @@ namespace DNAnalyzerClientTest
 			try {
 				Assert::IsTrue(ServiceTestInterface::lireFichier(_fichierGenome) == content);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 
@@ -155,8 +128,7 @@ namespace DNAnalyzerClientTest
 			try {
 				maladies = ServiceTestInterface::obtenirMaladiesParseur(response);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 
@@ -183,8 +155,7 @@ namespace DNAnalyzerClientTest
 			try {
 				maladies = ServiceTestInterface::obtenirMaladiesParseur(response);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 
@@ -262,9 +233,8 @@ namespace DNAnalyzerClientTest
 				try {
 					result = ServiceTestInterface::analysePreciseParseur(response);
 				}
-				catch (exception const& e)
+				catch (...)
 				{
-					UNREFERENCE_PARAMETER(e);
 					Assert::Fail();
 				}
 
@@ -282,9 +252,8 @@ namespace DNAnalyzerClientTest
 				try {
 					result = ServiceTestInterface::analysePreciseParseur(response);
 				}
-				catch (exception const& e)
+				catch (...)
 				{
-					UNREFERENCE_PARAMETER(e);
 					Assert::Fail();
 				}
 				Assert::IsFalse(result);
@@ -307,9 +276,8 @@ namespace DNAnalyzerClientTest
 				try {
 					result = ServiceTestInterface::analysePreciseParseur(response);
 				}
-				catch (exception const& e)
+				catch (...)
 				{
-					UNREFERENCE_PARAMETER(e);
 					Assert::Fail();
 				}
 
@@ -327,9 +295,8 @@ namespace DNAnalyzerClientTest
 				try {
 					result = ServiceTestInterface::analysePreciseParseur(response);
 				}
-				catch (exception const& e)
+				catch (...)
 				{
-					UNREFERENCE_PARAMETER(e);
 					Assert::Fail();
 				}
 
@@ -349,8 +316,6 @@ namespace DNAnalyzerClientTest
 			response += "\r\n";
 
 			bool invalidArgumentException = false;
-
-			bool result;
 
 			try {
 				ServiceTestInterface::analysePreciseParseur(response);
@@ -376,8 +341,6 @@ namespace DNAnalyzerClientTest
 			response += "\r\n";
 
 			bool runtimeErrorException = false;
-
-			bool result;
 
 			try {
 				ServiceTestInterface::analysePreciseParseur(response);
@@ -411,7 +374,7 @@ namespace DNAnalyzerClientTest
 			{
 				results = ServiceTestInterface::analyseGlobaleParseur(response);
 			}
-			catch (exception const& e)
+			catch (...)
 			{
 				Assert::Fail();
 			}
@@ -440,7 +403,7 @@ namespace DNAnalyzerClientTest
 			{
 				results = ServiceTestInterface::analyseGlobaleParseur(response);
 			}
-			catch (exception const& e)
+			catch (...)
 			{
 				Assert::Fail();
 			}
@@ -543,7 +506,7 @@ namespace DNAnalyzerClientTest
 			{
 				ServiceTestInterface::verifierLigneErreur(line);
 			}
-			catch (exception &e)
+			catch (...)
 			{
 				Assert::Fail();
 			}
