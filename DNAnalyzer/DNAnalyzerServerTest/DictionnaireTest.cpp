@@ -80,9 +80,7 @@ namespace DNAnalyzerServerTest
 				const Maladie * NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
 				Assert::IsTrue(NAME->definition.size() == 4);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
-
+			catch (...) {
 				Assert::Fail();
 			}
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 1);
@@ -103,8 +101,7 @@ namespace DNAnalyzerServerTest
 				const Maladie * NAME2 = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2");
 				Assert::IsTrue(NAME2->definition.size() == 2);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
@@ -128,8 +125,7 @@ namespace DNAnalyzerServerTest
 				}
 
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 1);
@@ -161,8 +157,7 @@ namespace DNAnalyzerServerTest
 					Assert::IsTrue(Mots::ObtenirInstance().RecupererMot(i) != "");
 				}
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 			Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirNomsMaladies().size() == 2);
@@ -207,8 +202,7 @@ namespace DNAnalyzerServerTest
 				const Maladie * NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
 				Assert::IsTrue(NAME->definition.size() == 4);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 
@@ -230,8 +224,7 @@ namespace DNAnalyzerServerTest
 				const Maladie * NAME2 = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2");
 				Assert::IsTrue(NAME2->definition.size() == 2);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 		}
@@ -250,8 +243,7 @@ namespace DNAnalyzerServerTest
 				const Maladie * NAME = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME");
 				Assert::IsTrue(NAME->definition.size() == 4);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 
@@ -273,8 +265,7 @@ namespace DNAnalyzerServerTest
 				const Maladie * NAME2 = Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2");
 				Assert::IsTrue(NAME2->definition.size() == 2);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 		}
@@ -295,8 +286,7 @@ namespace DNAnalyzerServerTest
 				unsigned int indexAA = Mots::ObtenirInstance().ObtenirIndex("AA");
 				Assert::IsTrue((*(Dictionnaire::ObtenirInstance().ObtenirMaladies(indexAA).find(NAME)))->nom == "NAME");
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 
@@ -348,8 +338,7 @@ namespace DNAnalyzerServerTest
 				Assert::IsTrue(Dictionnaire::ObtenirInstance().ObtenirMaladie("NAME2")->nom == "NAME2");
 
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 		}

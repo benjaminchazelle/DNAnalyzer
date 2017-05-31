@@ -115,7 +115,7 @@ unordered_set<string> Service::AnalyseGlobale(const Serveur & serveur, const str
 		UNREFERENCED_PARAMETER(e);
 		throw logic_error("La réponse du serveur n'est pas correcte");
 	}
-	catch (domain_error const& e) {
+	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
 		throw domain_error(e.what());
 	}
@@ -148,7 +148,7 @@ unordered_set<string> Service::ObtenirMaladies(const Serveur & serveur)
 		UNREFERENCED_PARAMETER(e);
 		throw logic_error("La réponse du serveur n'est pas correcte");
 	}
-	catch (domain_error const& e) {
+	catch (runtime_error const& e) {
 		UNREFERENCED_PARAMETER(e);
 		throw domain_error(e.what());
 	}

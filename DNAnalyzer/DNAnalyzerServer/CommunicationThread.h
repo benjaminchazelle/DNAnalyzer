@@ -15,8 +15,7 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 #include <winsock2.h>
 #include <unordered_set>
-
-#include "Log.h";
+#include "Log.h"
 
 using namespace std;
 

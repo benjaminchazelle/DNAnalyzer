@@ -14,6 +14,11 @@ namespace DNAnalyzerServerTest
 	{
 	public:
 
+		TEST_METHOD_INITIALIZE(Initialize)
+		{
+			Mots::RafraichirInstance();
+		}
+
 		TEST_METHOD_CLEANUP(CleanUp)
 		{
 			Mots::RafraichirInstance();
@@ -64,8 +69,7 @@ namespace DNAnalyzerServerTest
 			try {
 				Mots::ObtenirInstance().InsererMot(mot);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 
@@ -92,8 +96,7 @@ namespace DNAnalyzerServerTest
 			try {
 				Mots::ObtenirInstance().InsererMot(mot);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 		}
@@ -117,8 +120,7 @@ namespace DNAnalyzerServerTest
 
 					Assert::AreEqual(index, i);
 				}
-				catch (std::exception const& e) {
-					UNREFERENCE_PARAMETER(e);
+				catch (...) {
 					Assert::Fail();
 				}
 
@@ -143,8 +145,7 @@ namespace DNAnalyzerServerTest
 				try {
 					Mots::ObtenirInstance().InsererMot(mots[i]);
 				}
-				catch (std::exception const& e) {
-					UNREFERENCE_PARAMETER(e);
+				catch (...) {
 					Assert::Fail();
 				}
 
@@ -157,8 +158,7 @@ namespace DNAnalyzerServerTest
 
 					Assert::IsTrue(strcmp(mots[i], motRecupere) == 0);
 				}
-				catch (std::exception const& e) {
-					UNREFERENCE_PARAMETER(e);
+				catch (...) {
 					Assert::Fail();
 				}
 
@@ -206,8 +206,7 @@ namespace DNAnalyzerServerTest
 			try {
 				Mots::ObtenirInstance().InsererMot(mot);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 
@@ -226,8 +225,7 @@ namespace DNAnalyzerServerTest
 			try {
 				Mots::ObtenirInstance().InsererMot(mot);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 
@@ -237,8 +235,7 @@ namespace DNAnalyzerServerTest
 				Mots::ObtenirInstance().InsererMot(mot);
 				Assert::Fail();
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 			}
 
 			Assert::AreEqual(Mots::ObtenirInstance().ObtenirNombreMots(), (unsigned int)1);
@@ -294,8 +291,7 @@ namespace DNAnalyzerServerTest
 			try {
 				Mots::ObtenirInstance().InsererMot(mot);
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 
@@ -303,8 +299,7 @@ namespace DNAnalyzerServerTest
 				Mots::ObtenirInstance().ObtenirIndex(mot);
 
 			}
-			catch (std::exception const& e) {
-				UNREFERENCE_PARAMETER(e);
+			catch (...) {
 				Assert::Fail();
 			}
 		}
