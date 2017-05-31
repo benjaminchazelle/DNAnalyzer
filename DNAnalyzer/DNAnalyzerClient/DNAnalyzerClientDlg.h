@@ -34,7 +34,7 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnCbnSelchangeCombo1();
+	
 	afx_msg void OnBnClickedMfcmenubutton1();
 	afx_msg void OnEnChangeMfceditbrowse1();
 	unordered_map<int, Serveur> getServeurs();

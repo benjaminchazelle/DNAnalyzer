@@ -75,7 +75,6 @@ BEGIN_MESSAGE_MAP(CDNAnalyzerClientDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_CBN_SELCHANGE(IDC_COMBO1, &CDNAnalyzerClientDlg::OnCbnSelchangeCombo1)
 	ON_BN_CLICKED(IDC_MFCMENUBUTTON1, &CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1)
 	ON_EN_CHANGE(IDC_MFCEDITBROWSE1, &CDNAnalyzerClientDlg::OnEnChangeMfceditbrowse1)
 	ON_CBN_SELCHANGE(IDC_COMBO2, &CDNAnalyzerClientDlg::OnCbnSelchangeCombo2)
@@ -230,11 +229,7 @@ HCURSOR CDNAnalyzerClientDlg::OnQueryDragIcon()
 }
 
 
-//Evènement de permission de lancer une analyse
-void CDNAnalyzerClientDlg::OnCbnSelchangeCombo1()
-{
-	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(true);
-}
+
 
 //Evènement de lancement d'Analyse
 void CDNAnalyzerClientDlg::OnBnClickedMfcmenubutton1()
@@ -330,7 +325,7 @@ void CDNAnalyzerClientDlg::setMessageDisplay(CDNAnalyzerClientDlg * fen, int idO
 void CDNAnalyzerClientDlg::OnCbnSelchangeCombo2()
 {
 	//Récupération du serveur sélectionné
-	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(false);
+	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(true);
 	CComboBox * comboServeurs = (CComboBox *)GetDlgItem(IDC_COMBO2);
 	CComboBox * comboMaladies = (CComboBox *)GetDlgItem(IDC_COMBO1);
 	int indexServeurCourant = comboServeurs->GetCurSel();
