@@ -15,6 +15,8 @@ namespace TestUtil
 		
 		TEST_METHOD(FileUtil)
 		{
+			// Test de la classe FileUtil
+
 			FileUtil::write("foo", "bar");
 
 			Assert::IsTrue(FileUtil::exists("foo"));

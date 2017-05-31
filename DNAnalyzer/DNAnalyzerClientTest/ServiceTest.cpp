@@ -515,6 +515,8 @@ namespace DNAnalyzerClientTest
 
 		TEST_METHOD(trimCarriageReturn_Without)
 		{
+			// Suppression du caractère du '\r' non effective
+
 			string str = "Hello world !";
 
 			ServiceTestInterface::trimCarriageReturn(str);
@@ -524,6 +526,8 @@ namespace DNAnalyzerClientTest
 
 		TEST_METHOD(trimCarriageReturn_With)
 		{
+			// Suppression du caractère du '\r' effective
+
 			string str = "Hello world !\r";
 
 			ServiceTestInterface::trimCarriageReturn(str);
