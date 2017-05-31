@@ -39,12 +39,3 @@ bool FileUtil::exists(string file)
 	struct stat buffer;
 	return (stat(file.c_str(), &buffer) == 0);
 }
-
-FileUtil::FileUtil()
-{
-}
-
-
-FileUtil::~FileUtil()
-{
-}
