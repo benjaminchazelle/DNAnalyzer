@@ -22,10 +22,6 @@ e-mail               :	hugues.vogel@insa-lyon.fr
 
 //----------------------------------------------------------------- PUBLIC
 
-HANDLE Communication::threadServeurHandle = NULL;
-
-SOCKET Communication::sock;
-
 Communication* Communication::instanceCommunication;
 
 Communication & Communication::ObtenirInstance()
@@ -89,7 +85,7 @@ void Communication::recevoirRequete()
 		peer->csock = csock;
 
 		// On lance un thread pour traiter la requête du client en parallèle
-		threadServeurHandle = CreateThread(NULL, 0, &Communication::threadRequete, peer, 0, NULL);
+		threadServeurHandle = CreateThread(NULL, 0, &(Communication::threadRequete), peer, 0, NULL);
 
 		if (threadServeurHandle != NULL) {
 
@@ -123,6 +119,7 @@ DWORD Communication::threadRequete(void * p)
 
 Communication::Communication()
 {
+	threadServeurHandle = NULL;
 }
 
 

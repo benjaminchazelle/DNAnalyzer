@@ -28,10 +28,10 @@ class Communication
 {
 protected:
 
-	static HANDLE threadServeurHandle;
+	HANDLE threadServeurHandle;
 	// Description : Instance thread du serveur
 
-	static SOCKET sock;
+	SOCKET sock;
 	// Description : Socket serveur d'écoute
 
 	static Communication* instanceCommunication;
@@ -53,7 +53,7 @@ public:
 
 protected:
 
-	static void recevoirRequete();
+	void recevoirRequete();
 	// Mode d'emploi : Attend une nouvelle connexion entrante puis lance un threadRequete
 
 	static DWORD WINAPI threadRequete(void* p);
