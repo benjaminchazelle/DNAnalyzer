@@ -233,7 +233,7 @@ HCURSOR CDNAnalyzerClientDlg::OnQueryDragIcon()
 //Evènement de permission de lancer une analyse
 void CDNAnalyzerClientDlg::OnCbnSelchangeCombo1()
 {
-	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(true);
+	
 }
 
 //Evènement de lancement d'Analyse
@@ -330,7 +330,7 @@ void CDNAnalyzerClientDlg::setMessageDisplay(CDNAnalyzerClientDlg * fen, int idO
 void CDNAnalyzerClientDlg::OnCbnSelchangeCombo2()
 {
 	//Récupération du serveur sélectionné
-	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(false);
+	GetDlgItem(IDC_MFCMENUBUTTON1)->EnableWindow(true);
 	CComboBox * comboServeurs = (CComboBox *)GetDlgItem(IDC_COMBO2);
 	CComboBox * comboMaladies = (CComboBox *)GetDlgItem(IDC_COMBO1);
 	int indexServeurCourant = comboServeurs->GetCurSel();
